@@ -412,11 +412,289 @@
       z-index: 1;
     }
 
-    /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .brand-panel, .panel-divider { display: none; }
-      .login-card { max-width: 100%; padding: 2rem 1.5rem; }
-      .login-wrapper { padding: 1rem; }
+    /* ── What's New Pill Button ── */
+    .whats-new-pill-wrap {
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+    .whats-new-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 1rem;
+      border-radius: 9999px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.38);
+      color: #f6de8c;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+    .whats-new-pill:hover {
+      background: rgba(212, 175, 55, 0.22);
+      border-color: rgba(212, 175, 55, 0.7);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.28);
+    }
+    .pulsing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseGreen 2s infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .pill-badge {
+      background: rgba(212, 175, 55, 0.25);
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    /* ── What's New Modal Dialog ── */
+    .wn-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(4, 9, 20, 0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      animation: fadeInModal 0.25s ease-out;
+    }
+
+    @keyframes fadeInModal {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .wn-modal-card {
+      background: #0d1b2a;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 20px;
+      max-width: 640px;
+      width: 100%;
+      padding: 2rem 2.25rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(212, 175, 55, 0.15);
+      position: relative;
+      animation: scaleUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes scaleUpModal {
+      from { transform: scale(0.94); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .wn-close-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--muted);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      transition: all 0.2s;
+    }
+    .wn-close-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .wn-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--accent);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.75px;
+      margin-bottom: 0.75rem;
+    }
+
+    .wn-modal-card h2 {
+      font-family: var(--font-h);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+
+    .wn-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .wn-features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 540px) {
+      .wn-features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .wn-feature-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .wn-feat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .wn-feat-icon.blue   { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .wn-feat-icon.gold   { background: rgba(212, 175, 55, 0.15); color: var(--accent); }
+    .wn-feat-icon.green  { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .wn-feat-icon.purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+
+    .wn-feature-card strong {
+      display: block;
+      color: #fff;
+      font-size: 0.88rem;
+      margin-bottom: 0.2rem;
+    }
+    .wn-feature-card p {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Preview Illustration Box (labeled as preview illustration) */
+    .wn-preview-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .wn-preview-caption {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .wn-mock-search {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+    .wn-mock-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+    .wn-mock-btn {
+      padding: 0.65rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      opacity: 0.9;
+    }
+    .wn-mock-btn.mock-scan {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .wn-mock-btn.mock-transfer {
+      background: rgba(212, 175, 55, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .wn-mock-btn.mock-add {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .wn-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    .wn-btn-primary {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .wn-btn-primary:hover {
+      background: #e5be3e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
     }
   </style>
 </head>
@@ -456,6 +734,16 @@
 
     <!-- Right: Login Card -->
     <div class="login-card">
+
+      <!-- What's New Pill Button -->
+      <div class="whats-new-pill-wrap">
+        <button type="button" class="whats-new-pill" onclick="openWhatsNewModal()" title="Click to view new system updates">
+          <span class="pulsing-dot"></span>
+          <i class="fa-solid fa-star"></i>
+          <span>What's New: Senior Toolbar</span>
+          <span class="pill-badge">View</span>
+        </button>
+      </div>
 
       <div class="card-header">
         <div class="lock-icon">
@@ -657,7 +945,101 @@
     document.getElementById('username').addEventListener('keydown', e => {
       if (e.key === 'Enter') document.getElementById('password').focus();
     });
+
+    // ── What's New Modal Handlers ──────────────────────────────────────────────
+    function openWhatsNewModal() {
+      const modal = document.getElementById('whats-new-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeWhatsNewModal() {
+      const modal = document.getElementById('whats-new-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    function handleModalBackdropClick(event) {
+      if (event.target && event.target.id === 'whats-new-modal') {
+        closeWhatsNewModal();
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeWhatsNewModal();
+    });
   </script>
+
+  <!-- What's New Modal Dialog (Hidden by Default) -->
+  <div id="whats-new-modal" class="wn-modal" style="display: none;" onclick="handleModalBackdropClick(event)">
+    <div class="wn-modal-card" role="dialog" aria-modal="true" aria-labelledby="wn-modal-title">
+      <button type="button" class="wn-close-btn" onclick="closeWhatsNewModal()" aria-label="Close modal">&times;</button>
+      
+      <div class="wn-header">
+        <span class="wn-badge"><i class="fa-solid fa-star"></i> System Update</span>
+        <h2 id="wn-modal-title">Simpler Toolbar for Senior-Friendly Use</h2>
+        <p class="wn-desc">The search and action buttons inside the OSCA system are now separated into large, accessible rows — making it significantly easier to read and tap for staff and senior citizens.</p>
+      </div>
+
+      <!-- Feature cards grid -->
+      <div class="wn-features-grid">
+        <div class="wn-feature-card">
+          <div class="wn-feat-icon blue"><i class="fa-solid fa-magnifying-glass"></i></div>
+          <div>
+            <strong>Full-Width Search Bar</strong>
+            <p>Larger text size, high contrast, and dedicated search icon for rapid member lookup.</p>
+          </div>
+        </div>
+
+        <div class="wn-feature-card">
+          <div class="wn-feat-icon gold"><i class="fa-solid fa-qrcode"></i></div>
+          <div>
+            <strong>Large Action Buttons</strong>
+            <p>Distinct rows for Scan QR, Transfer Certificate, and Add New Senior with bold labels.</p>
+          </div>
+        </div>
+
+        <div class="wn-feature-card">
+          <div class="wn-feat-icon green"><i class="fa-solid fa-hand-pointer"></i></div>
+          <div>
+            <strong>Senior-Friendly Touch Targets</strong>
+            <p>Minimum 64px button height and generous spacing to prevent accidental taps.</p>
+          </div>
+        </div>
+
+        <div class="wn-feature-card">
+          <div class="wn-feat-icon purple"><i class="fa-solid fa-mobile-screen-button"></i></div>
+          <div>
+            <strong>Fully Responsive Design</strong>
+            <p>Adapts smoothly across desktop monitors, office tablets, and mobile devices.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Illustration Showcase -->
+      <div class="wn-preview-box">
+        <div class="wn-preview-caption"><i class="fa-solid fa-eye"></i> Layout Preview (Illustration)</div>
+        <div class="wn-mock-search">
+          <i class="fa-solid fa-magnifying-glass"></i> Search by ID, Full Name, Barangay, PhilHealth No...
+        </div>
+        <div class="wn-mock-row">
+          <div class="wn-mock-btn mock-scan"><i class="fa-solid fa-qrcode"></i> Scan QR</div>
+          <div class="wn-mock-btn mock-transfer"><i class="fa-solid fa-file-export"></i> Transfer</div>
+          <div class="wn-mock-btn mock-add"><i class="fa-solid fa-user-plus"></i> Add Senior</div>
+        </div>
+      </div>
+
+      <div class="wn-footer">
+        <button type="button" class="wn-btn-primary" onclick="closeWhatsNewModal()">
+          <i class="fa-solid fa-check"></i> Got It, Thanks!
+        </button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
