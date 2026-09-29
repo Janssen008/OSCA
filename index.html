@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -327,286 +327,46 @@
       box-shadow: 0 0 12px rgba(212,175,55,0.08);
     }
 
-    /* ===== Search & Verification View — Senior-Friendly ===== */
+    /* Search & Verification View */
     .search-section {
-      padding: 2rem;
+      padding: 1.75rem;
       margin-bottom: 2rem;
     }
 
-    /* Row 1: Search bar */
     .search-bar-wrapper {
       display: flex;
-      flex-direction: column;
-      gap: 1.15rem;
-      width: 100%;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .search-input-group {
+      flex: 1;
       position: relative;
-      width: 100%;
-      display: flex;
-      align-items: center;
+      min-width: 280px;
     }
 
-    .search-input-group .search-icon {
+    .search-input-group i {
       position: absolute;
-      left: 1.35rem;
+      left: 1.25rem;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 1.25rem;
-      pointer-events: none;
-      transition: color 0.2s;
-      z-index: 2;
     }
 
     .search-input {
       width: 100%;
-      padding: 1.1rem 3.4rem 1.1rem 3.6rem;
-      background: rgba(15, 23, 42, 0.65);
-      border: 2px solid var(--card-border);
-      border-radius: 14px;
+      padding: 0.9rem 1rem 0.9rem 3.2rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
       color: var(--text-main);
-      font-size: 1.12rem;
-      font-family: var(--font-body);
+      font-size: 1rem;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-      box-sizing: border-box;
-    }
-
-    .search-input::placeholder {
-      color: var(--text-muted);
-      font-size: 1.02rem;
+      transition: border-color 0.2s;
     }
 
     .search-input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
-      background: rgba(15, 23, 42, 0.85);
-    }
-    .search-input-group:focus-within .search-icon {
-      color: var(--accent);
-    }
-
-    .search-clear-btn {
-      position: absolute;
-      right: 0.85rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      z-index: 3;
-    }
-    .search-clear-btn:hover {
-      background: rgba(239, 68, 68, 0.25);
-      color: #ef4444;
-    }
-
-    /* Row 2: Action buttons */
-    .search-actions-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .action-btn {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-      border-radius: 14px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      font-family: var(--font-heading);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-      text-align: left;
-      min-height: 74px;
-      box-sizing: border-box;
-      width: 100%;
-    }
-
-    .action-btn .action-icon {
-      font-size: 1.55rem;
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
-    }
-    .action-btn:hover .action-icon {
-      transform: scale(1.08);
-    }
-
-    .action-btn .action-content {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .action-btn .action-label {
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      line-height: 1.25;
-      display: block;
-    }
-
-    .action-btn .action-sub {
-      font-size: 0.8rem;
-      font-weight: 400;
-      opacity: 0.8;
-      line-height: 1.25;
-      display: block;
-    }
-
-    /* Scan QR button */
-    .action-btn-scan {
-      background: rgba(59, 130, 246, 0.12);
-      border-color: rgba(59, 130, 246, 0.35);
-      color: #93c5fd;
-    }
-    .action-btn-scan .action-icon {
-      background: rgba(59, 130, 246, 0.2);
-      color: #60a5fa;
-    }
-    .action-btn-scan:hover {
-      background: rgba(59, 130, 246, 0.22);
-      border-color: rgba(59, 130, 246, 0.6);
-      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.2);
-      transform: translateY(-2px);
-    }
-
-    /* Transfer Certificate button */
-    .action-btn-transfer {
-      background: rgba(212, 175, 55, 0.10);
-      border-color: rgba(212, 175, 55, 0.35);
-      color: var(--accent);
-    }
-    .action-btn-transfer .action-icon {
-      background: rgba(212, 175, 55, 0.18);
-      color: var(--accent);
-    }
-    .action-btn-transfer:hover {
-      background: rgba(212, 175, 55, 0.20);
-      border-color: rgba(212, 175, 55, 0.6);
-      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.2);
-      transform: translateY(-2px);
-    }
-
-    /* Add New Senior button */
-    .action-btn-add {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #000;
-    }
-    .action-btn-add .action-icon {
-      background: rgba(0, 0, 0, 0.15);
-      color: #000;
-    }
-    .action-btn-add .action-sub {
-      opacity: 0.85;
-      color: #1a1a1a;
-    }
-    .action-btn-add:hover {
-      background: var(--accent-hover);
-      border-color: var(--accent-hover);
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-      transform: translateY(-2px);
-    }
-
-    /* ── Responsive Toolbar & Layout ── */
-    @media (max-width: 1040px) {
-      .app-container {
-        gap: 1.25rem;
-        padding: 0 1rem;
-      }
-      .search-actions-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .action-btn-add {
-        grid-column: 1 / -1;
-      }
-    }
-
-    @media (max-width: 840px) {
-      .app-container {
-        flex-direction: column;
-        margin: 1rem auto;
-        padding: 0 0.85rem;
-        gap: 1rem;
-      }
-      .sidebar {
-        width: 100%;
-        position: static;
-      }
-      .sidebar-card {
-        padding: 0.75rem;
-      }
-      .sidebar-card .nav-tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-      }
-      .sidebar-card .tab-btn {
-        flex: 1 1 calc(50% - 0.4rem);
-        min-width: 150px;
-        padding: 0.65rem 0.85rem;
-        font-size: 0.88rem;
-      }
-      .sidebar-mini-stat, .sidebar-divider, .sidebar-label {
-        display: none;
-      }
-    }
-
-    @media (max-width: 620px) {
-      .search-input {
-        font-size: 1rem;
-        padding: 0.95rem 2.9rem 0.95rem 3rem;
-      }
-      .search-input-group .search-icon {
-        left: 1rem;
-        font-size: 1.1rem;
-      }
-      .search-actions-row {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-      }
-      .action-btn {
-        padding: 0.85rem 1.1rem;
-        min-height: 64px;
-        gap: 0.85rem;
-      }
-      .action-btn .action-icon {
-        width: 42px;
-        height: 42px;
-        font-size: 1.35rem;
-      }
-      .action-btn .action-label {
-        font-size: 0.98rem;
-      }
-      .action-btn .action-sub {
-        font-size: 0.75rem;
-      }
-      .sidebar-card .tab-btn {
-        flex: 1 1 100%;
-      }
     }
 
     .btn {
@@ -833,10 +593,16 @@
       backdrop-filter: blur(8px);
       z-index: 1000;
       display: none;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
       padding: 1.5rem 1rem;
       overflow-y: auto;
+    }
+
+    /* When shown, display as flex */
+    .modal-overlay.show,
+    .modal-overlay[style*="flex"] {
+      display: flex !important;
     }
 
     .modal-content {
@@ -845,11 +611,13 @@
       border-radius: 20px;
       max-width: 650px;
       width: 100%;
-      max-height: none;
-      overflow-y: visible;
+      max-height: 90vh;
+      overflow-y: auto;
       padding: 2rem;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
       margin: auto;
+      flex-shrink: 0;
+      position: relative;
     }
 
     .modal-header {
@@ -1004,6 +772,107 @@
     #tab-directory select option:hover {
       background: rgba(212, 175, 55, 0.15);
     }
+
+    /* ── RESPONSIVE DESIGN ─────────────────────────────────────── */
+    
+    /* Forms Hub Responsive */
+    @media (max-width: 768px) {
+      .modal-content {
+        max-width: 95vw !important;
+        max-height: 90vh;
+        padding: 1.5rem;
+      }
+
+      #forms-module-ncsc,
+      #forms-module-uploads {
+        grid-template-columns: 1fr;
+      }
+
+      .forms-module-tab {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.8rem !important;
+      }
+
+      #modal-uploaded-forms .modal-content {
+        padding: 1.25rem;
+      }
+
+      #uploaded-forms-list {
+        max-height: 300px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .modal-content {
+        max-width: 100vw !important;
+        border-radius: 16px 16px 0 0;
+        max-height: 100vh;
+        padding: 1rem;
+        margin: auto;
+      }
+
+      .modal-header {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+      }
+
+      .modal-header h3 {
+        font-size: 0.95rem;
+      }
+
+      #forms-module-ncsc,
+      #forms-module-uploads {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .glass-card {
+        padding: 1.25rem !important;
+      }
+
+      .glass-card h4 {
+        font-size: 0.95rem !important;
+      }
+
+      .glass-card p {
+        font-size: 0.75rem !important;
+      }
+
+      .glass-card i {
+        font-size: 2rem !important;
+      }
+
+      .forms-module-tab {
+        font-size: 0.7rem;
+        padding: 0.45rem 0.6rem !important;
+        min-width: 120px;
+        flex: 0 1 auto;
+      }
+
+      .btn {
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      #uploaded-forms-list {
+        max-height: 250px;
+      }
+
+      #uploaded-forms-list > div {
+        padding: 0.75rem !important;
+        flex-direction: column;
+        text-align: left;
+      }
+
+      #uploaded-forms-list .fa-solid {
+        margin-bottom: 0.5rem;
+      }
+
+      #uploaded-forms-list button {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.65rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1058,12 +927,6 @@
           <button class="tab-btn" onclick="switchTab('tab-directory')">
             <i class="fa-solid fa-table-list"></i> Senior Master List
           </button>
-          <button class="tab-btn" onclick="switchTab('tab-import')">
-            <i class="fa-solid fa-file-excel"></i> Import CSV / Excel
-          </button>
-          <button class="tab-btn" onclick="switchTab('tab-claims')">
-            <i class="fa-solid fa-receipt"></i> Benefit Claims
-          </button>
         </div>
 
         <hr class="sidebar-divider">
@@ -1076,14 +939,13 @@
             <i class="fa-solid fa-gear"></i> System Settings
           </button>
         </div>
-      </div>
 
         <hr class="sidebar-divider">
         <div class="sidebar-label">Overview</div>
         <div class="nav-tabs">
-          <button class="tab-btn" onclick="openDashboardModal()" style="color: #a78bfa;">
+          <a class="tab-btn" href="dashboard.html" style="color: #a78bfa; text-decoration: none;">
             <i class="fa-solid fa-chart-pie"></i> Dashboard
-          </button>
+          </a>
         </div>
       </div>
 
@@ -1101,93 +963,24 @@
 
     <!-- Main Content -->
     <main class="main-content" style="flex: 1; min-width: 0;">
-    <!-- Stats Section -->
-    <div class="stats-grid">
-      <div class="glass-card stat-card">
-        <div class="stat-icon total"><i class="fa-solid fa-users"></i></div>
-        <div class="stat-details">
-          <h3 id="stat-total">0</h3>
-          <p>Total Registered Seniors</p>
-        </div>
-      </div>
-      <div class="glass-card stat-card">
-        <div class="stat-icon active"><i class="fa-solid fa-circle-check"></i></div>
-        <div class="stat-details">
-          <h3 id="stat-active">0</h3>
-          <p>Verified Active Citizens</p>
-        </div>
-      </div>
-      <div class="glass-card stat-card">
-        <div class="stat-icon pension"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-        <div class="stat-details">
-          <h3 id="stat-pensioners">0</h3>
-          <p>Social Pension Beneficiaries</p>
-        </div>
-      </div>
-      <div class="glass-card stat-card">
-        <div class="stat-icon pending"><i class="fa-solid fa-clock-rotate-left"></i></div>
-        <div class="stat-details">
-          <h3 id="stat-pending">0</h3>
-          <p>Pending / Inactive / Deceased</p>
-        </div>
-      </div>
-    </div>
 
     <!-- TAB 1: Instant Verification & Search -->
     <div id="tab-verify" class="tab-content">
       <div class="glass-card search-section">
         <div class="search-bar-wrapper">
-
-          <!-- Row 1: Search Input -->
           <div class="search-input-group">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input
-              type="text"
-              id="verification-search-input"
-              class="search-input"
-              placeholder="Search by ID, Full Name, Barangay, PhilHealth No…"
-              oninput="handleInstantSearch(this.value); toggleSearchClearBtn(this.value);"
-            />
-            <button
-              type="button"
-              id="verification-search-clear"
-              class="search-clear-btn"
-              onclick="clearVerificationSearch()"
-              title="Clear search"
-              style="display: none;"
-            >
-              <i class="fa-solid fa-xmark"></i>
-            </button>
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="verification-search-input" class="search-input" placeholder="Search by ID Number, Full Name, Barangay, PhilHealth No., or Remarks..." oninput="handleInstantSearch(this.value)" />
           </div>
-
-          <!-- Row 2: Action Buttons (separated, large & accessible) -->
-          <div class="search-actions-row">
-
-            <button class="action-btn action-btn-scan" onclick="openScannerModal()" title="Scan QR Code or Barcode">
-              <span class="action-icon"><i class="fa-solid fa-qrcode"></i></span>
-              <div class="action-content">
-                <span class="action-label">Scan QR / Barcode</span>
-                <span class="action-sub">Verify senior via camera</span>
-              </div>
-            </button>
-
-            <button class="action-btn action-btn-transfer" onclick="openTransferModal()" title="Issue Certificate of Transfer">
-              <span class="action-icon"><i class="fa-solid fa-file-export"></i></span>
-              <div class="action-content">
-                <span class="action-label">Transfer Certificate</span>
-                <span class="action-sub">Issue for relocating seniors</span>
-              </div>
-            </button>
-
-            <button class="action-btn action-btn-add" onclick="openAddSeniorModal()" title="Add a new senior citizen">
-              <span class="action-icon"><i class="fa-solid fa-user-plus"></i></span>
-              <div class="action-content">
-                <span class="action-label">Add New Senior</span>
-                <span class="action-sub">Register a new member</span>
-              </div>
-            </button>
-
-          </div>
+          <button class="btn btn-secondary" onclick="openScannerModal()">
+            <i class="fa-solid fa-qrcode"></i> Scan QR / Barcode
+          </button>
+          <button class="btn btn-secondary" onclick="openTransferModal()" style="border-color: rgba(212, 175, 55, 0.4); color: var(--accent);" title="Issue Certificate of Transfer">
+            <i class="fa-solid fa-file-export"></i> Transfer Certificate
+          </button>
+          <button class="btn btn-primary" onclick="openAddSeniorModal()">
+            <i class="fa-solid fa-user-plus"></i> Add New Senior
+          </button>
         </div>
       </div>
 
@@ -1215,8 +1008,15 @@
           </div>
         </div>
 
-        <!-- Filter Toolbar -->
-        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; background: rgba(0,0,0,0.2); padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--card-border);">
+        <!-- Filter Toolbar Toggle -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <button id="filter-toggle-btn" onclick="toggleFilterToolbar()" style="background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.3); border-radius:8px; color:var(--accent); font-size:0.82rem; padding:0.4rem 0.85rem; cursor:pointer; font-family:var(--font-heading); font-weight:600; display:flex; align-items:center; gap:0.4rem;">
+            <i class="fa-solid fa-sliders"></i> Show Filters
+          </button>
+        </div>
+
+        <!-- Filter Toolbar (Hidden by default) -->
+        <div id="filter-toolbar" style="display: none; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; background: rgba(0,0,0,0.2); padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--card-border);">
           <!-- Search -->
           <div style="position: relative; flex: 1; min-width: 200px;">
             <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.75rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.85rem;"></i>
@@ -1287,89 +1087,6 @@
         <div id="ml-pagination" style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem; flex-wrap:wrap; gap:0.5rem;">
           <span id="ml-page-info" style="color:var(--text-muted); font-size:0.85rem;"></span>
           <div style="display:flex; gap:0.4rem; flex-wrap:wrap;" id="ml-page-buttons"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: Excel & CSV Data Import & Mirroring Tool -->
-    <div id="tab-import" class="tab-content" style="display: none;">
-      <div class="glass-card" style="padding: 2rem;">
-        <h2 style="font-family: var(--font-heading); color: var(--accent); margin-bottom: 0.5rem;">
-          <i class="fa-solid fa-file-csv"></i> Import & Mirror OSCA Excel Masterlist
-        </h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
-          Matches the official OSCA Guide Layout: <strong>[No. | Name of Members | Date of Birth (Month, Day, Year) | Sex | ID Number | Philhealth Number | Remarks]</strong>. Automatically handles title rows and Barangay names!
-        </p>
-
-        <div class="dropzone" id="excel-dropzone" onclick="document.getElementById('excel-file-input').click()">
-          <i class="fa-solid fa-file-csv"></i>
-          <h3>Click or Drag & Drop OSCA Masterlist File (.xlsx / .csv) Here</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Supports .xlsx, .xls, .csv, .txt files</p>
-          <input type="file" id="excel-file-input" accept=".csv, .xlsx, .xls, .txt" style="display: none;" onchange="handleExcelFileUpload(event)" />
-        </div>
-
-        <div style="margin-top: 2rem;">
-          <h3 style="font-size: 1rem; color: #fff; margin-bottom: 0.5rem;">
-            <i class="fa-solid fa-paste"></i> Or Paste Copy-Pasted Spreadsheet Rows:
-          </h3>
-          <textarea id="excel-paste-textarea" class="paste-area" placeholder="Paste rows directly copied from your Excel spreadsheet..."></textarea>
-          <div style="margin-top: 0.75rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-            <button class="btn btn-primary" onclick="parsePastedExcelText()">
-              <i class="fa-solid fa-bolt"></i> Process & Preview Columns
-            </button>
-            <button class="btn btn-secondary" onclick="loadSampleOSCAData()">
-              <i class="fa-solid fa-database"></i> Reset to Barangay Singalat Master List
-            </button>
-          </div>
-        </div>
-
-        <!-- Column Mapping Preview Section -->
-        <div id="column-mapping-wrapper" style="display: none; margin-top: 2rem; border-top: 1px solid var(--card-border); padding-top: 1.5rem;">
-          <h3 style="color: var(--accent); margin-bottom: 0.5rem;"><i class="fa-solid fa-sliders"></i> Spreadsheet Columns Detected</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Verify column headers matching the OSCA Guide layout:</p>
-          
-          <div class="profile-info-grid" id="column-map-grid">
-            <!-- Populated dynamically -->
-          </div>
-
-          <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-            <button id="confirm-import-btn" class="btn btn-success" onclick="confirmExcelImport()">
-              <i class="fa-solid fa-check-double"></i> Confirm & Import to phpMyAdmin / MySQL
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- TAB 4: Benefit Claims Tracker -->
-    <div id="tab-claims" class="tab-content" style="display: none;">
-      <div class="glass-card" style="padding: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-          <h2 style="font-family: var(--font-heading); color: var(--accent);">
-            <i class="fa-solid fa-receipt"></i> Senior Citizens Assistance & Subsidy Claim Log
-          </h2>
-          <button class="btn btn-primary" onclick="openLogClaimModal()">
-            <i class="fa-solid fa-plus-circle"></i> Record New Claim
-          </button>
-        </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Date & Time</th>
-                <th>Senior Citizen Name</th>
-                <th>OSCA Control ID</th>
-                <th>Benefit / Subsidy Type</th>
-                <th>Amount / Item</th>
-                <th>Disbursed By</th>
-              </tr>
-            </thead>
-            <tbody id="claims-table-body">
-              <!-- Claims dynamic rows -->
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -1453,88 +1170,103 @@
     </div>
   </div>
 
-  <!-- MODAL 2: Record Benefit Claim -->
-  <div id="modal-claim-form" class="modal-overlay">
-    <div class="modal-content">
+  <!-- MODAL: FORMS & DOCUMENTS HUB -->
+  <div id="modal-forms-hub" class="modal-overlay">
+    <div class="modal-content" style="max-width: 95%; max-width: min(900px, 95vw);">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-hand-holding-hand"></i> Record Assistance / Benefit Claim</h3>
-        <button class="close-btn" onclick="closeModal('modal-claim-form')">&times;</button>
+        <h3 style="font-size: 1.1rem;"><i class="fa-solid fa-folder-open"></i> Forms & Documents Hub</h3>
+        <button class="close-btn" onclick="closeModal('modal-forms-hub')">&times;</button>
       </div>
-      <form onsubmit="saveClaimRecord(event)">
-        <div class="form-group" style="margin-bottom: 1rem;">
-          <label>Select Senior Citizen *</label>
-          <div style="position: relative; margin-bottom: 0.5rem;">
-            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4);"></i>
-            <input type="text" id="claim-senior-search" class="form-control" placeholder="Search by name or ID..." style="padding-left: 2.2rem; background: rgba(0,0,0,0.2);" onkeyup="populateClaimSeniorSelect(this.value)" autocomplete="off">
-          </div>
-          <select id="claim-senior-select" class="form-control" required>
-            <!-- Dynamically populated -->
-          </select>
-        </div>
-        <div class="form-group" style="margin-bottom: 1rem;">
-          <label>Benefit / Assistance Type *</label>
-          <select id="claim-type" class="form-control" required>
-            <option value="Social Pension Allowance (₱3,000 / Quarter)">Social Pension Allowance (₱3,000 / Quarter)</option>
-            <option value="Birthday Cash Gift (₱1,000)">Birthday Cash Gift (₱1,000)</option>
 
-            <option value="Grocery Subsidy / Food Pack">Grocery Subsidy / Food Pack</option>
-            <option value="Centenarian Cash Incentive (₱100,000)">Centenarian Cash Incentive (₱100,000)</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin-bottom: 1rem;">
-          <label>Amount / Remarks</label>
-          <input type="text" id="claim-amount" class="form-control" placeholder="e.g. ₱3,000.00 or 1 Booklet" required />
-        </div>
-        <div class="form-group" style="margin-bottom: 1.5rem;">
-          <label>Disbursing Officer</label>
-          <input type="text" id="claim-officer" class="form-control" value="OSCA Staff Officer" required />
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-claim-form')">Cancel</button>
-          <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> Submit Claim</button>
-        </div>
-      </form>
+      <!-- Module Tabs Navigation -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; overflow-x: auto; flex-wrap: wrap;">
+        <button class="forms-module-tab active" onclick="switchFormsModule('ncsc')" style="padding: 0.6rem 1rem; background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.35); border-radius: 10px; color: var(--accent); font-family: var(--font-heading); font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; flex: 1; min-width: 150px;">
+          <i class="fa-solid fa-file-contract"></i> RA 11982 Forms
+        </button>
+        <button class="forms-module-tab" onclick="switchFormsModule('uploads')" style="padding: 0.6rem 1rem; background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; flex: 1; min-width: 150px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> My Uploads
+        </button>
+      </div>
+
+      <!-- Module 1: RA 11982 Forms -->
+      <div id="forms-module-ncsc" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+          <!-- Special Power of Attorney -->
+          <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="printNCScForm('spa')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #f87171; margin-bottom: 1rem;"></i>
+            <h4 style="margin: 0; font-size: 1rem; color: #fff;">Special Power of Attorney</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">SPA for Deceased Beneficiary (Annex C)</p>
+            <p style="font-size: 0.7rem; color: #94a3b8; margin-top:0.25rem;">RA 11982 Octogenarian & Nonagenarian Program</p>
+          </div>
+
+          <!-- Grievance Form -->
+          <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="printNCScForm('grievance')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #fbbf24; margin-bottom: 1rem;"></i>
+            <h4 style="margin: 0; font-size: 1rem; color: #fff;">Grievance Form</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Submit inclusion/exclusion grievances (Annex D)</p>
+            <p style="font-size: 0.7rem; color: #94a3b8; margin-top:0.25rem;">RA 11982 Octogenarian & Nonagenarian Program</p>
+          </div>
+
+          <!-- Authorization Letter -->
+          <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="printNCScForm('authorization')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #60a5fa; margin-bottom: 1rem;"></i>
+            <h4 style="margin: 0; font-size: 1rem; color: #fff;">Authorization Letter</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Authorize another to claim cash gift (Annex E)</p>
+            <p style="font-size: 0.7rem; color: #94a3b8; margin-top:0.25rem;">RA 11982 Octogenarian & Nonagenarian Program</p>
+          </div>
+
+          <!-- RA 11982 Reference -->
+          <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="printNCScForm('ra11982')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #a78bfa; margin-bottom: 1rem;"></i>
+            <h4 style="margin: 0; font-size: 1rem; color: #fff;">RA 11982 Official Reference</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Official act granting benefits to octogenarians & nonagenarians</p>
+            <p style="font-size: 0.7rem; color: #94a3b8; margin-top:0.25rem;">Republic Act No. 11982</p>
+          </div>
+      </div>
+
+      <!-- Module 2: Upload Your Own Forms -->
+      <div id="forms-module-uploads" style="display: none; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+          <!-- Upload Form Card -->
+          <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; border: 2px dashed rgba(212, 175, 55, 0.4); transition: all 0.2s;" onclick="document.getElementById('file-upload-input').click()" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='rgba(212,175,55,0.05)'" onmouseout="this.style.borderColor='rgba(212,175,55,0.4)'; this.style.background='var(--card-bg)'">
+            <i class="fa-solid fa-file-arrow-up" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;"></i>
+            <h4 style="margin: 0; font-size: 1rem; color: #fff;">Upload PDF / Document</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Add your custom forms and documents</p>
+            <p style="font-size: 0.7rem; color: #94a3b8; margin-top:0.25rem;">PDF, DOC, DOCX, or Image files</p>
+          </div>
+
+          <!-- Your Uploads Card -->
+          <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="showUploadedFormsModal()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <i class="fa-solid fa-list-ul" style="font-size: 2.5rem; color: #34d399; margin-bottom: 1rem;"></i>
+            <h4 style="margin: 0; font-size: 1rem; color: #fff;">Your Uploaded Forms</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">View and manage your uploads</p>
+            <p style="font-size: 0.7rem; color: #94a3b8; margin-top:0.25rem;" id="upload-count-badge">0 files uploaded</p>
+          </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- MODAL: FORMS & DOCUMENTS HUB -->
-  <div id="modal-forms-hub" class="modal-overlay">
-    <div class="modal-content" style="max-width: 700px;">
+  <!-- Hidden File Upload Input -->
+  <input type="file" id="file-upload-input" style="display: none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleFormUpload(event)" />
+
+  <!-- MODAL: Your Uploaded Forms -->
+  <div id="modal-uploaded-forms" class="modal-overlay">
+    <div class="modal-content" style="max-width: 95%; max-width: min(700px, 95vw);">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-folder-open"></i> Forms & Documents Hub</h3>
-        <button class="close-btn" onclick="closeModal('modal-forms-hub')">&times;</button>
+        <h3 style="font-size: 1rem;"><i class="fa-solid fa-cloud-arrow-down"></i> Your Uploaded Forms</h3>
+        <button class="close-btn" onclick="closeModal('modal-uploaded-forms')">&times;</button>
       </div>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1rem;">
-        
-        <!-- Transfer Certificate -->
-        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="closeModal('modal-forms-hub'); openTransferModal();" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-          <i class="fa-solid fa-file-export" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;"></i>
-          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Certificate of Transfer</h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Issue a transfer certificate for relocating seniors.</p>
-        </div>
 
-        <!-- Verification Slip -->
-        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="openVerificationSlipHub()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-          <i class="fa-solid fa-file-signature" style="font-size: 2.5rem; color: #34d399; margin-bottom: 1rem;"></i>
-          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Verification Slip</h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Generate an official OSCA verification slip.</p>
-        </div>
-        
-        <!-- ID Replacement Form -->
-        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="alert('Printable Intake & ID Forms coming soon in next update.')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-          <i class="fa-solid fa-id-card" style="font-size: 2.5rem; color: #60a5fa; margin-bottom: 1rem;"></i>
-          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Registration / ID Form</h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Print blank intake forms for new applicants.</p>
-        </div>
+      <div id="uploaded-forms-list" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 12px;">
+        <!-- Uploaded files list populated by JS -->
+      </div>
 
-        <!-- Social Pension Form -->
-        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="alert('Social Pension Application printing coming soon in next update.')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-          <i class="fa-solid fa-hand-holding-dollar" style="font-size: 2.5rem; color: #fbbf24; margin-bottom: 1rem;"></i>
-          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Social Pension Application</h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Print application forms for social pension.</p>
-        </div>
-
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary" onclick="clearAllUploads()">
+          <i class="fa-solid fa-trash"></i> Clear All
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-uploaded-forms')">
+          Close
+        </button>
       </div>
     </div>
   </div>
@@ -1748,104 +1480,87 @@
     </div>
   </div>
 
-  
-  <!-- MODAL: Dashboard -->
-  <div id="modal-dashboard" class="modal-overlay">
-    <div class="modal-content" style="max-width: 860px;">
-      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 1.5rem; padding-bottom: 1rem;">
-        <div>
-          <h3 style="margin:0; font-size: 1.2rem;"><i class="fa-solid fa-chart-pie" style="color:#a78bfa;"></i> Dashboard Overview</h3>
-          <p style="margin: 0.25rem 0 0; font-size: 0.78rem; color: var(--text-muted);" id="dash-subtitle">OSCA Palayan City — Senior Citizens Data Summary</p>
-        </div>
-        <button class="close-btn" onclick="closeModal('modal-dashboard')">&times;</button>
-      </div>
-
-      <!-- Stat Cards Row -->
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
-        <div style="background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
-          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-users"></i> Total</div>
-          <div id="dash-total" style="font-size: 2rem; font-weight: 800; color: #d4af37; line-height: 1;">0</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Registered Seniors</div>
-        </div>
-        <div style="background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
-          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-circle-check"></i> Active</div>
-          <div id="dash-active" style="font-size: 2rem; font-weight: 800; color: #34d399; line-height: 1;">0</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Verified Citizens</div>
-        </div>
-        <div style="background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
-          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-hand-holding-dollar"></i> Pension</div>
-          <div id="dash-pension" style="font-size: 2rem; font-weight: 800; color: #60a5fa; line-height: 1;">0</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Social Pension Beneficiaries</div>
-        </div>
-        <div style="background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
-          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-clock-rotate-left"></i> Inactive</div>
-          <div id="dash-pending" style="font-size: 2rem; font-weight: 800; color: #f87171; line-height: 1;">0</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Pending / Inactive</div>
-        </div>
-      </div>
-
-      <!-- Two columns: Barangay breakdown + Gender/Age breakdown -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
-
-        <!-- Top Barangays -->
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.1rem;">
-          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.85rem;"><i class="fa-solid fa-map-pin" style="color:#a78bfa;"></i> Top Barangays</div>
-          <div id="dash-barangay-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <div style="color: var(--text-muted); font-size: 0.82rem; text-align:center; padding: 1rem;">Loading...</div>
-          </div>
-        </div>
-
-        <!-- Gender & Age breakdown -->
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.1rem;">
-          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.85rem;"><i class="fa-solid fa-venus-mars" style="color:#f472b6;"></i> Gender & Age</div>
-          <div id="dash-gender-age" style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <div style="color: var(--text-muted); font-size: 0.82rem; text-align:center; padding: 1rem;">Loading...</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Status breakdown bar -->
-      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.1rem;">
-        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.85rem;"><i class="fa-solid fa-chart-bar" style="color:#34d399;"></i> Status Distribution</div>
-        <div id="dash-status-bar" style="display: flex; border-radius: 8px; overflow: hidden; height: 28px; margin-bottom: 0.75rem; gap: 2px;"></div>
-        <div id="dash-status-legend" style="display: flex; flex-wrap: wrap; gap: 0.75rem;"></div>
-      </div>
-
-      <div style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
-        <button class="btn btn-secondary" onclick="closeModal('modal-dashboard')"><i class="fa-solid fa-xmark"></i> Close</button>
-      </div>
-    </div>
-  </div>
-
   <!-- MODAL: System Settings (Signatories) -->
   <div id="modal-settings" class="modal-overlay">
-    <div class="modal-content" style="max-width: 450px;">
+    <div class="modal-content" style="max-width: 620px;">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-gear"></i> System Settings</h3>
+        <h3><i class="fa-solid fa-signature" style="color:var(--accent);"></i> Manage Signatories</h3>
         <button class="close-btn" onclick="closeModal('modal-settings')">&times;</button>
       </div>
-      <form onsubmit="saveSignatorySettings(event)" style="display: flex; flex-direction: column; gap: 1rem;">
-        <div style="background: rgba(30, 41, 59, 0.45); border-radius: 8px; padding: 1rem; border: 1px solid rgba(255,255,255,0.08);">
-          <h4 style="margin-top: 0; margin-bottom: 0.75rem; color: var(--accent); font-size: 0.95rem;">
-            <i class="fa-solid fa-signature"></i> Manage Signatories
-          </h4>
-          
-          <div style="margin-bottom: 0.85rem;">
-            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Prepared / Recorded By (e.g. Officer-in-Charge)</label>
-            <input type="text" id="setting-signatory-prep" class="form-control" placeholder="OSCA OFFICER-IN-CHARGE" required style="margin-top: 0.25rem;">
+
+      <!-- Active Signatory Summary -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:1.25rem;">
+        <div style="background:rgba(212,175,55,0.07); border:1px solid rgba(212,175,55,0.2); border-radius:12px; padding:0.9rem 1rem;">
+          <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:0.3rem;">
+            <i class="fa-solid fa-pen-nib"></i> Prepared / Recorded By
           </div>
-          
+          <div id="active-prep-display" style="font-size:0.95rem; font-weight:700; color:#fff;">—</div>
+          <div id="active-prep-title" style="font-size:0.72rem; color:var(--accent); margin-top:2px;">—</div>
+        </div>
+        <div style="background:rgba(96,165,250,0.07); border:1px solid rgba(96,165,250,0.2); border-radius:12px; padding:0.9rem 1rem;">
+          <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:0.3rem;">
+            <i class="fa-solid fa-stamp"></i> Approved By
+          </div>
+          <div id="active-appr-display" style="font-size:0.95rem; font-weight:700; color:#fff;">—</div>
+          <div id="active-appr-title" style="font-size:0.72rem; color:#60a5fa; margin-top:2px;">—</div>
+        </div>
+      </div>
+
+      <!-- Signatory List -->
+      <div style="background:rgba(15,23,42,0.4); border:1px solid rgba(255,255,255,0.08); border-radius:12px; overflow:hidden; margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid rgba(255,255,255,0.07);">
+          <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">
+            <i class="fa-solid fa-list-ul"></i> All Signatories
+          </span>
+          <button onclick="openAddSignatoryRow()" style="background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.3); border-radius:8px; color:var(--accent); font-size:0.78rem; padding:0.3rem 0.75rem; cursor:pointer; font-family:var(--font-heading); font-weight:600; display:flex; align-items:center; gap:0.35rem;">
+            <i class="fa-solid fa-plus"></i> Add
+          </button>
+        </div>
+        <div id="signatory-list-body" style="max-height:240px; overflow-y:auto;">
+          <!-- rows rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Add / Edit Inline Form -->
+      <div id="signatory-add-form" style="display:none; background:rgba(30,41,59,0.6); border:1px solid rgba(212,175,55,0.25); border-radius:12px; padding:1rem; margin-bottom:1rem;">
+        <div style="font-size:0.78rem; font-weight:700; color:var(--accent); margin-bottom:0.75rem;" id="sig-form-title">
+          <i class="fa-solid fa-user-pen"></i> Add New Signatory
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.75rem;">
           <div>
-            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Approved By (e.g. Head, OSCA / Mayor)</label>
-            <input type="text" id="setting-signatory-appr" class="form-control" placeholder="HEAD, OSCA / CITY MAYOR" required style="margin-top: 0.25rem;">
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Full Name *</label>
+            <input type="text" id="sig-input-name" class="form-control" placeholder="e.g. Janssen Gutierrez" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Title / Position *</label>
+            <input type="text" id="sig-input-title" class="form-control" placeholder="e.g. Officer-in-Charge" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Role</label>
+            <select id="sig-input-role" class="form-control">
+              <option value="prepared">Prepared / Recorded By</option>
+              <option value="approved">Approved By</option>
+              <option value="noted">Noted By</option>
+              <option value="witness">Witness</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Department / Office</label>
+            <input type="text" id="sig-input-dept" class="form-control" placeholder="e.g. OSCA — Palayan City" />
           </div>
         </div>
-        
-        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-settings')">Cancel</button>
-          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Settings</button>
+        <input type="hidden" id="sig-edit-index" value="" />
+        <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+          <button type="button" onclick="closeAddSignatoryRow()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:8px; color:var(--text-muted); font-size:0.82rem; padding:0.4rem 0.85rem; cursor:pointer; font-family:var(--font-heading); font-weight:600;">Cancel</button>
+          <button type="button" onclick="saveSignatoryRow()" style="background:var(--accent); border:none; border-radius:8px; color:#000; font-size:0.82rem; padding:0.4rem 1rem; cursor:pointer; font-family:var(--font-heading); font-weight:700; display:flex; align-items:center; gap:0.35rem;">
+            <i class="fa-solid fa-floppy-disk"></i> Save
+          </button>
         </div>
-      </form>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-settings')">Close</button>
+      </div>
     </div>
   </div>
 
@@ -1888,7 +1603,6 @@
     // Global State Variables
     let masterData = [];
     let customHeaders = [];
-    let benefitClaims = [];
     let tempParsedExcel = null;
     let html5QrScanner = null;
     let useMySQLAPI = true;
@@ -1901,118 +1615,187 @@
 
     
     // ═════════════════════════════════════════════════════════════════════════
-    // DASHBOARD MODAL
-    // ═════════════════════════════════════════════════════════════════════════
-    function openDashboardModal() {
-      const data = masterData;
-      const total   = data.length;
-      const active  = data.filter(d => (d.status||'').toLowerCase() === 'active').length;
-      const pension = data.filter(d => (d.pensioner||'').toLowerCase() === 'yes').length;
-      const pending = data.filter(d => (d.status||'').toLowerCase() !== 'active').length;
-
-      document.getElementById('dash-total').textContent   = total.toLocaleString();
-      document.getElementById('dash-active').textContent  = active.toLocaleString();
-      document.getElementById('dash-pension').textContent = pension.toLocaleString();
-      document.getElementById('dash-pending').textContent = pending.toLocaleString();
-      document.getElementById('dash-subtitle').textContent =
-        `OSCA Palayan City — ${new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' })}`;
-
-      // --- Barangay Breakdown ---
-      const brgyMap = {};
-      data.forEach(d => {
-        const b = (d.barangay || 'Unknown').trim();
-        brgyMap[b] = (brgyMap[b] || 0) + 1;
-      });
-      const sorted = Object.entries(brgyMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
-      const maxCount = sorted[0]?.[1] || 1;
-      const brgyEl = document.getElementById('dash-barangay-list');
-      brgyEl.innerHTML = sorted.map(([name, count]) => `
-        <div>
-          <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:3px;">
-            <span style="color:var(--text-main); font-weight:600;">${name}</span>
-            <span style="color:var(--accent); font-weight:700;">${count}</span>
-          </div>
-          <div style="height:6px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;">
-            <div style="height:100%; width:${Math.round((count/maxCount)*100)}%; background:linear-gradient(90deg,#a78bfa,#7c3aed); border-radius:4px; transition:width 0.4s;"></div>
-          </div>
-        </div>
-      `).join('');
-
-      // --- Gender & Age ---
-      const male   = data.filter(d => ['male','m'].includes((d.gender||d.sex||'').toLowerCase().trim())).length;
-      const female = data.filter(d => ['female','f'].includes((d.gender||d.sex||'').toLowerCase().trim())).length;
-      const unknown = total - male - female;
-      const age60   = data.filter(d => { const a=parseInt(d.age); return a>=60&&a<=69; }).length;
-      const age70   = data.filter(d => { const a=parseInt(d.age); return a>=70&&a<=79; }).length;
-      const age80   = data.filter(d => { const a=parseInt(d.age); return a>=80&&a<=89; }).length;
-      const age90   = data.filter(d => { const a=parseInt(d.age); return a>=90; }).length;
-      const gaEl = document.getElementById('dash-gender-age');
-      const pct = (n) => total > 0 ? ((n/total)*100).toFixed(1) : '0.0';
-      gaEl.innerHTML = `
-        <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.25rem;">Gender</div>
-        ${[['Male','#60a5fa',male],['Female','#f472b6',female],['Unknown','#6b7280',unknown]].map(([lbl,col,cnt]) => `
-          <div style="display:flex; align-items:center; gap:0.5rem;">
-            <div style="width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0;"></div>
-            <span style="font-size:0.78rem;color:var(--text-main);flex:1;">${lbl}</span>
-            <span style="font-size:0.78rem;font-weight:700;color:${col};">${cnt.toLocaleString()} <span style="color:var(--text-muted);font-weight:400;">(${pct(cnt)}%)</span></span>
-          </div>`).join('')}
-        <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin: 0.6rem 0 0.25rem;">Age Groups</div>
-        ${[['60–69','#d4af37',age60],['70–79','#34d399',age70],['80–89','#60a5fa',age80],['90+','#f87171',age90]].map(([lbl,col,cnt]) => `
-          <div style="display:flex; align-items:center; gap:0.5rem;">
-            <div style="width:10px;height:10px;border-radius:2px;background:${col};flex-shrink:0;"></div>
-            <span style="font-size:0.78rem;color:var(--text-main);flex:1;">${lbl}</span>
-            <span style="font-size:0.78rem;font-weight:700;color:${col};">${cnt.toLocaleString()} <span style="color:var(--text-muted);font-weight:400;">(${pct(cnt)}%)</span></span>
-          </div>`).join('')}
-      `;
-
-      // --- Status Bar ---
-      const statusMap = {};
-      data.forEach(d => {
-        const s = (d.status || 'Unknown').trim();
-        statusMap[s] = (statusMap[s] || 0) + 1;
-      });
-      const statusColors = { Active:'#34d399', Inactive:'#f87171', Deceased:'#6b7280', Transferred:'#a78bfa', Pending:'#fbbf24' };
-      const barEl = document.getElementById('dash-status-bar');
-      const legEl = document.getElementById('dash-status-legend');
-      barEl.innerHTML = Object.entries(statusMap).map(([s,c]) => {
-        const col = statusColors[s] || '#94a3b8';
-        return `<div title="${s}: ${c}" style="flex:${c};background:${col};min-width:4px;" ></div>`;
-      }).join('');
-      legEl.innerHTML = Object.entries(statusMap).map(([s,c]) => {
-        const col = statusColors[s] || '#94a3b8';
-        return `<div style="display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;">
-          <div style="width:10px;height:10px;border-radius:2px;background:${col};"></div>
-          <span style="color:var(--text-muted);">${s}</span>
-          <strong style="color:${col};">${c}</strong>
-        </div>`;
-      }).join('');
-
-      document.getElementById('modal-dashboard').style.display = 'flex';
-    }
-
-    // ═════════════════════════════════════════════════════════════════════════
     // SYSTEM SETTINGS / SIGNATORIES
     // ═════════════════════════════════════════════════════════════════════════
+
+    // Signatory data store — array of { name, title, dept, role, activePrep, activeAppr }
+    let signatoryList = [];
+
+    function loadSignatoryList() {
+      try {
+        const raw = localStorage.getItem('osca_signatory_list');
+        if (raw) { signatoryList = JSON.parse(raw); return; }
+      } catch(e) {}
+      // Migrate from old flat keys
+      const prep = localStorage.getItem('osca_signatory_prep') || '';
+      const appr = localStorage.getItem('osca_signatory_appr') || '';
+      signatoryList = [];
+      if (prep) signatoryList.push({ name: prep, title: 'Officer-in-Charge', dept: 'OSCA — Palayan City', role: 'prepared', active: true });
+      if (appr && appr !== prep) signatoryList.push({ name: appr, title: 'Head, OSCA / City Mayor', dept: 'OSCA — Palayan City', role: 'approved', active: true });
+      saveSignatoryList();
+    }
+
+    function saveSignatoryList() {
+      localStorage.setItem('osca_signatory_list', JSON.stringify(signatoryList));
+      // Keep legacy keys in sync for backward compat with transfer cert / verification slip
+      const prep = signatoryList.find(s => s.role === 'prepared' && s.active);
+      const appr = signatoryList.find(s => s.role === 'approved' && s.active);
+      if (prep) localStorage.setItem('osca_signatory_prep', prep.name);
+      if (appr) localStorage.setItem('osca_signatory_appr', appr.name);
+    }
+
+    function getActiveSignatory(role) {
+      return signatoryList.find(s => s.role === role && s.active) || signatoryList.find(s => s.role === role) || null;
+    }
+
     function openSettingsModal() {
-      const prep = localStorage.getItem('osca_signatory_prep') || 'OSCA OFFICER-IN-CHARGE';
-      const appr = localStorage.getItem('osca_signatory_appr') || 'HEAD, OSCA / CITY MAYOR';
-      
-      document.getElementById('setting-signatory-prep').value = prep;
-      document.getElementById('setting-signatory-appr').value = appr;
-      
+      loadSignatoryList();
+      renderSignatoryList();
+      renderActiveSummary();
+      closeAddSignatoryRow();
       document.getElementById('modal-settings').style.display = 'flex';
     }
 
+    function renderActiveSummary() {
+      const prep = getActiveSignatory('prepared');
+      const appr = getActiveSignatory('approved');
+      
+      const prepDisplay = document.getElementById('active-prep-display');
+      const prepTitle = document.getElementById('active-prep-title');
+      const apprDisplay = document.getElementById('active-appr-display');
+      const apprTitle = document.getElementById('active-appr-title');
+
+      if (prepDisplay) prepDisplay.textContent = prep ? prep.name : 'Not set';
+      if (prepTitle) prepTitle.textContent = prep ? prep.title : '—';
+      if (apprDisplay) apprDisplay.textContent = appr ? appr.name : 'Not set';
+      if (apprTitle) apprTitle.textContent = appr ? appr.title : '—';
+    }
+
+    const ROLE_LABELS = { prepared:'Prepared By', approved:'Approved By', noted:'Noted By', witness:'Witness' };
+    const ROLE_COLORS = { prepared:'#d4af37', approved:'#60a5fa', noted:'#34d399', witness:'#a78bfa' };
+
+    function renderSignatoryList() {
+      const body = document.getElementById('signatory-list-body');
+      if (!signatoryList.length) {
+        body.innerHTML = `<div style="padding:1.25rem; text-align:center; color:var(--text-muted); font-size:0.82rem;">
+          No signatories added yet. Click <strong>+ Add</strong> to create one.
+        </div>`;
+        return;
+      }
+      body.innerHTML = signatoryList.map((s, i) => {
+        const col   = ROLE_COLORS[s.role] || '#94a3b8';
+        const label = ROLE_LABELS[s.role] || s.role;
+        const isActive = !!s.active;
+        return `
+        <div style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; border-bottom:1px solid rgba(255,255,255,0.05);">
+          <!-- Avatar -->
+          <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,${col}33,${col}22); border:1.5px solid ${col}55; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <i class="fa-solid fa-user" style="font-size:0.8rem; color:${col};"></i>
+          </div>
+          <!-- Info -->
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:700; font-size:0.88rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</div>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:1px;">${s.title}${s.dept ? ' · ' + s.dept : ''}</div>
+          </div>
+          <!-- Role Badge -->
+          <span style="font-size:0.65rem; font-weight:700; background:${col}22; color:${col}; border:1px solid ${col}44; border-radius:20px; padding:0.15rem 0.55rem; white-space:nowrap; flex-shrink:0;">${label}</span>
+          <!-- Set Active -->
+          <button onclick="setActiveSignatory(${i})" title="${isActive ? 'Currently active' : 'Set as active'}"
+            style="background:${isActive ? col+'22' : 'rgba(255,255,255,0.05)'}; border:1px solid ${isActive ? col+'55' : 'rgba(255,255,255,0.1)'}; border-radius:8px; color:${isActive ? col : 'var(--text-muted)'}; font-size:0.72rem; padding:0.25rem 0.55rem; cursor:pointer; white-space:nowrap; font-family:var(--font-heading); font-weight:600; flex-shrink:0;">
+            <i class="fa-solid ${isActive ? 'fa-circle-check' : 'fa-circle'}"></i> ${isActive ? 'Active' : 'Set'}
+          </button>
+          <!-- Edit -->
+          <button onclick="editSignatoryRow(${i})" title="Edit" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-muted); padding:0.28rem 0.5rem; cursor:pointer; font-size:0.8rem;">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <!-- Delete -->
+          <button onclick="deleteSignatory(${i})" title="Delete" style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:8px; color:#f87171; padding:0.28rem 0.5rem; cursor:pointer; font-size:0.8rem;">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>`;
+      }).join('');
+    }
+
+    function openAddSignatoryRow() {
+      document.getElementById('sig-form-title').innerHTML = '<i class="fa-solid fa-user-plus"></i> Add New Signatory';
+      document.getElementById('sig-input-name').value  = '';
+      document.getElementById('sig-input-title').value = '';
+      document.getElementById('sig-input-dept').value  = '';
+      document.getElementById('sig-input-role').value  = 'prepared';
+      document.getElementById('sig-edit-index').value  = '';
+      document.getElementById('signatory-add-form').style.display = 'block';
+      document.getElementById('sig-input-name').focus();
+    }
+
+    function closeAddSignatoryRow() {
+      document.getElementById('signatory-add-form').style.display = 'none';
+    }
+
+    function editSignatoryRow(i) {
+      const s = signatoryList[i];
+      document.getElementById('sig-form-title').innerHTML = '<i class="fa-solid fa-user-pen"></i> Edit Signatory';
+      document.getElementById('sig-input-name').value  = s.name;
+      document.getElementById('sig-input-title').value = s.title;
+      document.getElementById('sig-input-dept').value  = s.dept || '';
+      document.getElementById('sig-input-role').value  = s.role;
+      document.getElementById('sig-edit-index').value  = i;
+      document.getElementById('signatory-add-form').style.display = 'block';
+      document.getElementById('sig-input-name').focus();
+    }
+
+    function saveSignatoryRow() {
+      const name  = document.getElementById('sig-input-name').value.trim();
+      const title = document.getElementById('sig-input-title').value.trim();
+      const dept  = document.getElementById('sig-input-dept').value.trim();
+      const role  = document.getElementById('sig-input-role').value;
+      const idx   = document.getElementById('sig-edit-index').value;
+
+      if (!name || !title) {
+        document.getElementById('sig-input-name').style.borderColor = name ? '' : '#f87171';
+        document.getElementById('sig-input-title').style.borderColor = title ? '' : '#f87171';
+        return;
+      }
+      document.getElementById('sig-input-name').style.borderColor  = '';
+      document.getElementById('sig-input-title').style.borderColor = '';
+
+      // If this is the first of its role, auto-set active
+      const isFirstOfRole = !signatoryList.some(s => s.role === role);
+
+      if (idx === '') {
+        signatoryList.push({ name, title, dept, role, active: isFirstOfRole });
+      } else {
+        const prev = signatoryList[parseInt(idx)];
+        signatoryList[parseInt(idx)] = { name, title, dept, role, active: prev.active };
+      }
+
+      saveSignatoryList();
+      closeAddSignatoryRow();
+      renderSignatoryList();
+      renderActiveSummary();
+    }
+
+    function setActiveSignatory(i) {
+      const role = signatoryList[i].role;
+      // De-activate all of same role, activate selected
+      signatoryList.forEach((s, j) => { if (s.role === role) s.active = (j === i); });
+      saveSignatoryList();
+      renderSignatoryList();
+      renderActiveSummary();
+    }
+
+    function deleteSignatory(i) {
+      if (!confirm(`Remove "${signatoryList[i].name}" from signatories?`)) return;
+      signatoryList.splice(i, 1);
+      saveSignatoryList();
+      renderSignatoryList();
+      renderActiveSummary();
+    }
+
+    // Legacy shim — keep saveSignatorySettings callable from old code paths
     function saveSignatorySettings(e) {
-      e.preventDefault();
-      const prep = document.getElementById('setting-signatory-prep').value.trim();
-      const appr = document.getElementById('setting-signatory-appr').value.trim();
-      
-      localStorage.setItem('osca_signatory_prep', prep);
-      localStorage.setItem('osca_signatory_appr', appr);
-      
+      if (e) e.preventDefault();
+      saveSignatoryList();
       closeModal('modal-settings');
-      alert('System settings updated successfully!');
     }
 
     // Default Fallback OSCA Data — full dataset loaded from all_seniors_data.json at runtime
@@ -2127,6 +1910,7 @@
       startClock();
       loadStoredData();
       setupDragAndDrop();
+      setupModalHandlers();
     });
 
     function startClock() {
@@ -2202,7 +1986,6 @@
 
       renderStats();
       renderMasterTable();
-      renderClaimsTable();
 
       if (masterData.length > 0) {
         displayVerificationResult(masterData[0]);
@@ -2221,7 +2004,6 @@
         });
         localStorage.setItem('osca_master_data', JSON.stringify(cleanMasterData));
         localStorage.setItem('osca_custom_headers', JSON.stringify(customHeaders));
-        localStorage.setItem('osca_claims_data', JSON.stringify(benefitClaims));
       } catch(e) {
         console.warn('LocalStorage quota exceeded. Data is safely stored in phpMyAdmin/MySQL database.', e);
       }
@@ -2264,21 +2046,6 @@
         const isOnline = mainBadge.classList.contains('db-online');
         sbDb.style.color = isOnline ? '#34d399' : '#f87171';
         sbDb.querySelector('span').textContent = isOnline ? 'MySQL: Online' : 'MySQL: Offline';
-      }
-    }
-
-    function toggleSearchClearBtn(val) {
-      const btn = document.getElementById('verification-search-clear');
-      if (btn) btn.style.display = (val && val.trim().length > 0) ? 'flex' : 'none';
-    }
-
-    function clearVerificationSearch() {
-      const input = document.getElementById('verification-search-input');
-      if (input) {
-        input.value = '';
-        input.focus();
-        toggleSearchClearBtn('');
-        handleInstantSearch('');
       }
     }
 
@@ -2435,6 +2202,18 @@
       document.getElementById('ml-sex').value = '';
       masterCurrentPage = 1;
       renderMasterTable();
+    }
+
+    function toggleFilterToolbar() {
+      const toolbar = document.getElementById('filter-toolbar');
+      const btn = document.getElementById('filter-toggle-btn');
+      if (toolbar.style.display === 'none') {
+        toolbar.style.display = 'flex';
+        btn.innerHTML = '<i class="fa-solid fa-sliders"></i> Hide Filters';
+      } else {
+        toolbar.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-sliders"></i> Show Filters';
+      }
     }
 
     function renderMasterTable() {
@@ -2703,14 +2482,491 @@
     }
 
     function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
+      try {
+        const modal = document.getElementById(id);
+        if (modal) {
+          modal.style.display = 'none';
+          modal.classList.remove('show');
+        }
+      } catch(e) {
+        console.error('Error closing modal:', id, e);
+      }
+    }
+
+    function openModal(id) {
+      try {
+        const modal = document.getElementById(id);
+        if (modal) {
+          modal.style.display = 'flex';
+          modal.classList.add('show');
+        } else {
+          console.error('Modal element not found:', id);
+        }
+      } catch(e) {
+        console.error('Error opening modal:', id, e);
+      }
+    }
+
+    function setupModalHandlers() {
+      // Close modal when clicking outside the modal-content
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            overlay.style.display = 'none';
+            overlay.classList.remove('show');
+          }
+        });
+      });
     }
 
     // ═════════════════════════════════════════════════════════════════════════
     // FORMS & DOCUMENTS HUB
     // ═════════════════════════════════════════════════════════════════════════
-    function openFormsHubModal() {
-      document.getElementById('modal-forms-hub').style.display = 'flex';
+    // Download NCSC Forms - Opens printable HTML versions in new window
+    function printNCScForm(formType) {
+      let htmlContent = '';
+      
+      if (formType === 'spa') {
+        htmlContent = generateSPAForm();
+      } else if (formType === 'grievance') {
+        htmlContent = generateGrievanceForm();
+      } else if (formType === 'authorization') {
+        htmlContent = generateAuthorizationForm();
+      } else if (formType === 'ra11982') {
+        htmlContent = generateRA11982Form();
+      }
+
+      if (!htmlContent) return;
+
+      // Open in new window
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      
+      // Auto-trigger print dialog
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    }
+
+    function generateSPAForm() {
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Special Power of Attorney - Annex C</title>
+          <style>
+            body { font-family: 'Times New Roman', Arial, sans-serif; line-height: 1.6; margin: 40px; color: #000; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .header h2 { margin: 10px 0; font-size: 16px; }
+            .header p { margin: 5px 0; font-size: 13px; }
+            .content { max-width: 850px; margin: 0 auto; }
+            .section { margin: 20px 0; text-align: justify; }
+            .signature-area { margin-top: 50px; display: flex; justify-content: space-around; }
+            .sig-block { text-align: center; }
+            .sig-line { border-bottom: 1px solid #000; width: 280px; margin: 40px 0 5px 0; }
+            .sig-label { font-size: 12px; }
+            .ack-section { margin-top: 40px; border-top: 2px solid #000; padding-top: 20px; }
+            input[type="text"] { border: none; border-bottom: 1px dotted #999; padding: 0 3px; }
+            @media print { body { margin: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <p><strong>Republic of the Philippines</strong></p>
+            <p><strong>Office of the President</strong></p>
+            <h2>NATIONAL COMMISSION OF SENIOR CITIZENS</h2>
+            <p>4th Floor, AAP Tower, 683 Aurora Blvd, Mariana, 1117 Quezon City, Philippines</p>
+            <p>Official website: www.ncsc.gov.ph</p>
+            <p style="margin-top: 20px;"><strong>Annex "C"</strong></p>
+            <h2 style="font-size: 16px;">SPECIAL POWER OF ATTORNEY</h2>
+            <p>(FOR DECEASED BENEFICIARY)</p>
+          </div>
+
+          <div class="content">
+            <div class="section">
+              <p style="text-align: center;"><strong>KNOW ALL PERSONS BY THESE PRESENTS</strong></p>
+              <p style="margin-top: 15px;">WE, _______________________________, with residence and postal address at _______________________________, all Filipinos, of legal ages, hereby state that we are the nearest living relatives of _______________________________, a beneficiary of Republic Act No. 11982, who died on _____________ and we hereby appoint _______________________________ as our true and legal representative to act for and in our name and stead and to receive the Cash Gift amounting to _______________________________ and Letter of Felicitation (if applicable) for _______________________________.</p>
+            </div>
+
+            <div class="section">
+              <p><strong>HEREBY GRANTING</strong> unto our representative full power and authority to execute and perform every act necessary to render effective the power granted to him/her, as though we ourselves have so performed it, and HEREBY APPROVING ALL that he may do by virtue hereof with full right of substitution of his person and revocation of this instrument.</p>
+            </div>
+
+            <div class="section">
+              <p><strong>IN WITNESS WHEREOF,</strong> we have hereunto set our hands this ______ day of _______________________, at _______________________.</p>
+            </div>
+
+            <div class="signature-area">
+              <div class="sig-block">
+                <div class="sig-line"></div>
+                <p class="sig-label">Name and Signature of Grantor/Principal</p>
+              </div>
+              <div class="sig-block">
+                <div class="sig-line"></div>
+                <p class="sig-label">Name and Signature of Grantee/Agent</p>
+              </div>
+            </div>
+
+            <div class="ack-section">
+              <h3 style="font-size: 14px;">ACKNOWLEDGEMENT</h3>
+              <p><strong>REPUBLIC OF THE PHILIPPINES</strong></p>
+              <p>_________________________ S.S.</p>
+              <p>BEFORE ME, a Notary Public for and in the above jurisdiction, this ______ day of _______________________ 2024, personally appeared the following individuals known to me to be the same persons who executed the foregoing Special Power of Attorney, acknowledged to me that the same are their free and voluntary act and deed.</p>
+              <div style="margin-top: 50px; text-align: center;">
+                <div style="border-bottom: 1px solid #000; width: 300px; margin: 0 auto 5px;"></div>
+                <p style="font-size: 13px;"><strong>NOTARY PUBLIC</strong></p>
+              </div>
+            </div>
+          </div>
+
+          <p style="text-align: center; margin-top: 60px; font-size: 12px; color: #666;">
+            <em>Use your browser's Print function (Ctrl+P or Cmd+P) to save this as PDF</em>
+          </p>
+        </body>
+        </html>
+      `;
+    }
+
+    function generateGrievanceForm() {
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Grievance Form - Annex D</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 40px; color: #000; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .header p { margin: 3px 0; font-size: 12px; }
+            .header h3 { margin: 10px 0; font-size: 14px; }
+            .content { max-width: 850px; margin: 0 auto; }
+            .form-group { margin: 15px 0; }
+            label { font-weight: bold; display: block; margin-bottom: 5px; }
+            input[type="text"], textarea { border: 1px solid #999; padding: 5px; width: 100%; box-sizing: border-box; }
+            textarea { min-height: 80px; font-family: Arial; }
+            .checkbox { margin: 5px 0; }
+            .checkbox input { margin-right: 10px; }
+            @media print { body { margin: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <p><strong>Republic of the Philippines</strong></p>
+            <h3>NATIONAL COMMISSION OF SENIOR CITIZENS</h3>
+            <p>4th Floor, AAP Tower, 683 Aurora Blvd, Mariana, 1117 Quezon City, Philippines</p>
+            <p>Official website: www.ncsc.gov.ph</p>
+            <h2 style="font-size: 16px; margin-top: 20px;">GRIEVANCE FORM</h2>
+            <p style="font-size: 12px;">Annex "D"</p>
+          </div>
+
+          <div class="content">
+            <div class="form-group">
+              <label>*Date:</label>
+              <input type="text" style="width: 200px;">
+            </div>
+
+            <div class="form-group">
+              <label>*Complete Name:</label>
+              <input type="text">
+            </div>
+
+            <div class="form-group">
+              <label>*Complete Address:</label>
+              <textarea></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Contact Number:</label>
+              <input type="text">
+            </div>
+
+            <div class="form-group">
+              <label>Email Address:</label>
+              <input type="text">
+            </div>
+
+            <p style="margin: 15px 0; font-weight: bold;">N.B. Kindly fill-out completely and put N/A if not applicable.</p>
+
+            <div class="form-group">
+              <label>*Complete Name and Address of Senior Citizen to be:</label>
+              <div class="checkbox">
+                <input type="checkbox"> Included &nbsp;&nbsp;&nbsp; <input type="checkbox"> Excluded
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>1. Name:</label>
+              <input type="text">
+            </div>
+
+            <div class="form-group">
+              <label>Address:</label>
+              <textarea></textarea>
+            </div>
+
+            <div class="form-group">
+              <label><strong>Program/s:</strong></label>
+              <div class="checkbox">
+                <input type="checkbox"> Social Pension for Indigent Senior Citizen Program
+              </div>
+              <div class="checkbox">
+                <input type="checkbox"> Octogenarian, Nonagenarian, and Centenarian Program
+              </div>
+              <div class="checkbox">
+                <input type="checkbox"> Online Registration Program
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label><strong>Reason/s:</strong></label>
+              <textarea></textarea>
+            </div>
+
+            <div style="margin-top: 50px;">
+              <p style="border-bottom: 1px solid #000; width: 400px; height: 40px;"></p>
+              <p><strong>*Printed Name and Signature/Thumbmark</strong></p>
+              <p style="font-size: 11px; margin-top: 20px;"><strong>Note:</strong> By signing this form, I am authorizing the National Commission of Senior Citizens to process my request and use my personal information thereof pursuant to the specified purpose and in accordance with R.A. No. 10173, or otherwise known as the "Data Privacy Act of 2012."</p>
+            </div>
+          </div>
+
+          <p style="text-align: center; margin-top: 60px; font-size: 12px; color: #666;">
+            <em>Use your browser's Print function to save this as PDF</em>
+          </p>
+        </body>
+        </html>
+      `;
+    }
+
+    function generateAuthorizationForm() {
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Authorization Letter - Annex E</title>
+          <style>
+            body { font-family: 'Times New Roman', Arial, sans-serif; line-height: 1.8; margin: 40px; color: #000; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .header p { margin: 5px 0; font-size: 13px; }
+            .header h3 { margin: 10px 0; font-size: 14px; }
+            .content { max-width: 850px; margin: 0 auto; text-align: justify; }
+            .section { margin: 20px 0; }
+            input[type="text"] { border: none; border-bottom: 1px dotted #999; padding: 0 3px; }
+            .sig-area { margin-top: 50px; }
+            .sig-line { border-bottom: 1px solid #000; width: 400px; margin: 40px 0 5px 0; }
+            .sig-label { font-size: 12px; }
+            @media print { body { margin: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <p><strong>Republic of the Philippines</strong></p>
+            <h3>NATIONAL COMMISSION OF SENIOR CITIZENS</h3>
+            <p>4th Floor, AAP Tower, 683 Aurora Blvd, Mariana, 1117 Quezon City, Philippines</p>
+            <p>Official website: www.ncsc.gov.ph</p>
+            <h2 style="font-size: 16px; margin-top: 20px;">AUTHORIZATION</h2>
+            <p style="font-size: 12px;">Annex "E"</p>
+          </div>
+
+          <div class="content">
+            <p>Date: _________________</p>
+
+            <div class="section" style="margin-top: 40px; text-align: center;">
+              <p>I am ________________________________, born on ______________________ (Month, Date, Year),</p>
+              <p style="margin-top: 15px;">resident of _________________________________________________________________ (Address)</p>
+              <p style="margin-top: 15px;">hereby authorizing my _________________, ______________________________________ (Name of Authorized Representative)</p>
+              <p style="margin-top: 15px;">(Relation to the Beneficiary)</p>
+              <p style="margin-top: 15px; text-align: justify;">to claim my cash gift from the NCSC and I cannot personally claim the cash gift due to _________________________________________________________________________ (Reason/s on the inability to personally claim the cash gift)</p>
+              <p style="margin-top: 15px; text-align: justify;">and to sign any documents in relation thereto.</p>
+            </div>
+
+            <div class="sig-area">
+              <div class="sig-line"></div>
+              <p class="sig-label" style="text-align: center;">(Name and Signature or Thumbmark of the Beneficiary)</p>
+            </div>
+
+            <div style="margin-top: 60px;">
+              <p><strong>Witnessed and attested by:</strong></p>
+              <div class="sig-line"></div>
+              <p class="sig-label" style="text-align: center;">(Name and Signature of any Representative from the Local Government Unit)</p>
+            </div>
+          </div>
+
+          <p style="text-align: center; margin-top: 60px; font-size: 12px; color: #666;">
+            <em>Use your browser's Print function to save this as PDF</em>
+          </p>
+        </body>
+        </html>
+      `;
+    }
+
+    function generateRA11982Form() {
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Republic Act No. 11982</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; color: #000; }
+            .header { text-align: center; margin-bottom: 30px; }
+            h2 { text-align: center; font-size: 16px; }
+            h3 { font-size: 14px; margin-top: 20px; }
+            .content p { text-align: justify; margin: 12px 0; }
+            .section { margin: 20px 0; }
+            @media print { body { margin: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2><strong>REPUBLIC ACT No. 11982</strong></h2>
+            <h3>AN ACT GRANTING BENEFITS TO FILIPINO OCTOGENARIANS AND NONAGENARIANS, AMENDING FOR THE PURPOSE REPUBLIC ACT NO. 10868, OTHERWISE KNOWN AS THE "CENTENARIANS ACT OF 2016"</h3>
+          </div>
+
+          <div class="content">
+            <div class="section">
+              <h3>SECTION 1. Title</h3>
+              <p>This Act shall be known as the "Octogenarians, Nonagenarians, and Centenarians Assistance Act of 2023."</p>
+            </div>
+
+            <div class="section">
+              <h3>SECTION 2. Letter of Felicitation and Cash Gift</h3>
+              <p>All Filipinos, whether residing in the Philippines or abroad, upon reaching the age of one hundred (100) years old, shall receive a cash gift of One hundred thousand pesos (P100,000.00) and a letter of felicitation from the President of the Philippines congratulating the celebrant for his or her longevity.</p>
+              <p>All Filipinos, whether residing in the Philippines or abroad, upon reaching the ages of eighty (80), eighty-five (85), ninety (90), and ninety-five (95), shall each receive a cash gift of Ten thousand pesos (P10,000.00).</p>
+              <p>The grantees under this section shall be eligible to receive the cash gift within one (1) year from reaching the ages of eighty (80), eighty-five (85), ninety (90), ninety-five (95), and one hundred (100).</p>
+            </div>
+
+            <div class="section">
+              <h3>SECTION 2-A. Elderly Data Management System</h3>
+              <p>To effectively implement the provisions of this Act, an elderly data management system recording relevant information on the persons covered by this Act shall be maintained by the National Commission of Senior Citizens (NCSC), in accordance with Republic Act No. 11350 and implementing rules and regulations. The NCSC shall coordinate with the Philippine Statistics Authority (PSA), the Department of Social Welfare and Development (DSWD), the Department of Information and Communications Technology (DICT), and local government units (LGUs) in the online registration of the beneficiaries of this Act.</p>
+            </div>
+
+            <div class="section">
+              <h3>SECTION 3. Appropriations</h3>
+              <p>The amount necessary to implement the provisions of this Act shall be included in the annual General Appropriations Act.</p>
+            </div>
+
+            <div class="section">
+              <h3>SECTION 4. Separability Clause</h3>
+              <p>If any provision of this Act is declared invalid or unconstitutional, the provisions not affected thereby shall remain in full force and effect.</p>
+            </div>
+
+            <div class="section">
+              <h3>SECTION 5. Repealing Clause</h3>
+              <p>All laws, presidential decrees, executive orders, presidential proclamations, rules and regulations, or parts thereof contrary to or inconsistent with this Act are hereby repealed or modified accordingly.</p>
+            </div>
+
+            <div class="section">
+              <h3>SECTION 6. Effectivity</h3>
+              <p>This Act shall take effect fifteen (15) days after its publication in the Official Gazette or in a newspaper of general circulation.</p>
+            </div>
+
+            <div style="margin-top: 50px; text-align: center; border-top: 2px solid #000; padding-top: 20px;">
+              <p><strong>Approved: February 26, 2024</strong></p>
+              <p style="margin-top: 10px; font-size: 12px;">This document is a reference for NCSC programs and benefits under Republic Act No. 11982.</p>
+            </div>
+          </div>
+
+          <p style="text-align: center; margin-top: 60px; font-size: 12px; color: #666;">
+            <em>Use your browser's Print function to save this as PDF</em>
+          </p>
+        </body>
+        </html>
+      `;
+    }
+
+    // PDF Upload System
+    let formUploads = [];
+
+    function loadFormUploads() {
+      try {
+        const raw = localStorage.getItem('osca_form_uploads');
+        if (raw) formUploads = JSON.parse(raw);
+      } catch(e) { formUploads = []; }
+      renderFormUploads();
+    }
+
+    function saveFormUploads() {
+      localStorage.setItem('osca_form_uploads', JSON.stringify(formUploads));
+    }
+
+    function handleFormPDFUpload(evt) {
+      const file = evt.target.files[0];
+      if (!file) return;
+      
+      if (file.type !== 'application/pdf') {
+        alert('❌ Please select a PDF file.');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('❌ File size must be less than 5MB.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const upload = {
+          id: 'upload_' + Date.now(),
+          name: file.name,
+          size: file.size,
+          uploadDate: new Date().toLocaleString('en-PH'),
+          data: e.target.result // Base64 encoded PDF
+        };
+        formUploads.push(upload);
+        saveFormUploads();
+        renderFormUploads();
+        evt.target.value = ''; // Reset input
+        alert(`✅ "${file.name}" uploaded successfully!`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderFormUploads() {
+      const container = document.getElementById('form-uploads-list');
+      if (!formUploads.length) {
+        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:1.5rem; font-size:0.88rem;">No PDF files uploaded yet. Click <strong>+ Upload PDF</strong> to add one.</div>';
+        return;
+      }
+
+      container.innerHTML = formUploads.map((u, i) => `
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.6rem; display:flex; align-items:center; justify-content:space-between; gap:0.75rem; flex-wrap:wrap;">
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:600; color:#fff; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              <i class="fa-solid fa-file-pdf" style="color:#f87171; margin-right:0.5rem;"></i> ${u.name}
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+              ${(u.size / 1024).toFixed(1)} KB · ${u.uploadDate}
+            </div>
+          </div>
+          <div style="display:flex; gap:0.4rem; flex-shrink:0;">
+            <button onclick="downloadFormPDF(${i})" title="Download" style="background:rgba(96,165,250,0.12); border:1px solid rgba(96,165,250,0.3); border-radius:8px; color:#60a5fa; padding:0.3rem 0.6rem; cursor:pointer; font-size:0.8rem; font-family:var(--font-heading); font-weight:600;">
+              <i class="fa-solid fa-download"></i> Download
+            </button>
+            <button onclick="deleteFormPDF(${i})" title="Delete" style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:8px; color:#f87171; padding:0.3rem 0.6rem; cursor:pointer; font-size:0.8rem; font-family:var(--font-heading); font-weight:600;">
+              <i class="fa-solid fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function downloadFormPDF(index) {
+      const upload = formUploads[index];
+      if (!upload) return;
+      const link = document.createElement('a');
+      link.href = upload.data;
+      link.download = upload.name;
+      link.click();
+    }
+
+    function deleteFormPDF(index) {
+      if (!confirm(`Delete "${formUploads[index].name}"?`)) return;
+      formUploads.splice(index, 1);
+      saveFormUploads();
+      renderFormUploads();
     }
 
     function openVerificationSlipHub() {
@@ -2819,12 +3075,12 @@
       const philhealth = senior.philhealth || senior.philhealth_no || 'N/A';
       const status = senior.status || 'Active';
 
-      document.getElementById('transfer-summary-name').textContent = fullName;
-      document.getElementById('transfer-summary-id').textContent = senior.id;
-      document.getElementById('transfer-summary-age-sex').textContent = `${age} yrs old / ${sex}`;
-      document.getElementById('transfer-summary-dob').textContent = dobFormatted;
-      document.getElementById('transfer-summary-philhealth').textContent = philhealth;
-      document.getElementById('transfer-summary-address').textContent = `Barangay ${brgy}, Palayan City, Nueva Ecija`;
+      const _nameEl = document.getElementById('transfer-summary-name'); if (_nameEl) _nameEl.textContent = fullName;
+      const _idEl = document.getElementById('transfer-summary-id'); if (_idEl) _idEl.textContent = senior.id;
+      const _ageSexEl = document.getElementById('transfer-summary-age-sex'); if (_ageSexEl) _ageSexEl.textContent = age + ' yrs old / ' + sex;
+      const _dobEl = document.getElementById('transfer-summary-dob'); if (_dobEl) _dobEl.textContent = dobFormatted;
+      const _philEl = document.getElementById('transfer-summary-philhealth'); if (_philEl) _philEl.textContent = philhealth;
+      const _addrEl = document.getElementById('transfer-summary-address'); if (_addrEl) _addrEl.textContent = 'Barangay ' + brgy + ', Palayan City, Nueva Ecija';
 
       const badge = document.getElementById('transfer-summary-badge');
       if (badge) {
@@ -2870,79 +3126,145 @@
     }
 
     function getTransferFormData() {
-      const seniorId = document.getElementById('transfer-senior-select').value;
-      const senior = masterData.find(d => String(d.id) === String(seniorId)) || {};
+      try {
+        const seniorId = document.getElementById('transfer-senior-select')?.value || '';
+        const senior = masterData.find(d => String(d.id) === String(seniorId)) || {};
 
-      const fullName = senior.name_of_members || `${senior.firstname || ''} ${senior.middlename ? senior.middlename + ' ' : ''}${senior.lastname || ''} ${senior.extension || ''}`.trim() || 'Senior Citizen';
-      let dobFormatted = 'N/A';
-      if (senior.dob_month && senior.dob_day && senior.dob_year) {
-        dobFormatted = `${senior.dob_month} ${senior.dob_day}, ${senior.dob_year}`;
-      } else if (senior.dob) {
-        const d = new Date(senior.dob);
-        dobFormatted = isNaN(d) ? senior.dob : d.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+        const fullName = senior.name_of_members || `${senior.firstname || ''} ${senior.middlename ? senior.middlename + ' ' : ''}${senior.lastname || ''} ${senior.extension || ''}`.trim() || 'Senior Citizen';
+        let dobFormatted = 'N/A';
+        if (senior.dob_month && senior.dob_day && senior.dob_year) {
+          dobFormatted = `${senior.dob_month} ${senior.dob_day}, ${senior.dob_year}`;
+        } else if (senior.dob) {
+          const d = new Date(senior.dob);
+          dobFormatted = isNaN(d) ? senior.dob : d.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        const age = senior.age || calculateAge(senior.dob) || '60+';
+        const sex = senior.gender || senior.sex || 'N/A';
+        const originBrgy = senior.barangay || 'Singalat';
+        const philhealth = senior.philhealth || senior.philhealth_no || 'N/A';
+        const civilStatus = senior.civilstatus || 'Married';
+
+        const destBrgyEl = document.getElementById('transfer-dest-barangay');
+        const destCityEl = document.getElementById('transfer-dest-city');
+        const destProvinceEl = document.getElementById('transfer-dest-province');
+        
+        const destBrgy = (destBrgyEl?.value || '').trim() || '[New Barangay]';
+        const destCity = (destCityEl?.value || '').trim() || '[New City / Municipality]';
+        const destProvince = (destProvinceEl?.value || '').trim() || 'Nueva Ecija';
+
+        const rawTransferDateEl = document.getElementById('transfer-date');
+        const rawTransferDate = rawTransferDateEl?.value || '';
+        let transferDateFormatted = 'N/A';
+        if (rawTransferDate) {
+          const td = new Date(rawTransferDate);
+          transferDateFormatted = isNaN(td) ? rawTransferDate : td.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+        } else {
+          transferDateFormatted = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        const reasonEl = document.getElementById('transfer-reason');
+        let reason = reasonEl?.value || 'Relocation of permanent residence';
+        if (reason === 'Custom') {
+          const customReasonEl = document.getElementById('transfer-custom-reason');
+          reason = (customReasonEl?.value || '').trim() || 'Relocation of permanent residence';
+        }
+
+        const yr = new Date().getFullYear();
+        const controlNoEl = document.getElementById('transfer-control-no');
+        const controlNo = (controlNoEl?.value || '').trim() || `OSCA-COT-${String(senior.no || senior.id || '0001').padStart(4, '0')}-${yr}`;
+        
+        const bookletStatusEl = document.getElementById('transfer-booklet-status');
+        const bookletStatus = bookletStatusEl?.value || 'surrendered and cleared of obligations';
+        
+        const purposeEl = document.getElementById('transfer-purpose');
+        const purpose = (purposeEl?.value || '').trim() || 'registration with the Office of Senior Citizens Affairs at new residence and Masterlist updating';
+
+        // Get active signatories from signatory list instead of form elements
+        const signatoryList = JSON.parse(localStorage.getItem('osca_signatory_list') || '[]');
+        const prepSignatory = signatoryList.find(s => s.role === 'prepared' && s.active);
+        const apprSignatory = signatoryList.find(s => s.role === 'approved' && s.active);
+        
+        const signatoryPrep = prepSignatory ? (prepSignatory.name || 'OSCA OFFICER-IN-CHARGE').toUpperCase() : 'OSCA OFFICER-IN-CHARGE';
+        const signatoryAppr = apprSignatory ? (apprSignatory.name || 'HEAD, OSCA / CITY MAYOR').toUpperCase() : 'HEAD, OSCA / CITY MAYOR';
+        
+        const todayFormatted = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        return {
+          senior,
+          seniorId,
+          fullName,
+          dobFormatted,
+          age,
+          sex,
+          originBrgy,
+          philhealth,
+          civilStatus,
+          destBrgy,
+          destCity,
+          destProvince,
+          transferDateFormatted,
+          reason,
+          controlNo,
+          bookletStatus,
+          purpose,
+          signatoryPrep,
+          signatoryAppr,
+          todayFormatted
+        };
+      } catch(e) {
+        console.error('Error getting transfer form data:', e);
+        return {
+          senior: {},
+          seniorId: '',
+          fullName: 'Senior Citizen',
+          dobFormatted: 'N/A',
+          age: '60+',
+          sex: 'N/A',
+          originBrgy: 'Singalat',
+          philhealth: 'N/A',
+          civilStatus: 'Married',
+          destBrgy: '[New Barangay]',
+          destCity: '[New City / Municipality]',
+          destProvince: 'Nueva Ecija',
+          transferDateFormatted: new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }),
+          reason: 'Relocation of permanent residence',
+          controlNo: 'OSCA-COT-0001-' + new Date().getFullYear(),
+          bookletStatus: 'surrendered and cleared of obligations',
+          purpose: 'registration with the Office of Senior Citizens Affairs at new residence',
+          signatoryPrep: 'OSCA OFFICER-IN-CHARGE',
+          signatoryAppr: 'HEAD, OSCA / CITY MAYOR',
+          todayFormatted: new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' })
+        };
       }
-
-      const age = senior.age || calculateAge(senior.dob) || '60+';
-      const sex = senior.gender || senior.sex || 'N/A';
-      const originBrgy = senior.barangay || 'Singalat';
-      const philhealth = senior.philhealth || senior.philhealth_no || 'N/A';
-      const civilStatus = senior.civilstatus || 'Married';
-
-      const destBrgy = (document.getElementById('transfer-dest-barangay').value || '').trim() || '[New Barangay]';
-      const destCity = (document.getElementById('transfer-dest-city').value || '').trim() || '[New City / Municipality]';
-      const destProvince = (document.getElementById('transfer-dest-province').value || '').trim() || 'Nueva Ecija';
-
-      const rawTransferDate = document.getElementById('transfer-date').value;
-      let transferDateFormatted = 'N/A';
-      if (rawTransferDate) {
-        const td = new Date(rawTransferDate);
-        transferDateFormatted = isNaN(td) ? rawTransferDate : td.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
-      } else {
-        transferDateFormatted = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
-      }
-
-      let reason = document.getElementById('transfer-reason').value;
-      if (reason === 'Custom') {
-        reason = (document.getElementById('transfer-custom-reason').value || '').trim() || 'Relocation of permanent residence';
-      }
-
-      const yr = new Date().getFullYear();
-      const controlNo = (document.getElementById('transfer-control-no').value || '').trim() || `OSCA-COT-${String(senior.no || senior.id || '0001').padStart(4, '0')}-${yr}`;
-      const bookletStatus = document.getElementById('transfer-booklet-status').value;
-      const purpose = (document.getElementById('transfer-purpose').value || '').trim() || 'registration with the Office of Senior Citizens Affairs at new residence and Masterlist updating';
-
-      const signatoryPrep = (document.getElementById('transfer-signatory-prep').value || '').trim() || 'OSCA OFFICER-IN-CHARGE';
-      const signatoryAppr = (document.getElementById('transfer-signatory-appr').value || '').trim() || 'HEAD, OSCA / CITY MAYOR';
-      const todayFormatted = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
-
-      return {
-        senior,
-        seniorId,
-        fullName,
-        dobFormatted,
-        age,
-        sex,
-        originBrgy,
-        philhealth,
-        civilStatus,
-        destBrgy,
-        destCity,
-        destProvince,
-        transferDateFormatted,
-        reason,
-        controlNo,
-        bookletStatus,
-        purpose,
-        signatoryPrep,
-        signatoryAppr,
-        todayFormatted
-      };
     }
 
     function generateTransferCertHTML(qrContainerId = 'transfer-cert-qr') {
-      const data = getTransferFormData();
+      try {
+        const data = getTransferFormData() || {};
+        
+        // Defensive null checks - fallback to safe defaults
+        const fullName = data.fullName || 'Senior Citizen';
+        const sex = data.sex || 'N/A';
+        const dobFormatted = data.dobFormatted || 'N/A';
+        const age = data.age || '60+';
+        const civilStatus = data.civilStatus || 'N/A';
+        const originBrgy = data.originBrgy || 'Singalat';
+        const seniorId = data.seniorId || 'N/A';
+        const destBrgy = data.destBrgy || '[New Barangay]';
+        const destCity = data.destCity || '[New City / Municipality]';
+        const destProvince = data.destProvince || 'Nueva Ecija';
+        const transferDateFormatted = data.transferDateFormatted || 'N/A';
+        const reason = data.reason || 'Relocation of permanent residence';
+        const philhealth = data.philhealth || 'N/A';
+        const bookletStatus = data.bookletStatus || 'N/A';
+        const purpose = data.purpose || 'registration purposes';
+        const signatoryPrep = data.signatoryPrep || 'OSCA OFFICER-IN-CHARGE';
+        const signatoryAppr = data.signatoryAppr || 'HEAD, OSCA / CITY MAYOR';
+        const controlNo = data.controlNo || 'OSCA-COT-0000-' + new Date().getFullYear();
+        const todayFormatted = data.todayFormatted || new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
 
-      return `
+        return `
         <!-- 8.5 x 13 INCH (FOLIO / LONG BOND) OFFICIAL CERTIFICATE CONTAINER -->
         <div class="certificate-folio-sheet" style="font-family: 'Times New Roman', Times, serif; width: 100%; max-width: 7.7in; min-height: 12.05in; margin: 0 auto; padding: 1.6rem 2.2rem; background: #ffffff; color: #000000; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; border: 3px double #8B0000; outline: 1.5px solid #d4af37; outline-offset: -7px; position: relative;">
           
@@ -2969,7 +3291,7 @@
                 <h2 style="margin: 0; font-size: 1.45rem; text-transform: uppercase; letter-spacing: 3.5px; font-weight: bold; color: #8B0000; font-family: 'Palatino Linotype', Palatino, serif;">CERTIFICATE OF TRANSFER</h2>
               </div>
               <p style="margin: 0.55rem 0 0; font-size: 0.88rem; color: #333;">
-                Control No.: <strong style="color: #8B0000; font-size: 0.95rem;">${data.controlNo}</strong> &emsp;|&emsp; Date Issued: <strong>${data.todayFormatted}</strong>
+                Control No.: <strong style="color: #8B0000; font-size: 0.95rem;">${controlNo}</strong> &emsp;|&emsp; Date Issued: <strong>${todayFormatted}</strong>
               </p>
             </div>
 
@@ -2981,7 +3303,7 @@
             <!-- CERTIFICATION BODY TEXT -->
             <div style="font-size: 1.05rem; line-height: 2.05; margin-bottom: 1.5rem; text-align: justify; color: #1a1a1a;">
               <p style="margin: 0;">
-                &emsp;&emsp;THIS IS TO CERTIFY that <strong style="text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.5px; color: #0a2540;">${data.fullName}</strong>, of legal age, <strong>${data.sex}</strong>, born on <strong>${data.dobFormatted}</strong> (Age: <strong>${data.age}</strong> years old), civil status <strong>${data.civilStatus}</strong>, previously residing at <strong>Barangay ${data.originBrgy}, Palayan City, Nueva Ecija</strong>, is a registered senior citizen member in good standing of the Office of Senior Citizens Affairs (OSCA) of Palayan City with OSCA Control ID No. <strong style="font-size: 1.12rem; letter-spacing: 1px; color: #8B0000;">${data.seniorId}</strong>.
+                &emsp;&emsp;THIS IS TO CERTIFY that <strong style="text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.5px; color: #0a2540;">${fullName}</strong>, of legal age, <strong>${sex}</strong>, born on <strong>${dobFormatted}</strong> (Age: <strong>${age}</strong> years old), civil status <strong>${civilStatus}</strong>, previously residing at <strong>Barangay ${originBrgy}, Palayan City, Nueva Ecija</strong>, is a registered senior citizen member in good standing of the Office of Senior Citizens Affairs (OSCA) of Palayan City with OSCA Control ID No. <strong style="font-size: 1.12rem; letter-spacing: 1px; color: #8B0000;">${seniorId}</strong>.
               </p>
 
               <p style="margin: 1.15rem 0 0;">
@@ -2991,18 +3313,18 @@
               <!-- Destination Highlight Callout Box -->
               <div style="margin: 0.95rem auto; padding: 0.95rem 1.8rem; background: #fdfbf7; border-left: 6px solid #8B0000; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; text-align: center; border-radius: 4px;">
                 <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7280; font-weight: bold;">New Permanent Address (Transferee)</span><br />
-                <strong style="text-transform: uppercase; font-size: 1.18rem; color: #111827; letter-spacing: 0.5px; display: inline-block; margin: 0.25rem 0;">${data.destBrgy}, ${data.destCity}, ${data.destProvince}</strong><br />
+                <strong style="text-transform: uppercase; font-size: 1.18rem; color: #111827; letter-spacing: 0.5px; display: inline-block; margin: 0.25rem 0;">${destBrgy}, ${destCity}, ${destProvince}</strong><br />
                 <span style="font-size: 0.88rem; color: #4b5563;">
-                  Effective Date of Transfer: <strong>${data.transferDateFormatted}</strong> &bull; Reason: <em>${data.reason}</em>
+                  Effective Date of Transfer: <strong>${transferDateFormatted}</strong> &bull; Reason: <em>${reason}</em>
                 </span>
               </div>
 
               <p style="margin: 1.15rem 0 0;">
-                &emsp;&emsp;<strong>CLEARANCE &amp; STATUS ENDORSEMENT:</strong> Records of this Office confirm that the subject senior citizen has been verified with PhilHealth No. <strong>${data.philhealth}</strong> and has <strong style="text-transform: lowercase;">${data.bookletStatus}</strong>. In full compliance with Republic Act No. 7432, as amended by Republic Act No. 9994 (<em>Expanded Senior Citizens Act of 2010</em>), the senior citizen's record in the Palayan City OSCA Master Registry is hereby officially designated as <strong style="color: #8B0000; text-transform: uppercase; letter-spacing: 0.5px;">TRANSFERRED</strong> to ensure unhampered continuity of senior citizen privileges and prevent duplicate benefit enrollment.
+                &emsp;&emsp;<strong>CLEARANCE &amp; STATUS ENDORSEMENT:</strong> Records of this Office confirm that the subject senior citizen has been verified with PhilHealth No. <strong>${philhealth}</strong> and has <strong style="text-transform: lowercase;">${bookletStatus}</strong>. In full compliance with Republic Act No. 7432, as amended by Republic Act No. 9994 (<em>Expanded Senior Citizens Act of 2010</em>), the senior citizen's record in the Palayan City OSCA Master Registry is hereby officially designated as <strong style="color: #8B0000; text-transform: uppercase; letter-spacing: 0.5px;">TRANSFERRED</strong> to ensure unhampered continuity of senior citizen privileges and prevent duplicate benefit enrollment.
               </p>
 
               <p style="margin: 1.15rem 0 0;">
-                &emsp;&emsp;This Certification is officially issued upon the request of the interested party for <strong>${data.purpose}</strong>, and for whatever legal purposes this document may serve.
+                &emsp;&emsp;This Certification is officially issued upon the request of the interested party for <strong>${purpose}</strong>, and for whatever legal purposes this document may serve.
               </p>
             </div>
           </div>
@@ -3024,19 +3346,19 @@
               <div style="display: flex; gap: 1.75rem; align-items: flex-end; flex-wrap: wrap; flex: 1; justify-content: flex-end;">
                 <div style="text-align: center; min-width: 175px;">
                   <div style="border-top: 1.5px solid #000; padding-top: 0.35rem; margin-top: 3.25rem;">
-                    <strong style="font-size: 0.88rem; text-transform: uppercase; display: block;">${data.fullName}</strong>
+                    <strong style="font-size: 0.88rem; text-transform: uppercase; display: block;">${fullName}</strong>
                     <span style="font-size: 0.76rem; color: #444;">Senior Citizen / Transferee</span>
                   </div>
                 </div>
                 <div style="text-align: center; min-width: 185px;">
                   <div style="border-top: 1.5px solid #000; padding-top: 0.35rem; margin-top: 3.25rem;">
-                    <strong style="font-size: 0.88rem; display: block;">${data.signatoryPrep}</strong>
+                    <strong style="font-size: 0.88rem; display: block;">${signatoryPrep}</strong>
                     <span style="font-size: 0.76rem; color: #444;">Prepared &amp; Recorded By</span>
                   </div>
                 </div>
                 <div style="text-align: center; min-width: 185px;">
                   <div style="border-top: 1.5px solid #000; padding-top: 0.35rem; margin-top: 3.25rem;">
-                    <strong style="font-size: 0.88rem; display: block;">${data.signatoryAppr}</strong>
+                    <strong style="font-size: 0.88rem; display: block;">${signatoryAppr}</strong>
                     <span style="font-size: 0.76rem; color: #444;">Head, OSCA / City Mayor</span>
                   </div>
                 </div>
@@ -3052,6 +3374,11 @@
 
         </div>
       `;
+      } catch(e) {
+        console.error('Error generating transfer certificate HTML:', e);
+        alert('⚠️ Error generating certificate: ' + e.message + '. Please check form fields and try again.');
+        return '<div style="color: red; padding: 1rem; text-align: center;"><strong>Error generating certificate</strong><br/>Please check that all required fields are filled and try again.</div>';
+      }
     }
 
     function renderTransferPreview() {
@@ -3073,73 +3400,142 @@
     }
 
     async function printTransferCertificate() {
-      // Enforce 8.5in x 13in (Folio) page size in browser print engine
-      let folioStyle = document.getElementById('folio-print-page-style');
-      if (!folioStyle) {
-        folioStyle = document.createElement('style');
-        folioStyle.id = 'folio-print-page-style';
-        document.head.appendChild(folioStyle);
-      }
-      folioStyle.innerHTML = `
-        @page {
-          size: 8.5in 13in;
-          margin: 0.35in 0.45in 0.35in 0.45in;
+      try {
+        // Get transfer form data
+        const data = getTransferFormData();
+        
+        // Validation: Check if senior is selected
+        if (!data.seniorId || data.seniorId === '') {
+          alert('⚠️ ERROR: Please select a valid Senior Citizen from the dropdown.');
+          console.warn('No senior selected');
+          return;
         }
-      `;
 
-      const data = getTransferFormData();
-      if (!data.senior || !data.seniorId) {
-        alert('Please select a valid Senior Citizen.');
-        return;
-      }
+        // Validation: Check destination fields
+        const destBrgyEl = document.getElementById('transfer-dest-barangay');
+        const destCityEl = document.getElementById('transfer-dest-city');
+        
+        if (!destBrgyEl || !destBrgyEl.value || destBrgyEl.value.trim() === '') {
+          alert('⚠️ ERROR: Please fill in the Destination Barangay.');
+          return;
+        }
 
-      // Check if user wants to update status to "Transferred"
-      const updateStatusCheckbox = document.getElementById('transfer-update-status');
-      if (updateStatusCheckbox && updateStatusCheckbox.checked) {
-        const seniorIdx = masterData.findIndex(d => String(d.id) === String(data.seniorId));
-        if (seniorIdx !== -1) {
-          masterData[seniorIdx].status = 'Transferred';
-          const transferNote = `Transferred to ${data.destBrgy}, ${data.destCity}, ${data.destProvince} on ${data.transferDateFormatted} (Ref: ${data.controlNo})`;
-          const prevRemarks = masterData[seniorIdx].remarks || '';
-          if (!prevRemarks.includes(data.controlNo)) {
-            masterData[seniorIdx].remarks = prevRemarks ? `${prevRemarks} | ${transferNote}` : transferNote;
+        if (!destCityEl || !destCityEl.value || destCityEl.value.trim() === '') {
+          alert('⚠️ ERROR: Please fill in the Destination City/Municipality.');
+          return;
+        }
+
+        console.log('Transfer Data:', data);
+
+        // Check if user wants to update status to "Transferred"
+        const updateStatusCheckbox = document.getElementById('transfer-update-status');
+        if (updateStatusCheckbox && updateStatusCheckbox.checked) {
+          const seniorIdx = masterData.findIndex(d => String(d.id) === String(data.seniorId));
+          if (seniorIdx !== -1) {
+            masterData[seniorIdx].status = 'Transferred';
+            const transferNote = `Transferred to ${data.destBrgy}, ${data.destCity}, ${data.destProvince} on ${data.transferDateFormatted} (Ref: ${data.controlNo})`;
+            const prevRemarks = masterData[seniorIdx].remarks || '';
+            if (!prevRemarks.includes(data.controlNo)) {
+              masterData[seniorIdx].remarks = prevRemarks ? `${prevRemarks} | ${transferNote}` : transferNote;
+            }
+
+            // Sync with MySQL if API is available
+            if (typeof useMySQLAPI !== 'undefined' && useMySQLAPI && typeof API_BASE_URL !== 'undefined') {
+              try {
+                await fetch(`${API_BASE_URL}?action=save_senior`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(masterData[seniorIdx])
+                });
+                console.log('Senior data synced to MySQL');
+              } catch(err) { 
+                console.error('MySQL update error:', err); 
+              }
+            }
+
+            saveStoredData();
+            if (typeof renderStats === 'function') renderStats();
+            if (typeof renderMasterTable === 'function') renderMasterTable();
           }
+        }
 
-          // Sync with MySQL if API is available
-          if (useMySQLAPI) {
+        // Get or create print area
+        let printArea = document.getElementById('print-area');
+        if (!printArea) {
+          console.error('Print area element not found - creating one');
+          printArea = document.createElement('div');
+          printArea.id = 'print-area';
+          printArea.style.display = 'none';
+          document.body.appendChild(printArea);
+        }
+
+        // Generate certificate HTML
+        const printQrId = 'print-transfer-qr-' + Date.now();
+        const certHTML = generateTransferCertHTML(printQrId);
+        printArea.innerHTML = certHTML;
+        console.log('Certificate HTML generated');
+
+        // Generate QR Code with proper timing
+        await new Promise((resolve) => {
+          setTimeout(() => {
             try {
-              await fetch(`${API_BASE_URL}?action=save_senior`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(masterData[seniorIdx])
-              });
-            } catch(err) { console.error('MySQL update error:', err); }
-          }
-
-          saveStoredData();
-          renderStats();
-          renderMasterTable();
-          displayVerificationResult(masterData[seniorIdx]);
-        }
-      }
-
-      // Render to print area
-      const printArea = document.getElementById('print-area');
-      const printQrId = 'print-transfer-qr';
-      printArea.innerHTML = generateTransferCertHTML(printQrId);
-
-      const qrEl = document.getElementById(printQrId);
-      if (qrEl) {
-        new QRCode(qrEl, {
-          text: `OSCA-TRANSFER:${data.seniorId}:${data.fullName}:FROM-${data.originBrgy}:TO-${data.destCity}:${data.controlNo}`,
-          width: 82,
-          height: 82
+              const qrEl = document.getElementById(printQrId);
+              if (qrEl) {
+                const qrText = `OSCA-TRANSFER:${data.seniorId}:${data.fullName}:FROM-${data.originBrgy}:TO-${data.destCity}:${data.controlNo}`;
+                console.log('Generating QR code:', qrText);
+                new QRCode(qrEl, {
+                  text: qrText,
+                  width: 82,
+                  height: 82,
+                  colorDark: "#000000",
+                  colorLight: "#ffffff",
+                  correctLevel: QRCode.CorrectLevel.H
+                });
+                console.log('QR code generated successfully');
+              } else {
+                console.warn('QR container element not found:', printQrId);
+              }
+              resolve();
+            } catch(qrErr) {
+              console.error('QR Code generation error:', qrErr);
+              resolve(); // Continue even if QR fails
+            }
+          }, 100);
         });
-      }
 
-      setTimeout(() => {
-        window.print();
-      }, 350);
+        // Enforce 8.5in x 13in (Folio) page size in browser print engine
+        let folioStyle = document.getElementById('folio-print-page-style');
+        if (!folioStyle) {
+          folioStyle = document.createElement('style');
+          folioStyle.id = 'folio-print-page-style';
+          document.head.appendChild(folioStyle);
+        }
+        folioStyle.innerHTML = `
+          @page {
+            size: 8.5in 13in;
+            margin: 0.35in 0.45in 0.35in 0.45in;
+          }
+          body {
+            margin: 0;
+            padding: 0;
+          }
+        `;
+        console.log('Print styles applied');
+
+        // Wait for QR code to fully render before printing
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            console.log('Opening print dialog...');
+            window.print();
+            resolve();
+          }, 500);
+        });
+
+      } catch(e) {
+        console.error('Error printing transfer certificate:', e);
+        console.error('Stack:', e.stack);
+        alert('⚠️ ERROR: Failed to generate certificate.\n\nDetails: ' + e.message + '\n\nPlease check:\n1. Senior citizen is selected\n2. Destination fields are filled\n3. Check browser console for details');
+      }
     }
 
     function handleTransferSubmit(e) {
@@ -3645,90 +4041,6 @@ function printVerificationSlip(id) {
     }
 
     // CLAIMS MODULE
-    function populateClaimSeniorSelect(searchQuery = '') {
-      const select = document.getElementById('claim-senior-select');
-      let filtered = masterData;
-      if (searchQuery.trim() !== '') {
-        const q = searchQuery.toLowerCase();
-        filtered = masterData.filter(d => {
-          const name = (d.name_of_members || `${d.firstname||''} ${d.lastname||''}`).toLowerCase();
-          return name.includes(q) || String(d.id).includes(q) || (d.barangay || '').toLowerCase().includes(q);
-        });
-      }
-      
-      const sorted = [...filtered].sort((a, b) => {
-        const nameA = (a.name_of_members || `${a.firstname||''} ${a.lastname||''}`).toLowerCase();
-        const nameB = (b.name_of_members || `${b.firstname||''} ${b.lastname||''}`).toLowerCase();
-        return nameA.localeCompare(nameB);
-      });
-
-      select.innerHTML = sorted.map(d => 
-        `<option value="${d.id}">[${d.id}] ${d.name_of_members || (d.firstname + ' ' + d.lastname)} — Brgy. ${d.barangay}</option>`
-      ).join('');
-    }
-
-    function openLogClaimModal() {
-      const searchInput = document.getElementById('claim-senior-search');
-      if (searchInput) searchInput.value = '';
-      populateClaimSeniorSelect();
-      document.getElementById('modal-claim-form').style.display = 'flex';
-    }
-
-    async function saveClaimRecord(e) {
-      e.preventDefault();
-      const seniorId = document.getElementById('claim-senior-select').value;
-      const senior = masterData.find(d => String(d.id) === String(seniorId));
-
-      const claim = {
-        date: new Date().toLocaleString('en-PH'),
-        id: seniorId,
-        name: senior ? (senior.name_of_members || `${senior.firstname} ${senior.lastname}`) : 'Unknown Senior',
-        type: document.getElementById('claim-type').value,
-        amount: document.getElementById('claim-amount').value,
-        officer: document.getElementById('claim-officer').value
-      };
-
-      if (useMySQLAPI) {
-        try {
-          await fetch(`${API_BASE_URL}?action=save_claim`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(claim)
-          });
-        } catch(err) { console.error('Save claim API error:', err); }
-      }
-
-      benefitClaims.unshift(claim);
-      saveStoredData();
-      renderClaimsTable();
-      closeModal('modal-claim-form');
-      alert('Assistance claim logged successfully!');
-    }
-
-    function renderClaimsTable() {
-      const tbody = document.getElementById('claims-table-body');
-      tbody.innerHTML = '';
-
-      if (benefitClaims.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No benefit claims logged yet. Click "Record New Claim" above.</td></tr>`;
-        return;
-      }
-
-      benefitClaims.forEach(c => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${c.date}</td>
-          <td><strong>${c.name}</strong></td>
-          <td><strong style="color: var(--accent);">${c.id}</strong></td>
-          <td>${c.type}</td>
-          <td><span style="color:#34d399; font-weight:600;">${c.amount}</span></td>
-          <td>${c.officer}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // QR SCANNER MODULE
     function openScannerModal() {
       document.getElementById('modal-scanner').style.display = 'flex';
       html5QrScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
@@ -3745,6 +4057,288 @@ function printVerificationSlip(id) {
         html5QrScanner.clear().catch(e => console.error(e));
       }
       document.getElementById('modal-scanner').style.display = 'none';
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // FORMS HUB & FILE UPLOADS
+    // ═════════════════════════════════════════════════════════════════════════
+
+    function openFormsHubModal() {
+      try {
+        loadUploadedForms();
+      } catch(e) {
+        console.error('Error loading uploads:', e);
+      }
+      openModal('modal-forms-hub');
+    }
+
+    function switchFormsModule(module) {
+      // Hide all modules
+      document.getElementById('forms-module-ncsc').style.display = 'none';
+      document.getElementById('forms-module-uploads').style.display = 'none';
+
+      // Remove active class from all tabs
+      document.querySelectorAll('.forms-module-tab').forEach(btn => {
+        btn.style.background = 'transparent';
+        btn.style.borderColor = 'rgba(255,255,255,0.15)';
+        btn.style.color = 'var(--text-muted)';
+      });
+
+      // Show selected module
+      if (module === 'ncsc') {
+        document.getElementById('forms-module-ncsc').style.display = 'grid';
+        event.currentTarget.style.background = 'rgba(212,175,55,0.15)';
+        event.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)';
+        event.currentTarget.style.color = 'var(--accent)';
+      } else if (module === 'uploads') {
+        document.getElementById('forms-module-uploads').style.display = 'grid';
+        event.currentTarget.style.background = 'rgba(212,175,55,0.15)';
+        event.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)';
+        event.currentTarget.style.color = 'var(--accent)';
+      }
+    }
+
+    function showUploadedFormsModal() {
+      try {
+        loadUploadedForms();
+        const modal = document.getElementById('modal-uploaded-forms');
+        if (modal) {
+          modal.style.display = 'flex';
+          modal.classList.add('show');
+        } else {
+          console.error('Modal not found: modal-uploaded-forms');
+        }
+      } catch(e) {
+        console.error('Error showing uploaded forms modal:', e);
+      }
+    }
+
+    function debugUploads() {
+      const uploads = JSON.parse(localStorage.getItem('osca_form_uploads') || '[]');
+      console.log('Uploaded forms in storage:', uploads);
+      console.log('Count:', uploads.length);
+      return uploads;
+    }
+
+    function handleFormUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const uploads = JSON.parse(localStorage.getItem('osca_form_uploads') || '[]');
+        
+        uploads.push({
+          id: Date.now(),
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          data: e.target.result, // Base64 encoded
+          uploadedAt: new Date().toLocaleString('en-PH')
+        });
+
+        localStorage.setItem('osca_form_uploads', JSON.stringify(uploads));
+        loadUploadedForms();
+        alert(`✓ "${file.name}" uploaded successfully!`);
+        
+        // Reset file input
+        document.getElementById('file-upload-input').value = '';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadUploadedForms() {
+      try {
+        const uploads = JSON.parse(localStorage.getItem('osca_form_uploads') || '[]');
+        const listEl = document.getElementById('uploaded-forms-list');
+        const countEl = document.getElementById('upload-count-badge');
+
+        // Only update if elements exist
+        if (countEl) {
+          countEl.textContent = `${uploads.length} file${uploads.length !== 1 ? 's' : ''} uploaded`;
+        }
+
+        // Return early if no list element
+        if (!listEl) {
+          console.error('uploaded-forms-list element not found');
+          return;
+        }
+
+        if (uploads.length === 0) {
+          listEl.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+            <i class="fa-solid fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+            No forms uploaded yet.
+          </div>`;
+          return;
+        }
+
+        listEl.innerHTML = uploads.map(f => {
+          const icon = (f.type && f.type.includes('pdf')) ? 'fa-file-pdf' : (f.type && f.type.includes('image')) ? 'fa-image' : 'fa-file';
+          const color = (f.type && f.type.includes('pdf')) ? '#f87171' : (f.type && f.type.includes('image')) ? '#fbbf24' : '#60a5fa';
+          
+          return `
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0;">
+                <i class="fa-solid ${icon}" style="font-size: 1.5rem; color: ${color}; flex-shrink: 0;"></i>
+                <div style="min-width: 0;">
+                  <div style="font-size: 0.9rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${f.name || 'Unnamed'}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                    ${((f.size || 0) / 1024 / 1024).toFixed(2)} MB · ${f.uploadedAt || 'Unknown date'}
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+                <button onclick="downloadUploadedForm(${f.id})" title="Download" style="background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.3); border-radius: 8px; color: #60a5fa; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+                <button onclick="deleteUploadedForm(${f.id})" title="Delete" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; color: #f87171; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch(e) {
+        console.error('Error loading uploaded forms:', e);
+      }
+    }
+
+    function downloadUploadedForm(id) {
+      const uploads = JSON.parse(localStorage.getItem('osca_form_uploads') || '[]');
+      const file = uploads.find(f => f.id === id);
+      if (!file) return;
+
+      const link = document.createElement('a');
+      link.href = file.data;
+      link.download = file.name;
+      link.click();
+    }
+
+    function deleteUploadedForm(id) {
+      if (!confirm('Delete this form?')) return;
+      
+      let uploads = JSON.parse(localStorage.getItem('osca_form_uploads') || '[]');
+      uploads = uploads.filter(f => f.id !== id);
+      localStorage.setItem('osca_form_uploads', JSON.stringify(uploads));
+      loadUploadedForms();
+    }
+
+    function clearAllUploads() {
+      if (!confirm('Clear all uploaded forms? This cannot be undone.')) return;
+      localStorage.removeItem('osca_form_uploads');
+      loadUploadedForms();
+      alert('✓ All uploaded forms cleared.');
+    }
+
+    function printNCScForm(formType) {
+      let html = '';
+      
+      if (formType === 'spa') {
+        html = generateSPAForm();
+      } else if (formType === 'grievance') {
+        html = generateGrievanceForm();
+      } else if (formType === 'authorization') {
+        html = generateAuthorizationForm();
+      } else if (formType === 'ra11982') {
+        html = generateRA11982Form();
+      }
+
+      if (!html) return;
+      
+      const printWin = window.open('', '', 'width=900,height=1200');
+      printWin.document.write(html);
+      printWin.document.close();
+      setTimeout(() => printWin.print(), 250);
+    }
+
+    function generateSPAForm() {
+      return `<!DOCTYPE html>
+        <html><head><meta charset="UTF-8"><title>Special Power of Attorney - RA 11982</title>
+        <style>body{font-family:Arial,sans-serif;line-height:1.6;margin:1in;background:#fff;color:#000;}
+        .header{text-align:center;margin-bottom:2rem;border-bottom:2px solid #000;padding-bottom:1rem;}
+        h2,h3{margin:0.5rem 0;}.spacer{margin:2rem 0;}.box{border:1px solid #000;padding:1rem;margin:1rem 0;}
+        .signature-line{border-top:1px solid #000;width:200px;margin-top:2rem;display:inline-block;}
+        @media print{body{margin:0.5in;}}</style></head><body>
+        <div class="header"><h2>SPECIAL POWER OF ATTORNEY</h2><p>For Deceased Beneficiary Claim | RA 11982</p></div>
+        <p><strong>Republic of the Philippines<br>Province of Nueva Ecija<br>City of Palayan</strong></p>
+        <div class="spacer"><p>I, the undersigned, a resident of _________________, hereby authorize _________________ to represent me in claiming the benefits under Republic Act No. 11982 (Octogenarian and Nonagenarian Program) in case of my death or incapacity.</p></div>
+        <div class="box"><strong>DECEASED/INCAPACITATED BENEFICIARY:</strong><br>Name: _________________________<br>Age: ___ Sex: ___ OSCA ID: ___________</div>
+        <div class="box"><strong>AUTHORIZED REPRESENTATIVE:</strong><br>Name: _________________________<br>Relationship: ________________<br>Address: _____________________</div>
+        <p>This Special Power of Attorney is valid and shall remain in full force and effect until revoked by me in writing.</p>
+        <p><strong>IN WITNESS WHEREOF</strong>, I have hereunto set my hand this _____ day of __________, 20_____.</p>
+        <div style="margin-top:3rem;"><span class="signature-line"></span><br><p style="margin:0;"><strong>Signature of Beneficiary</strong></p></div>
+        <p style="margin-top:2rem;"><strong>ACKNOWLEDGED BEFORE ME:</strong></p>
+        <div style="margin-top:2rem;"><span class="signature-line"></span><br><p style="margin:0;"><strong>Head, OSCA / Authorized Official</strong></p></div>
+        </body></html>`;
+    }
+
+    function generateGrievanceForm() {
+      return `<!DOCTYPE html>
+        <html><head><meta charset="UTF-8"><title>Grievance Form - RA 11982</title>
+        <style>body{font-family:Arial,sans-serif;line-height:1.6;margin:1in;background:#fff;color:#000;}
+        .header{text-align:center;margin-bottom:2rem;border-bottom:2px solid #000;padding-bottom:1rem;}
+        h2{margin:0.5rem 0;}.spacer{margin:1rem 0;}.box{border:1px solid #000;padding:1rem;margin:1rem 0;}
+        .section{margin:1.5rem 0;}.field{margin:0.5rem 0;}
+        @media print{body{margin:0.5in;}}</style></head><body>
+        <div class="header"><h2>GRIEVANCE FORM</h2><p>Inclusion/Exclusion Appeal | RA 11982 Octogenarian & Nonagenarian Program</p></div>
+        <div class="section"><strong>PERSONAL INFORMATION:</strong><br>
+        Name: ___________________________________ Age: ___ Sex: ___<br>
+        Address: _________________________________ Barangay: __________</div>
+        <div class="section"><strong>NATURE OF GRIEVANCE:</strong><br>
+        <label><input type="checkbox"> Inclusion - I should be included in the program<br></label>
+        <label><input type="checkbox"> Exclusion - I was incorrectly excluded<br></label>
+        <label><input type="checkbox"> Benefit Claim Issue<br></label></div>
+        <div class="section"><strong>DETAILS OF GRIEVANCE:</strong><br>
+        <textarea style="width:100%;height:120px;border:1px solid #000;padding:0.5rem;"></textarea></div>
+        <div class="section"><strong>ATTACHED DOCUMENTS:</strong><br>
+        <label><input type="checkbox"> Birth Certificate<br></label>
+        <label><input type="checkbox"> Proof of Residence<br></label>
+        <label><input type="checkbox"> Government ID<br></label></div>
+        <p style="margin-top:2rem;"><strong>Signature: _________________________ Date: __________</strong></p>
+        </body></html>`;
+    }
+
+    function generateAuthorizationForm() {
+      return `<!DOCTYPE html>
+        <html><head><meta charset="UTF-8"><title>Authorization Letter - RA 11982</title>
+        <style>body{font-family:Arial,sans-serif;line-height:1.6;margin:1in;background:#fff;color:#000;}
+        .header{text-align:center;margin-bottom:2rem;border-bottom:2px solid #000;padding-bottom:1rem;}
+        h2{margin:0.5rem 0;}.spacer{margin:1rem 0;}
+        @media print{body{margin:0.5in;}}</style></head><body>
+        <div class="header"><h2>AUTHORIZATION LETTER</h2><p>To Claim Cash Gift | RA 11982 Program</p></div>
+        <p><strong>TO WHOM IT MAY CONCERN:</strong></p>
+        <p>I, _____________________, a beneficiary of the Octogenarian and Nonagenarian Program under RA 11982, hereby authorize _____________________ to claim and receive my cash gift on my behalf for the period _________ to _________.</p>
+        <p>This authorization is valid and binding until revoked in writing.</p>
+        <div style="margin-top:3rem;"><strong>BENEFICIARY:</strong><br>
+        Name: _________________________________<br>
+        OSCA ID: ______________________________<br>
+        <span style="border-top:1px solid #000;display:inline-block;width:200px;margin-top:1rem;text-align:center;">Signature over Printed Name</span></div>
+        <div style="margin-top:2rem;"><strong>AUTHORIZED REPRESENTATIVE:</strong><br>
+        Name: _________________________________<br>
+        Relationship: __________________________<br>
+        <span style="border-top:1px solid #000;display:inline-block;width:200px;margin-top:1rem;text-align:center;">Signature over Printed Name</span></div>
+        </body></html>`;
+    }
+
+    function generateRA11982Form() {
+      return `<!DOCTYPE html>
+        <html><head><meta charset="UTF-8"><title>RA 11982 Official Reference</title>
+        <style>body{font-family:Arial,sans-serif;line-height:1.5;margin:1in;background:#fff;color:#000;}
+        .header{text-align:center;margin-bottom:1.5rem;border-bottom:2px solid #000;padding-bottom:1rem;}
+        h2,h3{margin:0.5rem 0;} .section{margin:1rem 0;}</style></head><body>
+        <div class="header"><h2>REPUBLIC ACT NO. 11982</h2><p><strong>Octogenarian and Nonagenarian Assistance Program</strong></p></div>
+        <div class="section"><h3>KEY PROVISIONS:</h3>
+        <p><strong>Section 1. Purpose</strong> - To grant conditional cash benefits to indigent octogenarians and nonagenarians (80 years old and above).</p>
+        <p><strong>Section 2. Beneficiaries</strong> - Senior citizens 80 years old and above, whether male or female, shall be entitled to:</p>
+        <ul><li>₱500.00 monthly cash gift</li><li>Additional benefit for 100+ years old</li><li>Special assistance packages</li></ul>
+        <p><strong>Section 3. Application & Requirements</strong> - Applicants must submit valid government ID, proof of age, and proof of residency.</p>
+        <p><strong>Section 4. Administration</strong> - Implemented by the Department of Social Welfare and Development with assistance from local government units.</p>
+        </div>
+        <div class="section"><h3>ELIGIBILITY CRITERIA:</h3>
+        <ul><li>Aged 80 years old and above</li><li>Philippine citizen or may be a registered alien</li><li>Must be registered with OSCA or LGU</li><li>Submit valid ID and residency proof</li></ul>
+        </div>
+        <div class="section"><p><strong>For inquiries, visit your local Office of Senior Citizens Affairs (OSCA).</strong></p></div>
+        </body></html>`;
     }
   </script>
 </body>

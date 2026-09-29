@@ -130,6 +130,22 @@
       line-height: 1.6;
     }
 
+    .brand-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .brand-badge {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: var(--accent);
+      font-weight: 600;
+    }
 
     /* ── Divider ── */
     .panel-divider {
@@ -240,7 +256,7 @@
 
     .field-input {
       width: 100%;
-      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      padding: 0.85rem 2.8rem 0.85rem 2.8rem;
       background: rgba(8, 15, 30, 0.7);
       border: 1.5px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
@@ -251,9 +267,6 @@
       transition: all 0.25s;
     }
 
-    /* Password field needs extra right padding for the toggle button */
-    #password { padding-right: 2.8rem; }
-
     .field-input::placeholder { color: rgba(148, 163, 184, 0.5); }
 
     .field-input:focus {
@@ -262,49 +275,37 @@
       box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
     }
 
-    .field-input:focus ~ .pass-toggle,
-    .input-wrap:focus-within .pass-toggle { color: var(--accent); }
+    .field-input:focus + i,
+    .input-wrap:focus-within i { color: var(--accent); }
 
-    /* Left icon inside input */
-    .input-wrap > i:first-child {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      z-index: 1;
-    }
-    .input-wrap:focus-within > i:first-child { color: var(--accent); }
-
-    /* Password / Username toggle — show/hide */
+    /* Password toggle */
     .pass-toggle {
       position: absolute;
-      right: 0.6rem;
+      right: 0.8rem;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
+      background: none;
+      border: none;
       color: var(--muted);
       cursor: pointer;
       font-size: 1rem;
-      padding: 0;
-      line-height: 1;
-      z-index: 2;
+      padding: 0.5rem;
       transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      z-index: 10;
+      opacity: 0.7;
     }
-    .pass-toggle:hover {
+    
+    .pass-toggle:hover { 
       color: var(--accent);
-      background: rgba(212,175,55,0.12);
-      border-color: rgba(212,175,55,0.35);
+      opacity: 1;
     }
-    /* Extra right padding so text doesn't hide under toggle */
-    #username, #password { padding-right: 3rem; }
+    
+    .pass-toggle:active {
+      transform: translateY(-50%) scale(0.95);
+    }
 
     /* ── Alert ── */
     .alert-box {
@@ -411,131 +412,7 @@
       z-index: 1;
     }
 
-    /* ── What's New Preview Panel ── */
-    .update-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 300px;
-      animation: slideInLeft 0.7s cubic-bezier(.22,1,.36,1) both;
-    }
-
-    .update-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(212,175,55,0.15);
-      border: 1px solid rgba(212,175,55,0.4);
-      border-radius: 20px;
-      padding: 0.3rem 0.85rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    .update-title {
-      font-family: var(--font-h);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.35;
-    }
-
-    .update-desc {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* Mini preview card */
-    .preview-card {
-      background: rgba(14,26,46,0.85);
-      border: 1px solid rgba(212,175,55,0.2);
-      border-radius: 16px;
-      padding: 1rem;
-      backdrop-filter: blur(12px);
-    }
-
-    .preview-search-bar {
-      background: rgba(15,23,42,0.8);
-      border: 1.5px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
-      padding: 0.6rem 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-      color: rgba(148,163,184,0.7);
-      font-size: 0.75rem;
-    }
-
-    .preview-search-bar i { font-size: 0.8rem; }
-
-    .preview-btns {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 0.5rem;
-    }
-
-    .preview-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.6rem 0.35rem;
-      border-radius: 10px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      font-family: var(--font-h);
-      text-align: center;
-      border: 1.5px solid transparent;
-    }
-
-    .preview-btn i { font-size: 1.05rem; margin-bottom: 0.1rem; }
-
-    .preview-btn-scan {
-      background: rgba(59,130,246,0.12);
-      border-color: rgba(59,130,246,0.35);
-      color: #93c5fd;
-    }
-    .preview-btn-transfer {
-      background: rgba(212,175,55,0.10);
-      border-color: rgba(212,175,55,0.35);
-      color: var(--accent);
-    }
-    .preview-btn-add {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #000;
-    }
-
-    .update-features {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .update-feature-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .update-feature-item i {
-      color: var(--accent);
-      margin-top: 2px;
-      font-size: 0.72rem;
-      flex-shrink: 0;
-    }
-
     /* ── Responsive ── */
-    @media (max-width: 1024px) {
-      .update-panel { display: none; }
-    }
     @media (max-width: 768px) {
       .brand-panel, .panel-divider { display: none; }
       .login-card { max-width: 100%; padding: 2rem 1.5rem; }
@@ -550,58 +427,6 @@
   <!-- Login Layout -->
   <div class="login-wrapper">
 
-    <!-- Far Left: What's New Preview -->
-    <div class="update-panel">
-      <span class="update-badge"><i class="fa-solid fa-star"></i> What's New</span>
-      <p class="update-title">Simpler Toolbar<br>for Senior-Friendly Use</p>
-      <p class="update-desc">The search and action buttons are now separated into clear, large rows — easier to read and tap.</p>
-
-      <!-- Mini preview of the new toolbar -->
-      <div class="preview-card">
-        <div class="preview-search-bar">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          Search by ID, Full Name, Barangay…
-        </div>
-        <div class="preview-btns">
-          <div class="preview-btn preview-btn-scan">
-            <i class="fa-solid fa-qrcode"></i>
-            Scan QR
-          </div>
-          <div class="preview-btn preview-btn-transfer">
-            <i class="fa-solid fa-file-export"></i>
-            Transfer
-          </div>
-          <div class="preview-btn preview-btn-add">
-            <i class="fa-solid fa-user-plus"></i>
-            Add Senior
-          </div>
-        </div>
-      </div>
-
-      <!-- Feature list -->
-      <div class="update-features">
-        <div class="update-feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Full-width search bar with larger text</span>
-        </div>
-        <div class="update-feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Buttons now show icon + label + description</span>
-        </div>
-        <div class="update-feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Color-coded actions for quick recognition</span>
-        </div>
-        <div class="update-feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Responsive — stacks on mobile screens</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Divider -->
-    <div class="panel-divider" style="height: 400px;"></div>
-
     <!-- Left: Branding -->
     <div class="brand-panel">
       <div class="seals-row">
@@ -614,9 +439,15 @@
         <h1>OFFICE OF SENIOR CITIZENS AFFAIRS</h1>
         <p class="subtitle">Palayan City, Nueva Ecija</p>
         <p class="tagline">
-          Official Verification &amp; Master Data Management System &mdash;
+          Official Verification &amp; Master Data Management System —
           Serving the Senior Citizens of Palayan City with dignity and excellence.
         </p>
+      </div>
+
+      <div class="brand-badges">
+        <span class="brand-badge"><i class="fa-solid fa-shield-halved"></i> Secured System</span>
+        <span class="brand-badge"><i class="fa-solid fa-database"></i> MySQL Backed</span>
+        <span class="brand-badge"><i class="fa-solid fa-users"></i> 4,900+ Records</span>
       </div>
     </div>
 
@@ -652,9 +483,6 @@
               required
               spellcheck="false"
             />
-            <button type="button" class="pass-toggle" id="user-toggle-btn" onclick="toggleUsername()" title="Hide username" tabindex="-1" aria-label="Hide username">
-              <i class="fa-regular fa-eye-slash" id="user-toggle-icon"></i>
-            </button>
           </div>
         </div>
 
@@ -671,8 +499,8 @@
               autocomplete="current-password"
               required
             />
-            <button type="button" class="pass-toggle" id="pass-toggle-btn" onclick="togglePassword()" title="Show/Hide password" tabindex="-1" aria-label="Show password">
-              <i class="fa-regular fa-eye" id="pass-toggle-icon"></i>
+            <button type="button" class="pass-toggle" id="pass-toggle-btn" onclick="togglePassword()" title="Show/Hide password">
+              <i class="fa-solid fa-eye" id="pass-toggle-icon"></i>
             </button>
           </div>
         </div>
@@ -723,35 +551,19 @@
       const pwField = document.getElementById('password');
       const icon    = document.getElementById('pass-toggle-icon');
       const btn     = document.getElementById('pass-toggle-btn');
+      
       if (pwField.type === 'password') {
         pwField.type = 'text';
-        icon.className = 'fa-regular fa-eye-slash';
-        btn.setAttribute('aria-label', 'Hide password');
-        btn.title = 'Hide password';
+        icon.className = 'fa-solid fa-eye-slash';
+        btn.style.color = 'var(--accent)';
       } else {
         pwField.type = 'password';
-        icon.className = 'fa-regular fa-eye';
-        btn.setAttribute('aria-label', 'Show password');
-        btn.title = 'Show password';
+        icon.className = 'fa-solid fa-eye';
+        btn.style.color = 'var(--muted)';
       }
-    }
-
-    // ── Toggle username visibility ────────────────────────────────────────────
-    function toggleUsername() {
-      const field = document.getElementById('username');
-      const icon  = document.getElementById('user-toggle-icon');
-      const btn   = document.getElementById('user-toggle-btn');
-      if (field.type === 'password') {
-        field.type = 'text';
-        icon.className = 'fa-regular fa-eye-slash';
-        btn.setAttribute('aria-label', 'Hide username');
-        btn.title = 'Hide username';
-      } else {
-        field.type = 'password';
-        icon.className = 'fa-regular fa-eye';
-        btn.setAttribute('aria-label', 'Show username');
-        btn.title = 'Show username';
-      }
+      
+      // Keep focus on password field
+      pwField.focus();
     }
 
     // ── Show Alert ────────────────────────────────────────────────────────────
