@@ -276,26 +276,35 @@
     }
     .input-wrap:focus-within > i:first-child { color: var(--accent); }
 
-    /* Password toggle */
+    /* Password / Username toggle — show/hide */
     .pass-toggle {
       position: absolute;
-      right: 0.75rem;
+      right: 0.6rem;
       top: 50%;
       transform: translateY(-50%);
-      background: none;
-      border: none;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
       color: var(--muted);
       cursor: pointer;
       font-size: 1rem;
-      padding: 0.25rem 0.35rem;
+      padding: 0;
       line-height: 1;
       z-index: 2;
-      transition: color 0.2s;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 32px;
+      height: 32px;
     }
-    .pass-toggle:hover { color: var(--accent); }
+    .pass-toggle:hover {
+      color: var(--accent);
+      background: rgba(212,175,55,0.12);
+      border-color: rgba(212,175,55,0.35);
+    }
+    /* Extra right padding so text doesn't hide under toggle */
+    #username, #password { padding-right: 3rem; }
 
     /* ── Alert ── */
     .alert-box {
@@ -643,6 +652,9 @@
               required
               spellcheck="false"
             />
+            <button type="button" class="pass-toggle" id="user-toggle-btn" onclick="toggleUsername()" title="Hide username" tabindex="-1" aria-label="Hide username">
+              <i class="fa-regular fa-eye-slash" id="user-toggle-icon"></i>
+            </button>
           </div>
         </div>
 
@@ -721,6 +733,24 @@
         icon.className = 'fa-regular fa-eye';
         btn.setAttribute('aria-label', 'Show password');
         btn.title = 'Show password';
+      }
+    }
+
+    // ── Toggle username visibility ────────────────────────────────────────────
+    function toggleUsername() {
+      const field = document.getElementById('username');
+      const icon  = document.getElementById('user-toggle-icon');
+      const btn   = document.getElementById('user-toggle-btn');
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+        btn.setAttribute('aria-label', 'Hide username');
+        btn.title = 'Hide username';
+      } else {
+        field.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+        btn.setAttribute('aria-label', 'Show username');
+        btn.title = 'Show username';
       }
     }
 
