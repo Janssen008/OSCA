@@ -1,0 +1,3573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OSCA - Senior Citizen Verification & Master Data System</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- SheetJS & QRCode Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <!-- Auth Guard: redirect to login if not authenticated -->
+  <script>
+    (function() {
+      const token = localStorage.getItem('osca_auth_token');
+      if (!token) {
+        window.location.replace('login.html');
+      }
+    })();
+  </script>
+
+  <style>
+    :root {
+      --primary: #0a2540;
+      --primary-light: #1e3a5f;
+      --accent: #d4af37;
+      --accent-hover: #b89628;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.75);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(30, 58, 95, 0.2) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Glassmorphism Classes */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-nav {
+      background: rgba(10, 37, 64, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 1rem 2rem;
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-logo img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      background-color: #fff;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .brand-title h1 {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .brand-title p {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .db-status-badge {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .db-online { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .db-offline { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    .time-badge {
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Main Container */
+    .app-container {
+      display: flex;
+      gap: 1.5rem;
+      max-width: 1550px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+    }
+
+    .stat-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.total { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .stat-icon.active { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .stat-icon.pension { background: rgba(212, 175, 55, 0.15); color: var(--accent); }
+    .stat-icon.pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+    .stat-details h3 {
+      font-size: 1.6rem;
+      font-family: var(--font-heading);
+      font-weight: 700;
+    }
+
+    .stat-details p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 1.5rem;
+      align-self: flex-start;
+      height: fit-content;
+    }
+
+    .sidebar-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 1rem 0.75rem;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sidebar-mini-stat {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      margin-bottom: 0.4rem;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .sidebar-mini-stat .s-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .sidebar-mini-stat .s-val {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sidebar-db-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .sidebar-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      padding: 0 0.75rem;
+      margin-bottom: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .sidebar-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin: 0.5rem 0;
+    }
+
+    /* Tab Navigation */
+    .nav-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      border: none;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    .tab-btn i {
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+      font-size: 0.95rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .tab-btn.active {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--accent);
+      border-color: rgba(212, 175, 55, 0.35);
+      box-shadow: 0 0 12px rgba(212,175,55,0.08);
+    }
+
+    /* ===== Search & Verification View — Senior-Friendly ===== */
+    .search-section {
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Row 1: Search bar */
+    .search-bar-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .search-input-group {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input-group i {
+      position: absolute;
+      left: 1.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.3rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1.1rem 1.25rem 1.1rem 3.8rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 2px solid var(--card-border);
+      border-radius: 14px;
+      color: var(--text-main);
+      font-size: 1.15rem;
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(212,175,55,0.12);
+    }
+
+    /* Row 2: Action buttons */
+    .search-actions-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .search-actions-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 1.1rem 1rem;
+      border-radius: 14px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      font-family: var(--font-heading);
+      transition: all 0.2s ease;
+      text-align: center;
+      min-height: 80px;
+    }
+
+    .action-btn .action-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .action-btn .action-label {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .action-btn .action-sub {
+      font-size: 0.78rem;
+      font-weight: 400;
+      opacity: 0.75;
+    }
+
+    /* Scan QR button */
+    .action-btn-scan {
+      background: rgba(59,130,246,0.12);
+      border-color: rgba(59,130,246,0.35);
+      color: #93c5fd;
+    }
+    .action-btn-scan:hover {
+      background: rgba(59,130,246,0.22);
+      border-color: rgba(59,130,246,0.6);
+      box-shadow: 0 0 14px rgba(59,130,246,0.18);
+      transform: translateY(-2px);
+    }
+
+    /* Transfer Certificate button */
+    .action-btn-transfer {
+      background: rgba(212,175,55,0.10);
+      border-color: rgba(212,175,55,0.35);
+      color: var(--accent);
+    }
+    .action-btn-transfer:hover {
+      background: rgba(212,175,55,0.20);
+      border-color: rgba(212,175,55,0.6);
+      box-shadow: 0 0 14px rgba(212,175,55,0.18);
+      transform: translateY(-2px);
+    }
+
+    /* Add New Senior button */
+    .action-btn-add {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+    .action-btn-add:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      box-shadow: 0 0 18px rgba(212,175,55,0.35);
+      transform: translateY(-2px);
+    }
+
+    .btn {
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    /* Verification Badge Card */
+    .result-card {
+      padding: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .profile-photo-box {
+      text-align: center;
+      position: relative;
+    }
+
+    .avatar-img {
+      width: 180px;
+      height: 180px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      margin: 0 auto 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      background: #1e293b;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .status-verified {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .status-pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .status-suspended {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+        .status-transferred {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+
+.status-deceased {
+      background: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .profile-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .info-item {
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .info-item label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .info-item span {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+
+
+    /* Master Data Table Container */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      max-width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    th {
+      background: rgba(10, 37, 64, 0.95);
+      color: var(--accent);
+      padding: 1rem;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border-bottom: 1px solid var(--card-border);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Import Drop Zone */
+    .dropzone {
+      border: 2px dashed rgba(212, 175, 55, 0.4);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.4);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dropzone:hover {
+      border-color: var(--accent);
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    .dropzone i {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .paste-area {
+      width: 100%;
+      min-height: 120px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: #fff;
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      max-width: 650px;
+      width: 100%;
+      max-height: none;
+      overflow-y: visible;
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      margin: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1rem;
+    }
+
+    .modal-header h3 {
+      font-family: var(--font-heading);
+      color: var(--accent);
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    /* Form Fields */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    @media(max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-control {
+      padding: 0.75rem 1rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: #fff;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+    }
+
+    @media print {
+      @page {
+        size: 8.5in 13in;
+        margin: 0.35in 0.45in 0.35in 0.45in;
+      }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        width: 8.5in !important;
+      }
+      body * { visibility: hidden; }
+      #print-area,
+      #print-area * {
+        visibility: visible !important;
+      }
+      #print-area {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        max-width: 8.5in !important;
+        margin: 0 auto !important;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 0 !important;
+        z-index: 99999;
+      }
+      #print-area img {
+        display: inline-block !important;
+        visibility: visible !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      #print-area div,
+      #print-area p,
+      #print-area h2,
+      #print-area h3,
+      #print-area strong,
+      #print-area span {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .certificate-folio-sheet {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+    }
+
+    #reader {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* ── Dark-themed filter selects ─────────────────────────────────── */
+    #tab-directory select,
+    #tab-directory select option {
+      background-color: #1a2744;
+      color: var(--text-main);
+    }
+
+    #tab-directory select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2.2rem !important;
+      border-color: rgba(255,255,255,0.15) !important;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #tab-directory select:hover {
+      border-color: var(--accent) !important;
+    }
+
+    #tab-directory select:focus {
+      outline: none;
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25);
+    }
+
+    #tab-directory input[type="text"]:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25);
+    }
+
+    /* Scrollbar inside dropdowns (webkit) */
+    #tab-directory select option:checked {
+      background: var(--accent);
+      color: #0a2540;
+    }
+
+    #tab-directory select option:hover {
+      background: rgba(212, 175, 55, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="glass-nav">
+    <div class="header-container">
+      <div class="brand-logo">
+        <img src="osca_logo.jpg?v=2" alt="OSCA Seal" id="header-logo" style="border-radius: 50%; object-fit: cover; background-color: #fff;" onerror="this.src='https://via.placeholder.com/60/d4af37/000000?text=OSCA'" />
+        <div class="brand-title">
+          <h1>OFFICE OF SENIOR CITIZENS AFFAIRS</h1>
+          <p><i class="fa-solid fa-shield-halved"></i> Official Verification & Master Data Management System</p>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+        <div id="db-status-badge" class="db-status-badge db-offline">
+          <i class="fa-solid fa-database"></i> MySQL: Checking...
+        </div>
+        <div class="time-badge">
+          <i class="fa-regular fa-clock"></i>
+          <span id="live-clock">Loading...</span>
+        </div>
+        <!-- User Chip & Logout -->
+        <div id="user-chip" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 20px; padding: 0.3rem 0.85rem 0.3rem 0.5rem; cursor: pointer;" onclick="openChangePasswordModal()" title="Click to change password">
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #d4af37, #b89628); display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-user" style="font-size: 0.72rem; color: #0a2540;"></i>
+          </div>
+          <div>
+            <div id="header-user-name" style="font-size: 0.78rem; font-weight: 700; color: #fff; line-height: 1;">Loading...</div>
+            <div id="header-user-role" style="font-size: 0.65rem; color: var(--accent); line-height: 1; margin-top: 1px; text-transform: uppercase; letter-spacing: 0.5px;">Staff</div>
+          </div>
+        </div>
+        <button onclick="handleLogout()" title="Logout" style="background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; color: #fca5a5; font-size: 0.8rem; padding: 0.4rem 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; font-family: var(--font-heading); font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.25)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- App Container -->
+  <div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-label">Navigation</div>
+        <div class="nav-tabs">
+          <button class="tab-btn active" onclick="switchTab('tab-verify')">
+            <i class="fa-solid fa-id-card"></i> Verification & Search
+          </button>
+          <button class="tab-btn" onclick="switchTab('tab-directory')">
+            <i class="fa-solid fa-table-list"></i> Senior Master List
+          </button>
+          <button class="tab-btn" onclick="switchTab('tab-import')">
+            <i class="fa-solid fa-file-excel"></i> Import CSV / Excel
+          </button>
+          <button class="tab-btn" onclick="switchTab('tab-claims')">
+            <i class="fa-solid fa-receipt"></i> Benefit Claims
+          </button>
+        </div>
+
+        <hr class="sidebar-divider">
+        <div class="sidebar-label">Tools</div>
+        <div class="nav-tabs">
+          <button class="tab-btn" onclick="openFormsHubModal()" style="color: #34d399;">
+            <i class="fa-solid fa-folder-open"></i> Forms & Certificates
+          </button>
+          <button class="tab-btn" onclick="openSettingsModal()" style="color: var(--accent);">
+            <i class="fa-solid fa-gear"></i> System Settings
+          </button>
+        </div>
+      </div>
+
+        <hr class="sidebar-divider">
+        <div class="sidebar-label">Overview</div>
+        <div class="nav-tabs">
+          <button class="tab-btn" onclick="openDashboardModal()" style="color: #a78bfa;">
+            <i class="fa-solid fa-chart-pie"></i> Dashboard
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar System Info -->
+      <div style="padding: 1rem 0.5rem 0.5rem; text-align: center;">
+        <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 0.3rem;">
+          <i class="fa-regular fa-clock"></i> <span id="sb-clock">—</span>
+        </div>
+        <div id="sb-db-status" style="display: flex; align-items: center; justify-content: center; gap: 0.4rem; font-size: 0.68rem; font-weight: 600; color: #f87171;">
+          <i class="fa-solid fa-database"></i> <span>Checking...</span>
+        </div>
+      </div>
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content" style="flex: 1; min-width: 0;">
+    <!-- Stats Section -->
+    <div class="stats-grid">
+      <div class="glass-card stat-card">
+        <div class="stat-icon total"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-details">
+          <h3 id="stat-total">0</h3>
+          <p>Total Registered Seniors</p>
+        </div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-icon active"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="stat-details">
+          <h3 id="stat-active">0</h3>
+          <p>Verified Active Citizens</p>
+        </div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-icon pension"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+        <div class="stat-details">
+          <h3 id="stat-pensioners">0</h3>
+          <p>Social Pension Beneficiaries</p>
+        </div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-icon pending"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div class="stat-details">
+          <h3 id="stat-pending">0</h3>
+          <p>Pending / Inactive / Deceased</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: Instant Verification & Search -->
+    <div id="tab-verify" class="tab-content">
+      <div class="glass-card search-section">
+        <div class="search-bar-wrapper">
+
+          <!-- Row 1: Search Input -->
+          <div class="search-input-group">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              id="verification-search-input"
+              class="search-input"
+              placeholder="Search by ID, Full Name, Barangay, PhilHealth No…"
+              oninput="handleInstantSearch(this.value)"
+            />
+          </div>
+
+          <!-- Row 2: Action Buttons (separated, large & accessible) -->
+          <div class="search-actions-row">
+
+            <button class="action-btn action-btn-scan" onclick="openScannerModal()" title="Scan QR Code or Barcode">
+              <span class="action-icon"><i class="fa-solid fa-qrcode"></i></span>
+              <span class="action-label">Scan QR / Barcode</span>
+              <span class="action-sub">Verify senior via camera</span>
+            </button>
+
+            <button class="action-btn action-btn-transfer" onclick="openTransferModal()" title="Issue Certificate of Transfer">
+              <span class="action-icon"><i class="fa-solid fa-file-export"></i></span>
+              <span class="action-label">Transfer Certificate</span>
+              <span class="action-sub">Issue for relocating seniors</span>
+            </button>
+
+            <button class="action-btn action-btn-add" onclick="openAddSeniorModal()" title="Add a new senior citizen">
+              <span class="action-icon"><i class="fa-solid fa-user-plus"></i></span>
+              <span class="action-label">Add New Senior</span>
+              <span class="action-sub">Register a new member</span>
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <div id="verification-result-container">
+        <!-- Result card populated by JS -->
+      </div>
+    </div>
+
+    <!-- TAB 2: Senior Master List Table -->
+    <div id="tab-directory" class="tab-content" style="display: none;">
+      <div class="glass-card" style="padding: 1.5rem;">
+        <!-- Header Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+          <h2 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--accent);">
+            <i class="fa-solid fa-list-check"></i> Senior Master List
+            <span id="master-record-count" style="font-size:0.85rem; color:var(--text-muted); font-weight:400; margin-left:0.5rem;"></span>
+          </h2>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="exportToExcel()">
+              <i class="fa-solid fa-file-export"></i> Export (.xlsx)
+            </button>
+            <button class="btn btn-primary" onclick="openAddSeniorModal()">
+              <i class="fa-solid fa-plus"></i> Add Senior
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; background: rgba(0,0,0,0.2); padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--card-border);">
+          <!-- Search -->
+          <div style="position: relative; flex: 1; min-width: 200px;">
+            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.75rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.85rem;"></i>
+            <input id="ml-search" type="text" placeholder="Search name, ID, PhilHealth…"
+              style="width:100%; padding:0.55rem 0.75rem 0.55rem 2.2rem; background:rgba(255,255,255,0.06); border:1px solid var(--card-border); border-radius:8px; color:var(--text-main); font-size:0.875rem; outline:none;"
+              oninput="applyMasterFilters()" />
+          </div>
+          <!-- Barangay -->
+          <select id="ml-barangay" onchange="applyMasterFilters()"
+            style="padding:0.55rem 0.75rem; background:rgba(255,255,255,0.06); border:1px solid var(--card-border); border-radius:8px; color:var(--text-main); font-size:0.875rem; min-width:155px; cursor:pointer;">
+            <option value="">All Barangays</option>
+          </select>
+          <!-- Status -->
+          <select id="ml-status" onchange="applyMasterFilters()"
+            style="padding:0.55rem 0.75rem; background:rgba(255,255,255,0.06); border:1px solid var(--card-border); border-radius:8px; color:var(--text-main); font-size:0.875rem; min-width:130px; cursor:pointer;">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Transferred">Transferred</option>
+            <option value="Deceased">Deceased</option>
+            <option value="Pending">Pending</option>
+            <option value="Suspended">Suspended</option>
+          </select>
+          <!-- Sex -->
+          <select id="ml-sex" onchange="applyMasterFilters()"
+            style="padding:0.55rem 0.75rem; background:rgba(255,255,255,0.06); border:1px solid var(--card-border); border-radius:8px; color:var(--text-main); font-size:0.875rem; min-width:110px; cursor:pointer;">
+            <option value="">All Sex</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+          <!-- Rows per page -->
+          <select id="ml-pagesize" onchange="masterCurrentPage=1; renderMasterTable()"
+            style="padding:0.55rem 0.75rem; background:rgba(255,255,255,0.06); border:1px solid var(--card-border); border-radius:8px; color:var(--text-main); font-size:0.875rem; min-width:100px; cursor:pointer;">
+            <option value="25">25 / page</option>
+            <option value="50" selected>50 / page</option>
+            <option value="100">100 / page</option>
+            <option value="200">200 / page</option>
+          </select>
+          <!-- Clear -->
+          <button onclick="clearMasterFilters()" style="padding:0.55rem 0.9rem; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); border-radius:8px; color:#f87171; font-size:0.875rem; cursor:pointer; white-space:nowrap;">
+            <i class="fa-solid fa-xmark"></i> Clear
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name of Members</th>
+                <th>Date of Birth</th>
+                <th>Age</th>
+                <th>Barangay</th>
+                <th>Sex</th>
+                <th>ID Number</th>
+                <th>PhilHealth No.</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="master-table-body">
+              <!-- Table rows dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div id="ml-pagination" style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem; flex-wrap:wrap; gap:0.5rem;">
+          <span id="ml-page-info" style="color:var(--text-muted); font-size:0.85rem;"></span>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;" id="ml-page-buttons"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Excel & CSV Data Import & Mirroring Tool -->
+    <div id="tab-import" class="tab-content" style="display: none;">
+      <div class="glass-card" style="padding: 2rem;">
+        <h2 style="font-family: var(--font-heading); color: var(--accent); margin-bottom: 0.5rem;">
+          <i class="fa-solid fa-file-csv"></i> Import & Mirror OSCA Excel Masterlist
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
+          Matches the official OSCA Guide Layout: <strong>[No. | Name of Members | Date of Birth (Month, Day, Year) | Sex | ID Number | Philhealth Number | Remarks]</strong>. Automatically handles title rows and Barangay names!
+        </p>
+
+        <div class="dropzone" id="excel-dropzone" onclick="document.getElementById('excel-file-input').click()">
+          <i class="fa-solid fa-file-csv"></i>
+          <h3>Click or Drag & Drop OSCA Masterlist File (.xlsx / .csv) Here</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Supports .xlsx, .xls, .csv, .txt files</p>
+          <input type="file" id="excel-file-input" accept=".csv, .xlsx, .xls, .txt" style="display: none;" onchange="handleExcelFileUpload(event)" />
+        </div>
+
+        <div style="margin-top: 2rem;">
+          <h3 style="font-size: 1rem; color: #fff; margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-paste"></i> Or Paste Copy-Pasted Spreadsheet Rows:
+          </h3>
+          <textarea id="excel-paste-textarea" class="paste-area" placeholder="Paste rows directly copied from your Excel spreadsheet..."></textarea>
+          <div style="margin-top: 0.75rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="parsePastedExcelText()">
+              <i class="fa-solid fa-bolt"></i> Process & Preview Columns
+            </button>
+            <button class="btn btn-secondary" onclick="loadSampleOSCAData()">
+              <i class="fa-solid fa-database"></i> Reset to Barangay Singalat Master List
+            </button>
+          </div>
+        </div>
+
+        <!-- Column Mapping Preview Section -->
+        <div id="column-mapping-wrapper" style="display: none; margin-top: 2rem; border-top: 1px solid var(--card-border); padding-top: 1.5rem;">
+          <h3 style="color: var(--accent); margin-bottom: 0.5rem;"><i class="fa-solid fa-sliders"></i> Spreadsheet Columns Detected</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Verify column headers matching the OSCA Guide layout:</p>
+          
+          <div class="profile-info-grid" id="column-map-grid">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button id="confirm-import-btn" class="btn btn-success" onclick="confirmExcelImport()">
+              <i class="fa-solid fa-check-double"></i> Confirm & Import to phpMyAdmin / MySQL
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: Benefit Claims Tracker -->
+    <div id="tab-claims" class="tab-content" style="display: none;">
+      <div class="glass-card" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <h2 style="font-family: var(--font-heading); color: var(--accent);">
+            <i class="fa-solid fa-receipt"></i> Senior Citizens Assistance & Subsidy Claim Log
+          </h2>
+          <button class="btn btn-primary" onclick="openLogClaimModal()">
+            <i class="fa-solid fa-plus-circle"></i> Record New Claim
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Senior Citizen Name</th>
+                <th>OSCA Control ID</th>
+                <th>Benefit / Subsidy Type</th>
+                <th>Amount / Item</th>
+                <th>Disbursed By</th>
+              </tr>
+            </thead>
+            <tbody id="claims-table-body">
+              <!-- Claims dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    </main>
+  </div>
+
+  <!-- MODAL 1: Add / Edit Senior Citizen -->
+  <div id="modal-senior-form" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="senior-modal-title"><i class="fa-solid fa-user-pen"></i> Add Senior Citizen Record</h3>
+        <button class="close-btn" onclick="closeModal('modal-senior-form')">&times;</button>
+      </div>
+      <form id="senior-form" onsubmit="saveSeniorRecord(event)">
+        <input type="hidden" id="form-id" />
+        <div class="form-grid">
+          <div class="form-group">
+            <label>No. (Item Number)</label>
+            <input type="number" id="form-no" class="form-control" placeholder="1" />
+          </div>
+          <div class="form-group">
+            <label>ID Number (OSCA ID) *</label>
+            <input type="text" id="form-osca-id" class="form-control" required placeholder="e.g. 22-1678" />
+          </div>
+          <div class="form-group">
+            <label>Status *</label>
+            <select id="form-status" class="form-control" required>
+              <option value="Active">Active / Verified</option>
+              <option value="Transferred">Transferred</option>
+              <option value="Pending">Pending Verification</option>
+              <option value="Suspended">Suspended / Inactive</option>
+              <option value="Deceased">Deceased</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" id="form-firstname" class="form-control" required placeholder="Teresita" />
+          </div>
+          <div class="form-group">
+            <label>Middle Name</label>
+            <input type="text" id="form-middlename" class="form-control" placeholder="Navarro" />
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" id="form-lastname" class="form-control" required placeholder="Angway" />
+          </div>
+          <div class="form-group">
+            <label>Date of Birth *</label>
+            <input type="date" id="form-dob" class="form-control" required onchange="updateCalculatedAge()" />
+          </div>
+          <div class="form-group">
+            <label>Calculated Age</label>
+            <input type="number" id="form-age" class="form-control" readonly placeholder="Calculated" />
+          </div>
+          <div class="form-group">
+            <label>Sex *</label>
+            <select id="form-gender" class="form-control" required>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Philhealth Number</label>
+            <input type="text" id="form-philhealth" class="form-control" placeholder="21-175322207-4" />
+          </div>
+          <div class="form-group">
+            <label>Barangay *</label>
+            <input type="text" id="form-barangay" class="form-control" required value="Singalat" placeholder="Singalat" />
+          </div>
+          <div class="form-group">
+            <label>Remarks</label>
+            <input type="text" id="form-remarks" class="form-control" placeholder="Remarks / Notes" />
+          </div>
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-senior-form')">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Record Benefit Claim -->
+  <div id="modal-claim-form" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-hand-holding-hand"></i> Record Assistance / Benefit Claim</h3>
+        <button class="close-btn" onclick="closeModal('modal-claim-form')">&times;</button>
+      </div>
+      <form onsubmit="saveClaimRecord(event)">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Select Senior Citizen *</label>
+          <div style="position: relative; margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4);"></i>
+            <input type="text" id="claim-senior-search" class="form-control" placeholder="Search by name or ID..." style="padding-left: 2.2rem; background: rgba(0,0,0,0.2);" onkeyup="populateClaimSeniorSelect(this.value)" autocomplete="off">
+          </div>
+          <select id="claim-senior-select" class="form-control" required>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Benefit / Assistance Type *</label>
+          <select id="claim-type" class="form-control" required>
+            <option value="Social Pension Allowance (₱3,000 / Quarter)">Social Pension Allowance (₱3,000 / Quarter)</option>
+            <option value="Birthday Cash Gift (₱1,000)">Birthday Cash Gift (₱1,000)</option>
+
+            <option value="Grocery Subsidy / Food Pack">Grocery Subsidy / Food Pack</option>
+            <option value="Centenarian Cash Incentive (₱100,000)">Centenarian Cash Incentive (₱100,000)</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Amount / Remarks</label>
+          <input type="text" id="claim-amount" class="form-control" placeholder="e.g. ₱3,000.00 or 1 Booklet" required />
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Disbursing Officer</label>
+          <input type="text" id="claim-officer" class="form-control" value="OSCA Staff Officer" required />
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-claim-form')">Cancel</button>
+          <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> Submit Claim</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: FORMS & DOCUMENTS HUB -->
+  <div id="modal-forms-hub" class="modal-overlay">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-folder-open"></i> Forms & Documents Hub</h3>
+        <button class="close-btn" onclick="closeModal('modal-forms-hub')">&times;</button>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1rem;">
+        
+        <!-- Transfer Certificate -->
+        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="closeModal('modal-forms-hub'); openTransferModal();" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fa-solid fa-file-export" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;"></i>
+          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Certificate of Transfer</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Issue a transfer certificate for relocating seniors.</p>
+        </div>
+
+        <!-- Verification Slip -->
+        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="openVerificationSlipHub()" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fa-solid fa-file-signature" style="font-size: 2.5rem; color: #34d399; margin-bottom: 1rem;"></i>
+          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Verification Slip</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Generate an official OSCA verification slip.</p>
+        </div>
+        
+        <!-- ID Replacement Form -->
+        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="alert('Printable Intake & ID Forms coming soon in next update.')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fa-solid fa-id-card" style="font-size: 2.5rem; color: #60a5fa; margin-bottom: 1rem;"></i>
+          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Registration / ID Form</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Print blank intake forms for new applicants.</p>
+        </div>
+
+        <!-- Social Pension Form -->
+        <div class="glass-card" style="padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="alert('Social Pension Application printing coming soon in next update.')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fa-solid fa-hand-holding-dollar" style="font-size: 2.5rem; color: #fbbf24; margin-bottom: 1rem;"></i>
+          <h4 style="margin: 0; font-size: 1.1rem; color: #fff;">Social Pension Application</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Print application forms for social pension.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+    <!-- MODAL 4: Certificate of Transfer / Transferee Modal -->
+  <div id="modal-transfer-cert" class="modal-overlay">
+    <div class="modal-content" style="max-width: 820px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(212, 175, 55, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(212, 175, 55, 0.35);">
+            <i class="fa-solid fa-file-export" style="color: var(--accent); font-size: 1.25rem;"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.22rem; color: var(--accent);"><i class="fa-solid fa-stamp" style="margin-right: 4px;"></i> Certificate of Transfer (Transferee)</h3>
+            <p style="margin: 0.2rem 0 0; font-size: 0.82rem; color: var(--text-muted);">Official Clearance &amp; Certification for Senior Citizens relocating to another City / Municipality</p>
+          </div>
+        </div>
+        <button class="close-btn" onclick="closeModal('modal-transfer-cert')">&times;</button>
+      </div>
+
+      <!-- Navigation Tabs inside Modal -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.6rem;">
+        <button type="button" id="transfer-tab-btn-form" class="tab-btn active" style="padding: 0.5rem 1.1rem; font-size: 0.88rem;" onclick="switchTransferModalTab('form')">
+          <i class="fa-solid fa-pen-to-square"></i> Transfer Information &amp; Clearance
+        </button>
+        <button type="button" id="transfer-tab-btn-preview" class="tab-btn" style="padding: 0.5rem 1.1rem; font-size: 0.88rem;" onclick="switchTransferModalTab('preview')">
+          <i class="fa-solid fa-file-lines"></i> Certificate Live Preview
+        </button>
+      </div>
+
+      <!-- TAB 1: FORM -->
+      <div id="transfer-pane-form">
+        <form id="form-transfer-cert" onsubmit="handleTransferSubmit(event)">
+          <!-- Senior Citizen Selector -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="font-weight: 600; color: #fff; display: flex; justify-content: space-between; align-items: center;">
+              <span>Select Senior Citizen *</span>
+              <span id="transfer-senior-count-badge" style="font-size: 0.78rem; color: var(--accent); font-weight: normal;"></span>
+            </label>
+            <div style="position: relative; margin-bottom: 0.5rem;">
+              <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4);"></i>
+              <input type="text" id="transfer-senior-search" class="form-control" placeholder="Search by name, ID, or barangay..." style="padding-left: 2.2rem; background: rgba(0,0,0,0.2);" onkeyup="populateTransferSeniorSelect(null, this.value)" autocomplete="off">
+            </div>
+            <select id="transfer-senior-select" class="form-control" onchange="onTransferSeniorSelected(this.value)" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <!-- Quick Summary Card of Selected Senior -->
+          <div id="transfer-senior-summary" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h4 id="transfer-summary-name" style="margin: 0; color: #fff; font-size: 1.15rem; font-family: var(--font-heading); font-weight: 700;">-</h4>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.4rem; font-size: 0.82rem; color: var(--text-muted);">
+                  <span>OSCA ID: <strong id="transfer-summary-id" style="color: var(--accent); font-size: 0.9rem;">-</strong></span>
+                  <span>Age / Sex: <strong id="transfer-summary-age-sex" style="color: #fff;">-</strong></span>
+                  <span>DOB: <strong id="transfer-summary-dob" style="color: #fff;">-</strong></span>
+                  <span>PhilHealth: <strong id="transfer-summary-philhealth" style="color: #fff;">-</strong></span>
+                </div>
+              </div>
+              <div>
+                <span id="transfer-summary-badge" class="status-badge status-verified">Active</span>
+              </div>
+            </div>
+            <div style="margin-top: 0.65rem; font-size: 0.84rem; color: #cbd5e1; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 0.5rem;">
+              <i class="fa-solid fa-map-pin" style="color: var(--accent); margin-right: 0.35rem;"></i>
+              Current Origin Residence: <strong id="transfer-summary-address" style="color: #fff;">Brgy. Singalat, Palayan City, Nueva Ecija</strong>
+            </div>
+          </div>
+
+          <!-- Transfer Destination Details Grid -->
+          <div style="background: rgba(30, 41, 59, 0.45); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); padding: 1.15rem; margin-bottom: 1.25rem;">
+            <h4 style="font-size: 0.95rem; color: var(--accent); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-location-arrow"></i> Destination Details (New Permanent Residence)
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>New Barangay *</label>
+                <input type="text" id="transfer-dest-barangay" class="form-control" placeholder="e.g. Barangay San Roque" required oninput="renderTransferPreview()" />
+              </div>
+              <div class="form-group">
+                <label>New Municipality / City *</label>
+                <input type="text" id="transfer-dest-city" class="form-control" placeholder="e.g. Cabanatuan City" required oninput="renderTransferPreview()" />
+              </div>
+              <div class="form-group">
+                <label>New Province *</label>
+                <input type="text" id="transfer-dest-province" class="form-control" value="Nueva Ecija" required oninput="renderTransferPreview()" />
+              </div>
+              <div class="form-group">
+                <label>Effective Date of Transfer *</label>
+                <input type="date" id="transfer-date" class="form-control" required oninput="renderTransferPreview()" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Certificate Details Grid -->
+          <div style="background: rgba(30, 41, 59, 0.45); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); padding: 1.15rem; margin-bottom: 1.25rem;">
+            <h4 style="font-size: 0.95rem; color: var(--accent); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-shield-halved"></i> Clearance, Reason &amp; Official References
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Reason for Transfer</label>
+                <select id="transfer-reason" class="form-control" onchange="onTransferReasonChange(this.value); renderTransferPreview();">
+                  <option value="Relocation of permanent residence">Relocation of permanent residence</option>
+                  <option value="Living with children / relatives">Living with children / relatives</option>
+                  <option value="Medical and health care assistance">Medical and health care assistance</option>
+                  <option value="Family migration and resettlement">Family migration and resettlement</option>
+                  <option value="Custom">Other Reason (Specify below)...</option>
+                </select>
+              </div>
+              <div class="form-group" id="transfer-custom-reason-group" style="display: none;">
+                <label>Specify Reason</label>
+                <input type="text" id="transfer-custom-reason" class="form-control" placeholder="Type reason for transfer..." oninput="renderTransferPreview()" />
+              </div>
+              <div class="form-group">
+                <label>Control / Reference Number</label>
+                <input type="text" id="transfer-control-no" class="form-control" placeholder="OSCA-COT-XXXX-2026" oninput="renderTransferPreview()" />
+              </div>
+              <div class="form-group">
+                <label>OSCA Clearance &amp; Booklet Status</label>
+                <select id="transfer-booklet-status" class="form-control" onchange="renderTransferPreview()">
+                  <option value="surrendered and cleared of obligations">Purchase booklet surrendered; no unliquidated obligations</option>
+                  <option value="endorsed with no pending claims">Booklet endorsed for transfer; no pending benefit claims</option>
+                  <option value="cleared in full without encumbrance">Cleared in full without financial encumbrance</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Purpose of Certificate</label>
+                <input type="text" id="transfer-purpose" class="form-control" value="registration with the Office of Senior Citizens Affairs at the new residence and updating of Masterlist" oninput="renderTransferPreview()" />
+              </div>
+            </div>
+
+            <!-- Signatories -->
+            <div class="form-grid" style="margin-top: 1rem;">
+              <div class="form-group">
+                <label>Prepared / Recorded By</label>
+                <input type="text" id="transfer-signatory-prep" class="form-control" value="OSCA OFFICER-IN-CHARGE" oninput="renderTransferPreview()" />
+              </div>
+              <div class="form-group">
+                <label>Approved By</label>
+                <input type="text" id="transfer-signatory-appr" class="form-control" value="HEAD, OSCA / CITY MAYOR" oninput="renderTransferPreview()" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Options -->
+          <div style="background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 1.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; color: #fff; font-size: 0.9rem;">
+              <input type="checkbox" id="transfer-update-status" checked style="width: 18px; height: 18px; accent-color: var(--accent);" />
+              <span><strong>Update Senior Status to &quot;Transferred&quot;</strong> in Masterlist and log transfer remarks automatically</span>
+            </label>
+          </div>
+
+          <!-- Buttons -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modal-transfer-cert')">
+              Cancel
+            </button>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary" onclick="switchTransferModalTab('preview')">
+                <i class="fa-solid fa-eye"></i> Preview Certificate
+              </button>
+              <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #d4af37, #b89628); color: #0a2540; font-weight: 700; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
+                <i class="fa-solid fa-print"></i> Generate &amp; Print Certificate
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 2: LIVE CERTIFICATE PREVIEW -->
+      <div id="transfer-pane-preview" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">
+              <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i> Real-time preview of the official certificate
+            </span>
+            <span style="background: rgba(212, 175, 55, 0.15); color: var(--accent); border: 1px solid rgba(212, 175, 55, 0.4); font-size: 0.76rem; font-weight: 600; padding: 0.2rem 0.65rem; border-radius: 6px;">
+              <i class="fa-solid fa-file-contract"></i> Page Size: 8.5&Prime; &times; 13&Prime; (Folio / Long Bond)
+            </span>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.82rem;" onclick="switchTransferModalTab('form')">
+              <i class="fa-solid fa-arrow-left"></i> Edit Transfer Details
+            </button>
+            <button type="button" class="btn btn-primary" style="padding: 0.45rem 1.1rem; font-size: 0.82rem; background: linear-gradient(135deg, #d4af37, #b89628); color: #0a2540; font-weight: 700;" onclick="printTransferCertificate()">
+              <i class="fa-solid fa-print"></i> Print Official Certificate
+            </button>
+          </div>
+        </div>
+
+        <div id="transfer-certificate-preview-box" style="background: #ffffff; color: #000000; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-height: 540px; overflow-y: auto; border: 1px solid #d1d5db;">
+          <!-- Populated by renderTransferPreview() -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- MODAL 3: Camera QR Scanner -->
+  <div id="modal-scanner" class="modal-overlay">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-camera"></i> Scan OSCA ID QR Code</h3>
+        <button class="close-btn" onclick="closeScannerModal()">&times;</button>
+      </div>
+      <div id="reader"></div>
+      <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
+        Position the Senior Citizen ID QR Code inside the camera frame.
+      </p>
+    </div>
+  </div>
+
+  
+  <!-- MODAL: Dashboard -->
+  <div id="modal-dashboard" class="modal-overlay">
+    <div class="modal-content" style="max-width: 860px;">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 1.5rem; padding-bottom: 1rem;">
+        <div>
+          <h3 style="margin:0; font-size: 1.2rem;"><i class="fa-solid fa-chart-pie" style="color:#a78bfa;"></i> Dashboard Overview</h3>
+          <p style="margin: 0.25rem 0 0; font-size: 0.78rem; color: var(--text-muted);" id="dash-subtitle">OSCA Palayan City — Senior Citizens Data Summary</p>
+        </div>
+        <button class="close-btn" onclick="closeModal('modal-dashboard')">&times;</button>
+      </div>
+
+      <!-- Stat Cards Row -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-users"></i> Total</div>
+          <div id="dash-total" style="font-size: 2rem; font-weight: 800; color: #d4af37; line-height: 1;">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Registered Seniors</div>
+        </div>
+        <div style="background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-circle-check"></i> Active</div>
+          <div id="dash-active" style="font-size: 2rem; font-weight: 800; color: #34d399; line-height: 1;">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Verified Citizens</div>
+        </div>
+        <div style="background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-hand-holding-dollar"></i> Pension</div>
+          <div id="dash-pension" style="font-size: 2rem; font-weight: 800; color: #60a5fa; line-height: 1;">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Social Pension Beneficiaries</div>
+        </div>
+        <div style="background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); border-radius: 14px; padding: 1rem 1.1rem;">
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;"><i class="fa-solid fa-clock-rotate-left"></i> Inactive</div>
+          <div id="dash-pending" style="font-size: 2rem; font-weight: 800; color: #f87171; line-height: 1;">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Pending / Inactive</div>
+        </div>
+      </div>
+
+      <!-- Two columns: Barangay breakdown + Gender/Age breakdown -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+
+        <!-- Top Barangays -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.1rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.85rem;"><i class="fa-solid fa-map-pin" style="color:#a78bfa;"></i> Top Barangays</div>
+          <div id="dash-barangay-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="color: var(--text-muted); font-size: 0.82rem; text-align:center; padding: 1rem;">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Gender & Age breakdown -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.1rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.85rem;"><i class="fa-solid fa-venus-mars" style="color:#f472b6;"></i> Gender & Age</div>
+          <div id="dash-gender-age" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="color: var(--text-muted); font-size: 0.82rem; text-align:center; padding: 1rem;">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status breakdown bar -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.1rem;">
+        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.85rem;"><i class="fa-solid fa-chart-bar" style="color:#34d399;"></i> Status Distribution</div>
+        <div id="dash-status-bar" style="display: flex; border-radius: 8px; overflow: hidden; height: 28px; margin-bottom: 0.75rem; gap: 2px;"></div>
+        <div id="dash-status-legend" style="display: flex; flex-wrap: wrap; gap: 0.75rem;"></div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
+        <button class="btn btn-secondary" onclick="closeModal('modal-dashboard')"><i class="fa-solid fa-xmark"></i> Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: System Settings (Signatories) -->
+  <div id="modal-settings" class="modal-overlay">
+    <div class="modal-content" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-gear"></i> System Settings</h3>
+        <button class="close-btn" onclick="closeModal('modal-settings')">&times;</button>
+      </div>
+      <form onsubmit="saveSignatorySettings(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="background: rgba(30, 41, 59, 0.45); border-radius: 8px; padding: 1rem; border: 1px solid rgba(255,255,255,0.08);">
+          <h4 style="margin-top: 0; margin-bottom: 0.75rem; color: var(--accent); font-size: 0.95rem;">
+            <i class="fa-solid fa-signature"></i> Manage Signatories
+          </h4>
+          
+          <div style="margin-bottom: 0.85rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Prepared / Recorded By (e.g. Officer-in-Charge)</label>
+            <input type="text" id="setting-signatory-prep" class="form-control" placeholder="OSCA OFFICER-IN-CHARGE" required style="margin-top: 0.25rem;">
+          </div>
+          
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Approved By (e.g. Head, OSCA / Mayor)</label>
+            <input type="text" id="setting-signatory-appr" class="form-control" placeholder="HEAD, OSCA / CITY MAYOR" required style="margin-top: 0.25rem;">
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-settings')">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Change Password -->
+  <div id="modal-change-password" class="modal-overlay">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-key"></i> Change Password</h3>
+        <button class="close-btn" onclick="closeModal('modal-change-password')">&times;</button>
+      </div>
+      <form onsubmit="saveNewPassword(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div>
+          <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Current Password</label>
+          <input type="password" id="chpass-old" class="form-control" required style="margin-top: 0.25rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">New Password</label>
+          <input type="password" id="chpass-new" class="form-control" required minlength="6" style="margin-top: 0.25rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Confirm New Password</label>
+          <input type="password" id="chpass-confirm" class="form-control" required minlength="6" style="margin-top: 0.25rem;">
+        </div>
+        <div id="chpass-msg" style="font-size: 0.85rem; font-weight: 500; min-height: 20px;"></div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-change-password')">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden Printable Certificate Section -->
+  <div id="print-area" style="display: none;">
+    <!-- Populated when printing certificate -->
+  </div>
+
+  <!-- Application Script -->
+  <script>
+    // Global State Variables
+    let masterData = [];
+    let customHeaders = [];
+    let benefitClaims = [];
+    let tempParsedExcel = null;
+    let html5QrScanner = null;
+    let useMySQLAPI = true;
+    const API_BASE_URL = (() => {
+      if (location.pathname.toLowerCase().includes('/osca/')) return 'api.php';
+      if (location.port === '8000') return 'http://127.0.0.1:8000/api.php';
+      return 'http://127.0.0.1/OSCA/api.php';
+    })();
+    const AUTH_URL = API_BASE_URL.replace('api.php', 'auth.php');
+
+    
+    // ═════════════════════════════════════════════════════════════════════════
+    // DASHBOARD MODAL
+    // ═════════════════════════════════════════════════════════════════════════
+    function openDashboardModal() {
+      const data = masterData;
+      const total   = data.length;
+      const active  = data.filter(d => (d.status||'').toLowerCase() === 'active').length;
+      const pension = data.filter(d => (d.pensioner||'').toLowerCase() === 'yes').length;
+      const pending = data.filter(d => (d.status||'').toLowerCase() !== 'active').length;
+
+      document.getElementById('dash-total').textContent   = total.toLocaleString();
+      document.getElementById('dash-active').textContent  = active.toLocaleString();
+      document.getElementById('dash-pension').textContent = pension.toLocaleString();
+      document.getElementById('dash-pending').textContent = pending.toLocaleString();
+      document.getElementById('dash-subtitle').textContent =
+        `OSCA Palayan City — ${new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' })}`;
+
+      // --- Barangay Breakdown ---
+      const brgyMap = {};
+      data.forEach(d => {
+        const b = (d.barangay || 'Unknown').trim();
+        brgyMap[b] = (brgyMap[b] || 0) + 1;
+      });
+      const sorted = Object.entries(brgyMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
+      const maxCount = sorted[0]?.[1] || 1;
+      const brgyEl = document.getElementById('dash-barangay-list');
+      brgyEl.innerHTML = sorted.map(([name, count]) => `
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:3px;">
+            <span style="color:var(--text-main); font-weight:600;">${name}</span>
+            <span style="color:var(--accent); font-weight:700;">${count}</span>
+          </div>
+          <div style="height:6px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;">
+            <div style="height:100%; width:${Math.round((count/maxCount)*100)}%; background:linear-gradient(90deg,#a78bfa,#7c3aed); border-radius:4px; transition:width 0.4s;"></div>
+          </div>
+        </div>
+      `).join('');
+
+      // --- Gender & Age ---
+      const male   = data.filter(d => ['male','m'].includes((d.gender||d.sex||'').toLowerCase().trim())).length;
+      const female = data.filter(d => ['female','f'].includes((d.gender||d.sex||'').toLowerCase().trim())).length;
+      const unknown = total - male - female;
+      const age60   = data.filter(d => { const a=parseInt(d.age); return a>=60&&a<=69; }).length;
+      const age70   = data.filter(d => { const a=parseInt(d.age); return a>=70&&a<=79; }).length;
+      const age80   = data.filter(d => { const a=parseInt(d.age); return a>=80&&a<=89; }).length;
+      const age90   = data.filter(d => { const a=parseInt(d.age); return a>=90; }).length;
+      const gaEl = document.getElementById('dash-gender-age');
+      const pct = (n) => total > 0 ? ((n/total)*100).toFixed(1) : '0.0';
+      gaEl.innerHTML = `
+        <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.25rem;">Gender</div>
+        ${[['Male','#60a5fa',male],['Female','#f472b6',female],['Unknown','#6b7280',unknown]].map(([lbl,col,cnt]) => `
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <div style="width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0;"></div>
+            <span style="font-size:0.78rem;color:var(--text-main);flex:1;">${lbl}</span>
+            <span style="font-size:0.78rem;font-weight:700;color:${col};">${cnt.toLocaleString()} <span style="color:var(--text-muted);font-weight:400;">(${pct(cnt)}%)</span></span>
+          </div>`).join('')}
+        <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin: 0.6rem 0 0.25rem;">Age Groups</div>
+        ${[['60–69','#d4af37',age60],['70–79','#34d399',age70],['80–89','#60a5fa',age80],['90+','#f87171',age90]].map(([lbl,col,cnt]) => `
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <div style="width:10px;height:10px;border-radius:2px;background:${col};flex-shrink:0;"></div>
+            <span style="font-size:0.78rem;color:var(--text-main);flex:1;">${lbl}</span>
+            <span style="font-size:0.78rem;font-weight:700;color:${col};">${cnt.toLocaleString()} <span style="color:var(--text-muted);font-weight:400;">(${pct(cnt)}%)</span></span>
+          </div>`).join('')}
+      `;
+
+      // --- Status Bar ---
+      const statusMap = {};
+      data.forEach(d => {
+        const s = (d.status || 'Unknown').trim();
+        statusMap[s] = (statusMap[s] || 0) + 1;
+      });
+      const statusColors = { Active:'#34d399', Inactive:'#f87171', Deceased:'#6b7280', Transferred:'#a78bfa', Pending:'#fbbf24' };
+      const barEl = document.getElementById('dash-status-bar');
+      const legEl = document.getElementById('dash-status-legend');
+      barEl.innerHTML = Object.entries(statusMap).map(([s,c]) => {
+        const col = statusColors[s] || '#94a3b8';
+        return `<div title="${s}: ${c}" style="flex:${c};background:${col};min-width:4px;" ></div>`;
+      }).join('');
+      legEl.innerHTML = Object.entries(statusMap).map(([s,c]) => {
+        const col = statusColors[s] || '#94a3b8';
+        return `<div style="display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;">
+          <div style="width:10px;height:10px;border-radius:2px;background:${col};"></div>
+          <span style="color:var(--text-muted);">${s}</span>
+          <strong style="color:${col};">${c}</strong>
+        </div>`;
+      }).join('');
+
+      document.getElementById('modal-dashboard').style.display = 'flex';
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // SYSTEM SETTINGS / SIGNATORIES
+    // ═════════════════════════════════════════════════════════════════════════
+    function openSettingsModal() {
+      const prep = localStorage.getItem('osca_signatory_prep') || 'OSCA OFFICER-IN-CHARGE';
+      const appr = localStorage.getItem('osca_signatory_appr') || 'HEAD, OSCA / CITY MAYOR';
+      
+      document.getElementById('setting-signatory-prep').value = prep;
+      document.getElementById('setting-signatory-appr').value = appr;
+      
+      document.getElementById('modal-settings').style.display = 'flex';
+    }
+
+    function saveSignatorySettings(e) {
+      e.preventDefault();
+      const prep = document.getElementById('setting-signatory-prep').value.trim();
+      const appr = document.getElementById('setting-signatory-appr').value.trim();
+      
+      localStorage.setItem('osca_signatory_prep', prep);
+      localStorage.setItem('osca_signatory_appr', appr);
+      
+      closeModal('modal-settings');
+      alert('System settings updated successfully!');
+    }
+
+    // Default Fallback OSCA Data — full dataset loaded from all_seniors_data.json at runtime
+    let defaultOSCAData = [];
+
+    // ── Auth: load user info into header ──────────────────────────────────────
+    function loadUserChip() {
+      const raw = localStorage.getItem('osca_auth_user');
+      if (!raw) return;
+      try {
+        const user = JSON.parse(raw);
+        const nameEl = document.getElementById('header-user-name');
+        const roleEl = document.getElementById('header-user-role');
+        if (nameEl) nameEl.textContent = user.full_name || user.username || 'Staff';
+        if (roleEl) roleEl.textContent = user.role || 'staff';
+      } catch(e) {}
+    }
+
+    // ── Auth: verify token with server (non-blocking) ─────────────────────────
+    async function verifySessionSilently() {
+      const token = localStorage.getItem('osca_auth_token');
+      if (!token || token.startsWith('local_')) return; // local fallback mode
+      try {
+        const res = await fetch(`${AUTH_URL}?action=verify`, {
+          headers: { 'X-Auth-Token': token }
+        });
+        const json = await res.json();
+        if (json.status !== 'success') {
+          localStorage.removeItem('osca_auth_token');
+          localStorage.removeItem('osca_auth_user');
+          window.location.replace('login.html');
+        } else {
+          // Update user chip with fresh info
+          localStorage.setItem('osca_auth_user', JSON.stringify(json.user));
+          loadUserChip();
+        }
+      } catch(e) { /* offline mode — stay logged in */ }
+    }
+
+    // ── Logout ────────────────────────────────────────────────────────────────
+    async function handleLogout() {
+      const token = localStorage.getItem('osca_auth_token');
+      if (token && !token.startsWith('local_')) {
+        try {
+          await fetch(`${AUTH_URL}?action=logout`, {
+            headers: { 'X-Auth-Token': token }
+          });
+        } catch(e) {}
+      }
+      localStorage.removeItem('osca_auth_token');
+      localStorage.removeItem('osca_auth_user');
+      localStorage.removeItem('osca_token_expires');
+      window.location.replace('login.html');
+    }
+
+    // ── Change Password Modal ─────────────────────────────────────────────────
+    function openChangePasswordModal() {
+      document.getElementById('modal-change-password').style.display = 'flex';
+    }
+
+    async function saveNewPassword(e) {
+      e.preventDefault();
+      const token   = localStorage.getItem('osca_auth_token');
+      const oldPass = document.getElementById('chpass-old').value;
+      const newPass = document.getElementById('chpass-new').value;
+      const cfmPass = document.getElementById('chpass-confirm').value;
+      const msgEl   = document.getElementById('chpass-msg');
+
+      if (newPass !== cfmPass) {
+        msgEl.style.color = '#f87171';
+        msgEl.textContent = 'New passwords do not match!';
+        return;
+      }
+      if (newPass.length < 6) {
+        msgEl.style.color = '#f87171';
+        msgEl.textContent = 'New password must be at least 6 characters.';
+        return;
+      }
+
+      if (token && !token.startsWith('local_')) {
+        try {
+          const res = await fetch(`${AUTH_URL}?action=change_password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Auth-Token': token },
+            body: JSON.stringify({ old_password: oldPass, new_password: newPass })
+          });
+          const json = await res.json();
+          if (json.status === 'success') {
+            msgEl.style.color = '#34d399';
+            msgEl.textContent = 'Password changed successfully!';
+            setTimeout(() => closeModal('modal-change-password'), 1800);
+          } else {
+            msgEl.style.color = '#f87171';
+            msgEl.textContent = json.message || 'Error changing password.';
+          }
+        } catch(err) {
+          msgEl.style.color = '#f87171';
+          msgEl.textContent = 'Cannot connect to server.';
+        }
+      } else {
+        // Local mode: just close
+        msgEl.style.color = '#34d399';
+        msgEl.textContent = 'Password change requires XAMPP/MySQL connection.';
+        setTimeout(() => closeModal('modal-change-password'), 2000);
+      }
+    }
+
+    // App Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserChip();
+      verifySessionSilently();
+      startClock();
+      loadStoredData();
+      setupDragAndDrop();
+    });
+
+    function startClock() {
+      const clockEl   = document.getElementById('live-clock');
+      const sbClockEl = document.getElementById('sb-clock');
+      const update = () => {
+        const now = new Date();
+        const full = now.toLocaleDateString('en-PH', { 
+          weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', 
+          hour: '2-digit', minute: '2-digit', second: '2-digit' 
+        });
+        const short = now.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        if (clockEl)   clockEl.textContent   = full;
+        if (sbClockEl) sbClockEl.textContent = short;
+      };
+      update();
+      setInterval(update, 1000);
+    }
+
+    // Load Data: JSON file → MySQL API → LocalStorage fallback
+    async function loadStoredData() {
+      const badge = document.getElementById('db-status-badge');
+
+      // Step 1: Try to load the bundled all_seniors_data.json (all 4963 seniors)
+      try {
+        const jsonRes = await fetch('all_seniors_data.json?v=' + Date.now());
+        if (jsonRes.ok) {
+          const jsonData = await jsonRes.json();
+          if (Array.isArray(jsonData) && jsonData.length > 0) {
+            defaultOSCAData = jsonData;
+          }
+        }
+      } catch(e) {
+        console.log('Could not load all_seniors_data.json, using built-in fallback.');
+      }
+
+      // Step 2: Try MySQL API
+      try {
+        const res = await fetch(`${API_BASE_URL}?action=get_seniors`);
+        const json = await res.json();
+        
+        if (json.status === 'success') {
+          useMySQLAPI = true;
+          badge.className = 'db-status-badge db-online';
+          badge.innerHTML = `<i class="fa-solid fa-database"></i> MySQL Connected — ${json.data.length > 0 ? json.data.length : defaultOSCAData.length} Records`;
+          masterData = json.data.length > 0 ? json.data : defaultOSCAData;
+        } else {
+          throw new Error(json.message);
+        }
+      } catch(err) {
+        // Step 3: Offline / LocalStorage fallback
+        useMySQLAPI = false;
+        const savedMaster = localStorage.getItem('osca_master_data');
+        if (savedMaster) {
+          try {
+            const parsed = JSON.parse(savedMaster);
+            // Use saved only if it has more data than default (user may have edited)
+            masterData = parsed.length >= defaultOSCAData.length ? parsed : defaultOSCAData;
+          } catch(e) {
+            masterData = defaultOSCAData;
+          }
+        } else {
+          masterData = defaultOSCAData;
+        }
+        badge.className = 'db-status-badge db-offline';
+        badge.innerHTML = `<i class="fa-solid fa-server"></i> Offline Mode — ${masterData.length} Records Loaded`;
+      }
+
+      const savedHeaders = localStorage.getItem('osca_custom_headers');
+      if (savedHeaders) {
+        try { customHeaders = JSON.parse(savedHeaders); } catch(e) { customHeaders = []; }
+      }
+
+      renderStats();
+      renderMasterTable();
+      renderClaimsTable();
+
+      if (masterData.length > 0) {
+        displayVerificationResult(masterData[0]);
+      } else {
+        displayEmptyResult();
+      }
+    }
+
+    function saveStoredData() {
+      try {
+        // Strip heavy _rawObject for LocalStorage caching to avoid 5MB quota limits
+        const cleanMasterData = masterData.map(item => {
+          const clone = { ...item };
+          delete clone._rawObject;
+          return clone;
+        });
+        localStorage.setItem('osca_master_data', JSON.stringify(cleanMasterData));
+        localStorage.setItem('osca_custom_headers', JSON.stringify(customHeaders));
+        localStorage.setItem('osca_claims_data', JSON.stringify(benefitClaims));
+      } catch(e) {
+        console.warn('LocalStorage quota exceeded. Data is safely stored in phpMyAdmin/MySQL database.', e);
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const target = document.getElementById(tabId);
+      if (target) target.style.display = 'block';
+      if (event && event.currentTarget) event.currentTarget.classList.add('active');
+    }
+
+    function renderStats() {
+      const total   = masterData.length;
+      const active  = masterData.filter(d => (d.status || '').toLowerCase() === 'active').length;
+      const pension = masterData.filter(d => (d.pensioner || '').toLowerCase() === 'yes').length;
+      const pending = masterData.filter(d => (d.status || '').toLowerCase() !== 'active').length;
+
+      document.getElementById('stat-total').textContent     = total;
+      document.getElementById('stat-active').textContent    = active;
+      document.getElementById('stat-pensioners').textContent= pension;
+      document.getElementById('stat-pending').textContent   = pending;
+
+      // Sync sidebar quick stats
+      const sbTotal   = document.getElementById('sb-stat-total');
+      const sbActive  = document.getElementById('sb-stat-active');
+      const sbPension = document.getElementById('sb-stat-pension');
+      const sbPending = document.getElementById('sb-stat-pending');
+      if (sbTotal)   sbTotal.textContent   = total.toLocaleString();
+      if (sbActive)  sbActive.textContent  = active.toLocaleString();
+      if (sbPension) sbPension.textContent = pension.toLocaleString();
+      if (sbPending) sbPending.textContent = pending.toLocaleString();
+
+      // Sync sidebar DB status
+      const mainBadge = document.getElementById('db-status-badge');
+      const sbDb = document.getElementById('sb-db-status');
+      if (sbDb && mainBadge) {
+        const isOnline = mainBadge.classList.contains('db-online');
+        sbDb.style.color = isOnline ? '#34d399' : '#f87171';
+        sbDb.querySelector('span').textContent = isOnline ? 'MySQL: Online' : 'MySQL: Offline';
+      }
+    }
+
+    function handleInstantSearch(query) {
+      query = query.trim().toLowerCase();
+      if (!query) {
+        if (masterData.length > 0) displayVerificationResult(masterData[0]);
+        return;
+      }
+
+      const match = masterData.find(item => {
+        if (item.id && String(item.id).toLowerCase().includes(query)) return true;
+        if (item.name_of_members && item.name_of_members.toLowerCase().includes(query)) return true;
+        if (item.firstname && item.firstname.toLowerCase().includes(query)) return true;
+        if (item.lastname && item.lastname.toLowerCase().includes(query)) return true;
+        if (`${item.firstname} ${item.lastname}`.toLowerCase().includes(query)) return true;
+        if (item.barangay && item.barangay.toLowerCase().includes(query)) return true;
+        if (item.philhealth && item.philhealth.toLowerCase().includes(query)) return true;
+        if (item.remarks && item.remarks.toLowerCase().includes(query)) return true;
+
+        if (item._rawObject) {
+          return Object.values(item._rawObject).some(val => String(val).toLowerCase().includes(query));
+        }
+        return false;
+      });
+
+      if (match) {
+        displayVerificationResult(match);
+      } else {
+        displayEmptyResult(`No Senior Citizen record found matching "${query}".`);
+      }
+    }
+
+    function displayVerificationResult(senior) {
+      const container = document.getElementById('verification-result-container');
+      const fullName = senior.name_of_members || `${senior.firstname || ''} ${senior.middlename ? senior.middlename + ' ' : ''}${senior.lastname || ''} ${senior.extension || ''}`.trim() || 'Senior Citizen';
+      
+      let badgeClass = 'status-verified';
+      let badgeIcon = 'fa-circle-check';
+      const st = (senior.status || 'Active').toLowerCase();
+      if (st.includes('pend')) { badgeClass = 'status-pending'; badgeIcon = 'fa-clock'; }
+      else if (st.includes('susp') || st.includes('inact')) { badgeClass = 'status-suspended'; badgeIcon = 'fa-ban'; }
+      else if (st.includes('decea') || st.includes('dead')) { badgeClass = 'status-deceased'; badgeIcon = 'fa-skull-crossbones'; }
+      else if (st.includes('transf')) { badgeClass = 'status-transferred'; badgeIcon = 'fa-truck-arrow-right'; }
+
+      let dobFormatted = senior.dob || (senior.dob_month && senior.dob_day && senior.dob_year ? `${senior.dob_month} ${senior.dob_day}, ${senior.dob_year}` : 'N/A');
+
+      container.innerHTML = `
+        <div class="glass-card result-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.25rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+                <h2 style="font-family: var(--font-heading); font-size: 1.85rem; color: #fff; margin: 0; font-weight: 700;">${fullName}</h2>
+                <span class="status-badge ${badgeClass}">
+                  <i class="fa-solid ${badgeIcon}"></i> ${senior.status || 'Active'}
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; margin-top: 0.45rem;">
+                <p style="color: var(--accent); font-size: 0.95rem; font-weight: 500; margin: 0;">
+                  <i class="fa-solid fa-location-dot"></i> Barangay ${senior.barangay || 'Singalat'}
+                </p>
+                <span style="font-size: 0.85rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.05); padding: 0.2rem 0.65rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                  OSCA ID: <strong style="color: #fff; letter-spacing: 0.5px;">${senior.id}</strong>
+                </span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+              <button class="btn btn-secondary" onclick="printVerificationSlip('${senior.id}')">
+                <i class="fa-solid fa-print"></i> Verification Slip
+              </button>
+              <button class="btn btn-secondary" style="border-color: rgba(212, 175, 55, 0.5); color: var(--accent);" onclick="openTransferModal('${senior.id}')" title="Certificate of Transfer / Transferee">
+                <i class="fa-solid fa-file-export"></i> Certificate of Transfer
+              </button>
+              <button class="btn btn-primary" onclick="editSenior('${senior.id}')">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+              </button>
+            </div>
+          </div>
+
+          <div class="profile-info-grid" style="margin: 0.5rem 0 0 0;">
+            <div class="info-item">
+              <label>No. / ID Number</label>
+              <span>No. ${senior.no || '-'} | ID: ${senior.id}</span>
+            </div>
+            <div class="info-item">
+              <label>Date of Birth</label>
+              <span>${dobFormatted}</span>
+            </div>
+            <div class="info-item">
+              <label>Age</label>
+              <span>${senior.age || calculateAge(senior.dob)} years old</span>
+            </div>
+            <div class="info-item">
+              <label>Sex</label>
+              <span>${senior.gender || senior.sex || 'Male'}</span>
+            </div>
+            <div class="info-item">
+              <label>Barangay</label>
+              <span>${senior.barangay || 'Singalat'}</span>
+            </div>
+            <div class="info-item">
+              <label>PhilHealth No.</label>
+              <span>${senior.philhealth || senior.philhealth_no || 'N/A'}</span>
+            </div>
+            <div class="info-item">
+              <label>Remarks</label>
+              <span>${senior.remarks || 'None'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function displayEmptyResult(msg = "Search for a Senior Citizen above or scan a QR ID card.") {
+      document.getElementById('verification-result-container').innerHTML = `
+        <div class="glass-card" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+          <i class="fa-solid fa-address-card" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"></i>
+          <h3>Senior Verification Portal</h3>
+          <p style="margin-top: 0.5rem; font-size: 0.9rem;">${msg}</p>
+        </div>
+      `;
+    }
+
+    // ── Master List Filter State ────────────────────────────────────────────
+    let masterFilteredData = [];
+    let masterCurrentPage = 1;
+
+    function populateBarangayDropdown() {
+      const sel = document.getElementById('ml-barangay');
+      if (!sel) return;
+      const current = sel.value;
+      const brgySet = [...new Set(masterData.map(s => (s.barangay || '').trim()).filter(Boolean))].sort();
+      // Keep first option
+      sel.innerHTML = '<option value="">All Barangays</option>';
+      brgySet.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b;
+        opt.textContent = b;
+        if (b === current) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function applyMasterFilters() {
+      masterCurrentPage = 1;
+      renderMasterTable();
+    }
+
+    function clearMasterFilters() {
+      document.getElementById('ml-search').value = '';
+      document.getElementById('ml-barangay').value = '';
+      document.getElementById('ml-status').value = '';
+      document.getElementById('ml-sex').value = '';
+      masterCurrentPage = 1;
+      renderMasterTable();
+    }
+
+    function renderMasterTable() {
+      const tbody = document.getElementById('master-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (masterData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 2rem; color: var(--text-muted);">No records found. Import CSV/Excel or Add Senior.</td></tr>`;
+        document.getElementById('master-record-count').textContent = '';
+        return;
+      }
+
+      // ── Populate barangay dropdown if not yet filled
+      populateBarangayDropdown();
+
+      // ── Read filters
+      const search = (document.getElementById('ml-search')?.value || '').toLowerCase().trim();
+      const brgyFilter = (document.getElementById('ml-barangay')?.value || '').toLowerCase();
+      const statusFilter = (document.getElementById('ml-status')?.value || '').toLowerCase();
+      const sexFilter = (document.getElementById('ml-sex')?.value || '').toLowerCase();
+      const pageSize = parseInt(document.getElementById('ml-pagesize')?.value || '50');
+
+      // ── Filter
+      masterFilteredData = masterData.filter(s => {
+        const name = (s.name_of_members || `${s.firstname||''} ${s.lastname||''}`).toLowerCase();
+        const id = (s.id || '').toLowerCase();
+        const phil = (s.philhealth || s.philhealth_no || '').toLowerCase();
+        const brgy = (s.barangay || '').toLowerCase();
+        const status = (s.status || 'Active').toLowerCase();
+        const sex = (s.gender || s.sex || '').toLowerCase();
+        const remarks = (s.remarks || '').toLowerCase();
+
+        if (search && !name.includes(search) && !id.includes(search) && !phil.includes(search) && !brgy.includes(search) && !remarks.includes(search)) return false;
+        if (brgyFilter && brgy !== brgyFilter) return false;
+        if (statusFilter && status !== statusFilter) return false;
+        if (sexFilter && !sex.startsWith(sexFilter.charAt(0))) return false;
+        return true;
+      });
+
+      // ── Pagination
+      const totalPages = Math.max(1, Math.ceil(masterFilteredData.length / pageSize));
+      if (masterCurrentPage > totalPages) masterCurrentPage = totalPages;
+      const startIdx = (masterCurrentPage - 1) * pageSize;
+      const pageSlice = masterFilteredData.slice(startIdx, startIdx + pageSize);
+
+      // ── Record count label
+      const countEl = document.getElementById('master-record-count');
+      if (countEl) {
+        if (masterFilteredData.length === masterData.length) {
+          countEl.textContent = `— ${masterData.length.toLocaleString()} records`;
+        } else {
+          countEl.textContent = `— ${masterFilteredData.length.toLocaleString()} of ${masterData.length.toLocaleString()} records`;
+        }
+      }
+
+      // ── Render rows
+      if (pageSlice.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:2rem; color:var(--text-muted);"><i class="fa-solid fa-filter-circle-xmark" style="font-size:1.5rem; margin-bottom:0.5rem;"></i><br>No records match your filters.</td></tr>`;
+      } else {
+        pageSlice.forEach((senior, idx) => {
+          const fullName = senior.name_of_members || `${senior.firstname || ''} ${senior.lastname || ''}`.trim() || 'Senior';
+
+          let dobDisplay = 'N/A';
+          if (senior.dob_month && senior.dob_day && senior.dob_year) {
+            dobDisplay = `${senior.dob_month} ${senior.dob_day}, ${senior.dob_year}`;
+          } else if (senior.dob) {
+            const parsed = parseDateToComponents(senior.dob);
+            if (parsed.monthStr && parsed.day && parsed.year) {
+              dobDisplay = `${parsed.monthStr} ${parsed.day}, ${parsed.year}`;
+            } else {
+              dobDisplay = senior.dob;
+            }
+          }
+
+          const calculatedAge = senior.age || calculateAge(senior.dob);
+          const ageDisplay = calculatedAge ? `${calculatedAge}` : '—';
+          const statusVal = senior.status || 'Active';
+          const statusColor = statusVal === 'Active' ? 'var(--success)' : statusVal === 'Deceased' ? 'var(--danger)' : statusVal === 'Transferred' ? '#60a5fa' : 'var(--warning)';
+          const idSafe = String(senior.id).replace(/'/g, "\\'");
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="color:var(--text-muted); font-size:0.8rem;">${startIdx + idx + 1}</td>
+            <td><strong>${fullName}</strong></td>
+            <td style="white-space:nowrap;">${dobDisplay}</td>
+            <td><strong>${ageDisplay}</strong></td>
+            <td><span style="font-size:0.82rem;">${senior.barangay || '—'}</span></td>
+            <td>${senior.gender || senior.sex || '—'}</td>
+            <td><strong style="color:var(--accent);">${senior.id}</strong></td>
+            <td style="font-size:0.82rem;">${senior.philhealth || senior.philhealth_no || '—'}</td>
+            <td><span style="color:${statusColor}; font-weight:600; font-size:0.8rem;">${statusVal}</span></td>
+            <td style="font-size:0.82rem; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(senior.remarks||'').replace(/"/g,'&quot;')}">${senior.remarks || '—'}</td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-secondary" style="padding:0.3rem 0.55rem; font-size:0.78rem;" onclick="verifyRecord('${idSafe}')">
+                <i class="fa-solid fa-eye"></i> View
+              </button>
+              <button class="btn btn-secondary" style="padding:0.3rem 0.55rem; font-size:0.78rem; color:var(--accent);" onclick="openTransferModal('${idSafe}')" title="Issue Certificate of Transfer">
+                <i class="fa-solid fa-file-export"></i> Transfer
+              </button>
+              <button class="btn btn-primary" style="padding:0.3rem 0.55rem; font-size:0.78rem;" onclick="editSenior('${idSafe}')">
+                <i class="fa-solid fa-pen"></i> Edit
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // ── Pagination bar
+      renderMasterPagination(totalPages, pageSize);
+    }
+
+    function renderMasterPagination(totalPages, pageSize) {
+      const info = document.getElementById('ml-page-info');
+      const btnsEl = document.getElementById('ml-page-buttons');
+      if (!info || !btnsEl) return;
+
+      const startIdx = (masterCurrentPage - 1) * pageSize;
+      const endIdx = Math.min(startIdx + pageSize, masterFilteredData.length);
+      info.textContent = masterFilteredData.length === 0 ? ''
+        : `Showing ${startIdx + 1}–${endIdx} of ${masterFilteredData.length.toLocaleString()}`;
+
+      btnsEl.innerHTML = '';
+      if (totalPages <= 1) return;
+
+      const btnStyle = (active) =>
+        `padding:0.35rem 0.65rem; border-radius:6px; font-size:0.82rem; cursor:pointer; border:1px solid var(--card-border);
+         background:${active ? 'var(--accent)' : 'rgba(255,255,255,0.06)'};
+         color:${active ? '#0a2540' : 'var(--text-main)'}; font-weight:${active ? '700' : '400'};`;
+
+      const mkBtn = (label, page, disabled=false) => {
+        const b = document.createElement('button');
+        b.innerHTML = label;
+        b.style.cssText = btnStyle(page === masterCurrentPage);
+        b.disabled = disabled;
+        if (!disabled) b.onclick = () => { masterCurrentPage = page; renderMasterTable(); };
+        return b;
+      };
+
+      btnsEl.appendChild(mkBtn('<i class="fa-solid fa-angles-left"></i>', 1, masterCurrentPage === 1));
+      btnsEl.appendChild(mkBtn('<i class="fa-solid fa-angle-left"></i>', masterCurrentPage - 1, masterCurrentPage === 1));
+
+      // Page number window
+      let start = Math.max(1, masterCurrentPage - 2);
+      let end   = Math.min(totalPages, start + 4);
+      if (end - start < 4) start = Math.max(1, end - 4);
+      for (let p = start; p <= end; p++) btnsEl.appendChild(mkBtn(p, p));
+
+      btnsEl.appendChild(mkBtn('<i class="fa-solid fa-angle-right"></i>', masterCurrentPage + 1, masterCurrentPage === totalPages));
+      btnsEl.appendChild(mkBtn('<i class="fa-solid fa-angles-right"></i>', totalPages, masterCurrentPage === totalPages));
+    }
+
+    function verifyRecord(id) {
+      const senior = masterData.find(d => String(d.id) === String(id));
+      if (senior) {
+        switchTab('tab-verify');
+        displayVerificationResult(senior);
+      }
+    }
+
+    function calculateAge(dobString) {
+      if (!dobString) return 0;
+      const birthDate = new Date(dobString);
+      if (isNaN(birthDate.getTime())) return 0;
+      const difference = Date.now() - birthDate.getTime();
+      const ageDate = new Date(difference);
+      return Math.abs(ageDate.getUTCFullYear() - 1970);
+    }
+
+    function updateCalculatedAge() {
+      const dobVal = document.getElementById('form-dob').value;
+      if (dobVal) {
+        document.getElementById('form-age').value = calculateAge(dobVal);
+      }
+    }
+
+    function openAddSeniorModal() {
+      document.getElementById('senior-form').reset();
+      document.getElementById('form-id').value = '';
+      document.getElementById('form-no').value = masterData.length + 1;
+      document.getElementById('form-osca-id').value = `24-${String(masterData.length + 1000).padStart(4, '0')}`;
+      document.getElementById('senior-modal-title').innerHTML = `<i class="fa-solid fa-user-plus"></i> Add Senior Citizen Record`;
+      document.getElementById('modal-senior-form').style.display = 'flex';
+    }
+
+    function editSenior(id) {
+      const senior = masterData.find(d => String(d.id) === String(id));
+      if (!senior) return;
+
+      document.getElementById('form-id').value = senior.id;
+      document.getElementById('form-no').value = senior.no || '';
+      document.getElementById('form-osca-id').value = senior.id;
+      document.getElementById('form-status').value = senior.status || 'Active';
+      document.getElementById('form-firstname').value = senior.firstname || '';
+      document.getElementById('form-middlename').value = senior.middlename || '';
+      document.getElementById('form-lastname').value = senior.lastname || '';
+      document.getElementById('form-dob').value = senior.dob || '';
+      document.getElementById('form-age').value = senior.age || calculateAge(senior.dob);
+      document.getElementById('form-gender').value = senior.gender || senior.sex || 'Male';
+      document.getElementById('form-barangay').value = senior.barangay || 'Singalat';
+      document.getElementById('form-philhealth').value = senior.philhealth || senior.philhealth_no || '';
+      document.getElementById('form-remarks').value = senior.remarks || '';
+
+      document.getElementById('senior-modal-title').innerHTML = `<i class="fa-solid fa-user-pen"></i> Edit Senior Record: ${senior.id}`;
+      document.getElementById('modal-senior-form').style.display = 'flex';
+    }
+
+    async function saveSeniorRecord(e) {
+      e.preventDefault();
+      const oscaId = document.getElementById('form-osca-id').value.trim();
+      const existingIdx = masterData.findIndex(d => String(d.id) === String(oscaId));
+
+      const fn = document.getElementById('form-firstname').value.trim();
+      const mn = document.getElementById('form-middlename').value.trim();
+      const ln = document.getElementById('form-lastname').value.trim();
+
+      const record = {
+        no: parseInt(document.getElementById('form-no').value) || (masterData.length + 1),
+        id: oscaId,
+        name_of_members: `${ln}, ${fn} ${mn}`.trim(),
+        status: document.getElementById('form-status').value,
+        firstname: fn,
+        middlename: mn,
+        lastname: ln,
+        extension: '',
+        dob: document.getElementById('form-dob').value,
+        age: parseInt(document.getElementById('form-age').value) || calculateAge(document.getElementById('form-dob').value),
+        gender: document.getElementById('form-gender').value,
+        sex: document.getElementById('form-gender').value,
+        civilstatus: 'Married',
+        barangay: document.getElementById('form-barangay').value.trim() || 'Singalat',
+        address: `Brgy. ${document.getElementById('form-barangay').value.trim() || 'Singalat'}`,
+        contact: '',
+        emergency: '',
+        philhealth: document.getElementById('form-philhealth').value.trim(),
+        pensioner: 'No',
+        remarks: document.getElementById('form-remarks').value.trim(),
+        issue_date: new Date().toISOString().split('T')[0]
+      };
+
+      if (useMySQLAPI) {
+        try {
+          const res = await fetch(`${API_BASE_URL}?action=save_senior`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          });
+          const json = await res.json();
+          if (json.status !== 'success') alert('Warning: MySQL Sync Message: ' + json.message);
+        } catch(err) { console.error('MySQL Save error:', err); }
+      }
+
+      if (existingIdx !== -1) {
+        masterData[existingIdx] = record;
+      } else {
+        masterData.unshift(record);
+      }
+
+      saveStoredData();
+      renderStats();
+      renderMasterTable();
+      closeModal('modal-senior-form');
+      displayVerificationResult(record);
+      alert('Senior Citizen record saved successfully!');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // FORMS & DOCUMENTS HUB
+    // ═════════════════════════════════════════════════════════════════════════
+    function openFormsHubModal() {
+      document.getElementById('modal-forms-hub').style.display = 'flex';
+    }
+
+    function openVerificationSlipHub() {
+      const id = prompt("Enter the Senior Citizen OSCA ID to generate Verification Slip:");
+      if (id) {
+        const senior = masterData.find(s => String(s.id) === String(id));
+        if (senior) {
+          closeModal('modal-forms-hub');
+          printVerificationSlip(id);
+        } else {
+          alert(`Senior Citizen with ID ${id} not found in the master list.`);
+        }
+      }
+    }
+    // ═════════════════════════════════════════════════════════════════════════
+    // CERTIFICATE OF TRANSFER / TRANSFEREE MODULE
+    // ═════════════════════════════════════════════════════════════════════════
+
+    function openTransferModal(preselectedSeniorId = null) {
+      populateTransferSeniorSelect(preselectedSeniorId);
+
+      // Default date to today
+      const today = new Date().toISOString().split('T')[0];
+      const dateInput = document.getElementById('transfer-date');
+      if (dateInput && !dateInput.value) dateInput.value = today;
+
+      // Reset tabs to form
+      switchTransferModalTab('form');
+
+      // Show modal
+      
+      const savedPrep = localStorage.getItem('osca_signatory_prep') || 'OSCA OFFICER-IN-CHARGE';
+      const savedAppr = localStorage.getItem('osca_signatory_appr') || 'HEAD, OSCA / CITY MAYOR';
+      
+      const prepEl = document.getElementById('transfer-signatory-prep');
+      const apprEl = document.getElementById('transfer-signatory-appr');
+      if (prepEl) prepEl.value = savedPrep;
+      if (apprEl) apprEl.value = savedAppr;
+      
+      document.getElementById('modal-transfer-cert').style.display = 'flex';
+    }
+
+    function populateTransferSeniorSelect(selectedId = null, searchQuery = '') {
+      const select = document.getElementById('transfer-senior-select');
+      const countBadge = document.getElementById('transfer-senior-count-badge');
+      if (!select) return;
+
+      if (!masterData || masterData.length === 0) {
+        select.innerHTML = '<option value="">No senior citizen records available</option>';
+        if (countBadge) countBadge.textContent = '0 records';
+        return;
+      }
+
+      let filtered = masterData;
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.toLowerCase();
+        filtered = masterData.filter(d => {
+          const name = (d.name_of_members || `${d.firstname||''} ${d.lastname||''}`).toLowerCase();
+          return name.includes(q) || String(d.id).includes(q) || (d.barangay || '').toLowerCase().includes(q);
+        });
+      }
+
+      if (countBadge) countBadge.textContent = `${filtered.length} records available`;
+
+      // Sort seniors alphabetically by name for easy searching
+      const sorted = [...filtered].sort((a, b) => {
+        const nameA = (a.name_of_members || `${a.firstname||''} ${a.lastname||''}`).toLowerCase();
+        const nameB = (b.name_of_members || `${b.firstname||''} ${b.lastname||''}`).toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+
+      select.innerHTML = sorted.map(d => {
+        const name = d.name_of_members || `${d.firstname || ''} ${d.lastname || ''}`.trim() || 'Unnamed';
+        const brgy = d.barangay ? `Brgy. ${d.barangay}` : 'Singalat';
+        const isSel = (selectedId && String(d.id) === String(selectedId)) ? 'selected' : '';
+        return `<option value="${d.id}" ${isSel}>[${d.id}] ${name} — ${brgy} (${d.status || 'Active'})</option>`;
+      }).join('');
+
+      // Pick selected or first
+      const chosenId = selectedId || (sorted.length > 0 ? sorted[0].id : null);
+      if (chosenId) {
+        select.value = chosenId;
+        onTransferSeniorSelected(chosenId);
+      }
+    }
+
+    function onTransferSeniorSelected(seniorId) {
+      const senior = masterData.find(d => String(d.id) === String(seniorId));
+      if (!senior) return;
+
+      const summaryCard = document.getElementById('transfer-senior-summary');
+      if (summaryCard) summaryCard.style.display = 'block';
+
+      const fullName = senior.name_of_members || `${senior.firstname || ''} ${senior.middlename ? senior.middlename + ' ' : ''}${senior.lastname || ''} ${senior.extension || ''}`.trim() || 'Senior Citizen';
+      let dobFormatted = 'N/A';
+      if (senior.dob_month && senior.dob_day && senior.dob_year) {
+        dobFormatted = `${senior.dob_month} ${senior.dob_day}, ${senior.dob_year}`;
+      } else if (senior.dob) {
+        const d = new Date(senior.dob);
+        dobFormatted = isNaN(d) ? senior.dob : d.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      const age = senior.age || calculateAge(senior.dob) || '60+';
+      const sex = senior.gender || senior.sex || 'N/A';
+      const brgy = senior.barangay || 'Singalat';
+      const philhealth = senior.philhealth || senior.philhealth_no || 'N/A';
+      const status = senior.status || 'Active';
+
+      document.getElementById('transfer-summary-name').textContent = fullName;
+      document.getElementById('transfer-summary-id').textContent = senior.id;
+      document.getElementById('transfer-summary-age-sex').textContent = `${age} yrs old / ${sex}`;
+      document.getElementById('transfer-summary-dob').textContent = dobFormatted;
+      document.getElementById('transfer-summary-philhealth').textContent = philhealth;
+      document.getElementById('transfer-summary-address').textContent = `Barangay ${brgy}, Palayan City, Nueva Ecija`;
+
+      const badge = document.getElementById('transfer-summary-badge');
+      if (badge) {
+        badge.textContent = status;
+        badge.className = 'status-badge ' + (status === 'Active' ? 'status-verified' : status === 'Transferred' ? 'status-transferred' : status === 'Deceased' ? 'status-deceased' : 'status-pending');
+      }
+
+      // Auto-generate control number if empty or default
+      const yr = new Date().getFullYear();
+      const ctrlInput = document.getElementById('transfer-control-no');
+      if (ctrlInput && (!ctrlInput.value || ctrlInput.value.startsWith('OSCA-COT-'))) {
+        ctrlInput.value = `OSCA-COT-${String(senior.no || senior.id).padStart(4, '0')}-${yr}`;
+      }
+
+      renderTransferPreview();
+    }
+
+    function onTransferReasonChange(val) {
+      const customGrp = document.getElementById('transfer-custom-reason-group');
+      if (customGrp) {
+        customGrp.style.display = (val === 'Custom') ? 'block' : 'none';
+      }
+    }
+
+    function switchTransferModalTab(tab) {
+      const formPane = document.getElementById('transfer-pane-form');
+      const previewPane = document.getElementById('transfer-pane-preview');
+      const formBtn = document.getElementById('transfer-tab-btn-form');
+      const previewBtn = document.getElementById('transfer-tab-btn-preview');
+
+      if (tab === 'preview') {
+        formPane.style.display = 'none';
+        previewPane.style.display = 'block';
+        if (formBtn) formBtn.classList.remove('active');
+        if (previewBtn) previewBtn.classList.add('active');
+        renderTransferPreview();
+      } else {
+        formPane.style.display = 'block';
+        previewPane.style.display = 'none';
+        if (formBtn) formBtn.classList.add('active');
+        if (previewBtn) previewBtn.classList.remove('active');
+      }
+    }
+
+    function getTransferFormData() {
+      const seniorId = document.getElementById('transfer-senior-select').value;
+      const senior = masterData.find(d => String(d.id) === String(seniorId)) || {};
+
+      const fullName = senior.name_of_members || `${senior.firstname || ''} ${senior.middlename ? senior.middlename + ' ' : ''}${senior.lastname || ''} ${senior.extension || ''}`.trim() || 'Senior Citizen';
+      let dobFormatted = 'N/A';
+      if (senior.dob_month && senior.dob_day && senior.dob_year) {
+        dobFormatted = `${senior.dob_month} ${senior.dob_day}, ${senior.dob_year}`;
+      } else if (senior.dob) {
+        const d = new Date(senior.dob);
+        dobFormatted = isNaN(d) ? senior.dob : d.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      const age = senior.age || calculateAge(senior.dob) || '60+';
+      const sex = senior.gender || senior.sex || 'N/A';
+      const originBrgy = senior.barangay || 'Singalat';
+      const philhealth = senior.philhealth || senior.philhealth_no || 'N/A';
+      const civilStatus = senior.civilstatus || 'Married';
+
+      const destBrgy = (document.getElementById('transfer-dest-barangay').value || '').trim() || '[New Barangay]';
+      const destCity = (document.getElementById('transfer-dest-city').value || '').trim() || '[New City / Municipality]';
+      const destProvince = (document.getElementById('transfer-dest-province').value || '').trim() || 'Nueva Ecija';
+
+      const rawTransferDate = document.getElementById('transfer-date').value;
+      let transferDateFormatted = 'N/A';
+      if (rawTransferDate) {
+        const td = new Date(rawTransferDate);
+        transferDateFormatted = isNaN(td) ? rawTransferDate : td.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      } else {
+        transferDateFormatted = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      let reason = document.getElementById('transfer-reason').value;
+      if (reason === 'Custom') {
+        reason = (document.getElementById('transfer-custom-reason').value || '').trim() || 'Relocation of permanent residence';
+      }
+
+      const yr = new Date().getFullYear();
+      const controlNo = (document.getElementById('transfer-control-no').value || '').trim() || `OSCA-COT-${String(senior.no || senior.id || '0001').padStart(4, '0')}-${yr}`;
+      const bookletStatus = document.getElementById('transfer-booklet-status').value;
+      const purpose = (document.getElementById('transfer-purpose').value || '').trim() || 'registration with the Office of Senior Citizens Affairs at new residence and Masterlist updating';
+
+      const signatoryPrep = (document.getElementById('transfer-signatory-prep').value || '').trim() || 'OSCA OFFICER-IN-CHARGE';
+      const signatoryAppr = (document.getElementById('transfer-signatory-appr').value || '').trim() || 'HEAD, OSCA / CITY MAYOR';
+      const todayFormatted = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      return {
+        senior,
+        seniorId,
+        fullName,
+        dobFormatted,
+        age,
+        sex,
+        originBrgy,
+        philhealth,
+        civilStatus,
+        destBrgy,
+        destCity,
+        destProvince,
+        transferDateFormatted,
+        reason,
+        controlNo,
+        bookletStatus,
+        purpose,
+        signatoryPrep,
+        signatoryAppr,
+        todayFormatted
+      };
+    }
+
+    function generateTransferCertHTML(qrContainerId = 'transfer-cert-qr') {
+      const data = getTransferFormData();
+
+      return `
+        <!-- 8.5 x 13 INCH (FOLIO / LONG BOND) OFFICIAL CERTIFICATE CONTAINER -->
+        <div class="certificate-folio-sheet" style="font-family: 'Times New Roman', Times, serif; width: 100%; max-width: 7.7in; min-height: 12.05in; margin: 0 auto; padding: 1.6rem 2.2rem; background: #ffffff; color: #000000; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; border: 3px double #8B0000; outline: 1.5px solid #d4af37; outline-offset: -7px; position: relative;">
+          
+          <!-- TOP SECTION: HEADER & TITLE -->
+          <div>
+            <!-- OFFICIAL LETTERHEAD -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 3px solid #8B0000; margin-bottom: 0.35rem;">
+              <img src="palayan_seal.png" onerror="this.style.display='none'" style="width: 88px; height: 88px; object-fit: contain;" />
+              <div style="text-align: center; flex: 1; padding: 0 1.25rem;">
+                <p style="margin: 0; font-size: 0.82rem; font-style: italic; color: #444; letter-spacing: 0.5px;">Republic of the Philippines &bull; Province of Nueva Ecija</p>
+                <h2 style="margin: 0.2rem 0 0; font-size: 1.35rem; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; font-weight: bold; color: #1a1a1a; line-height: 1.2; letter-spacing: 0.5px;">CITY GOVERNMENT OF PALAYAN</h2>
+                <h3 style="margin: 0.2rem 0 0; font-size: 1.1rem; font-weight: bold; color: #8B0000; letter-spacing: 0.75px;">OFFICE OF THE SENIOR CITIZENS AFFAIRS (OSCA)</h3>
+                <p style="margin: 0.15rem 0 0; font-size: 0.82rem; color: #333;">Senior Citizens Center &bull; Barangay Singalat, Palayan City, Nueva Ecija 3132</p>
+              </div>
+              <img src="osca_logo.jpg" onerror="this.style.display='none'" style="width: 88px; height: 88px; object-fit: contain;" />
+            </div>
+
+            <!-- Red-Gold Decorative Divider -->
+            <div style="height: 3px; background: linear-gradient(to right, #8B0000, #d4af37, #8B0000); margin-bottom: 1.5rem;"></div>
+
+            <!-- CERTIFICATE TITLE & CONTROL NO. -->
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+              <div style="display: inline-block; border: 2.5px double #8B0000; padding: 0.45rem 2.8rem; background: #fffcf0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <h2 style="margin: 0; font-size: 1.45rem; text-transform: uppercase; letter-spacing: 3.5px; font-weight: bold; color: #8B0000; font-family: 'Palatino Linotype', Palatino, serif;">CERTIFICATE OF TRANSFER</h2>
+              </div>
+              <p style="margin: 0.55rem 0 0; font-size: 0.88rem; color: #333;">
+                Control No.: <strong style="color: #8B0000; font-size: 0.95rem;">${data.controlNo}</strong> &emsp;|&emsp; Date Issued: <strong>${data.todayFormatted}</strong>
+              </p>
+            </div>
+
+            <!-- SALUTATION -->
+            <p style="font-size: 1.08rem; font-weight: bold; margin: 1.25rem 0 0.65rem; letter-spacing: 1px; text-transform: uppercase; color: #111;">
+              TO WHOM IT MAY CONCERN:
+            </p>
+
+            <!-- CERTIFICATION BODY TEXT -->
+            <div style="font-size: 1.05rem; line-height: 2.05; margin-bottom: 1.5rem; text-align: justify; color: #1a1a1a;">
+              <p style="margin: 0;">
+                &emsp;&emsp;THIS IS TO CERTIFY that <strong style="text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.5px; color: #0a2540;">${data.fullName}</strong>, of legal age, <strong>${data.sex}</strong>, born on <strong>${data.dobFormatted}</strong> (Age: <strong>${data.age}</strong> years old), civil status <strong>${data.civilStatus}</strong>, previously residing at <strong>Barangay ${data.originBrgy}, Palayan City, Nueva Ecija</strong>, is a registered senior citizen member in good standing of the Office of Senior Citizens Affairs (OSCA) of Palayan City with OSCA Control ID No. <strong style="font-size: 1.12rem; letter-spacing: 1px; color: #8B0000;">${data.seniorId}</strong>.
+              </p>
+
+              <p style="margin: 1.15rem 0 0;">
+                &emsp;&emsp;THIS IS TO FURTHER CERTIFY that the above-named Senior Citizen has officially manifested relocation of permanent residence to:
+              </p>
+
+              <!-- Destination Highlight Callout Box -->
+              <div style="margin: 0.95rem auto; padding: 0.95rem 1.8rem; background: #fdfbf7; border-left: 6px solid #8B0000; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; text-align: center; border-radius: 4px;">
+                <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7280; font-weight: bold;">New Permanent Address (Transferee)</span><br />
+                <strong style="text-transform: uppercase; font-size: 1.18rem; color: #111827; letter-spacing: 0.5px; display: inline-block; margin: 0.25rem 0;">${data.destBrgy}, ${data.destCity}, ${data.destProvince}</strong><br />
+                <span style="font-size: 0.88rem; color: #4b5563;">
+                  Effective Date of Transfer: <strong>${data.transferDateFormatted}</strong> &bull; Reason: <em>${data.reason}</em>
+                </span>
+              </div>
+
+              <p style="margin: 1.15rem 0 0;">
+                &emsp;&emsp;<strong>CLEARANCE &amp; STATUS ENDORSEMENT:</strong> Records of this Office confirm that the subject senior citizen has been verified with PhilHealth No. <strong>${data.philhealth}</strong> and has <strong style="text-transform: lowercase;">${data.bookletStatus}</strong>. In full compliance with Republic Act No. 7432, as amended by Republic Act No. 9994 (<em>Expanded Senior Citizens Act of 2010</em>), the senior citizen's record in the Palayan City OSCA Master Registry is hereby officially designated as <strong style="color: #8B0000; text-transform: uppercase; letter-spacing: 0.5px;">TRANSFERRED</strong> to ensure unhampered continuity of senior citizen privileges and prevent duplicate benefit enrollment.
+              </p>
+
+              <p style="margin: 1.15rem 0 0;">
+                &emsp;&emsp;This Certification is officially issued upon the request of the interested party for <strong>${data.purpose}</strong>, and for whatever legal purposes this document may serve.
+              </p>
+            </div>
+          </div>
+
+          <!-- BOTTOM SECTION: QR CODE, SIGNATURES & LEGAL FOOTER -->
+          <div>
+            <!-- QR VERIFICATION & THREE-COLUMN SIGNATURES -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1.5px dashed #999; flex-wrap: wrap; gap: 1.25rem;">
+              <!-- QR & Dry Seal Box -->
+              <div style="text-align: center; min-width: 120px;">
+                <div id="${qrContainerId}" style="display: inline-block; background: #fff; padding: 4px; border: 1px solid #ccc;"></div>
+                <p style="font-size: 0.7rem; color: #555; margin: 0.35rem 0 0; font-weight: bold;">Scan to Verify Clearance</p>
+                <div style="margin-top: 0.4rem; font-size: 0.65rem; color: #8B0000; border: 1px solid #8B0000; padding: 2px 6px; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold;">
+                  Official Dry Seal
+                </div>
+              </div>
+
+              <!-- Signature Lines -->
+              <div style="display: flex; gap: 1.75rem; align-items: flex-end; flex-wrap: wrap; flex: 1; justify-content: flex-end;">
+                <div style="text-align: center; min-width: 175px;">
+                  <div style="border-top: 1.5px solid #000; padding-top: 0.35rem; margin-top: 3.25rem;">
+                    <strong style="font-size: 0.88rem; text-transform: uppercase; display: block;">${data.fullName}</strong>
+                    <span style="font-size: 0.76rem; color: #444;">Senior Citizen / Transferee</span>
+                  </div>
+                </div>
+                <div style="text-align: center; min-width: 185px;">
+                  <div style="border-top: 1.5px solid #000; padding-top: 0.35rem; margin-top: 3.25rem;">
+                    <strong style="font-size: 0.88rem; display: block;">${data.signatoryPrep}</strong>
+                    <span style="font-size: 0.76rem; color: #444;">Prepared &amp; Recorded By</span>
+                  </div>
+                </div>
+                <div style="text-align: center; min-width: 185px;">
+                  <div style="border-top: 1.5px solid #000; padding-top: 0.35rem; margin-top: 3.25rem;">
+                    <strong style="font-size: 0.88rem; display: block;">${data.signatoryAppr}</strong>
+                    <span style="font-size: 0.76rem; color: #444;">Head, OSCA / City Mayor</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DOCUMENT FOOTER & LEGAL CITATION -->
+            <div style="text-align: center; font-size: 0.72rem; color: #555; margin-top: 1.5rem; border-top: 1px solid #e5e7eb; padding-top: 0.5rem; line-height: 1.45;">
+              Office of Senior Citizens Affairs (OSCA) &bull; City Hall Complex, Singalat, Palayan City, Nueva Ecija 3132<br />
+              Pursuant to R.A. 7432 as amended by R.A. 9994 &bull; Official Clearance Copy for Receiving OSCA &bull; 8.5&Prime; &times; 13&Prime; Folio Format
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function renderTransferPreview() {
+      const box = document.getElementById('transfer-certificate-preview-box');
+      if (!box) return;
+
+      const qrId = 'transfer-preview-qr-' + Date.now();
+      box.innerHTML = generateTransferCertHTML(qrId);
+
+      const qrEl = document.getElementById(qrId);
+      if (qrEl) {
+        const data = getTransferFormData();
+        new QRCode(qrEl, {
+          text: `OSCA-TRANSFER:${data.seniorId}:${data.fullName}:FROM-${data.originBrgy}:TO-${data.destCity}:${data.controlNo}`,
+          width: 78,
+          height: 78
+        });
+      }
+    }
+
+    async function printTransferCertificate() {
+      // Enforce 8.5in x 13in (Folio) page size in browser print engine
+      let folioStyle = document.getElementById('folio-print-page-style');
+      if (!folioStyle) {
+        folioStyle = document.createElement('style');
+        folioStyle.id = 'folio-print-page-style';
+        document.head.appendChild(folioStyle);
+      }
+      folioStyle.innerHTML = `
+        @page {
+          size: 8.5in 13in;
+          margin: 0.35in 0.45in 0.35in 0.45in;
+        }
+      `;
+
+      const data = getTransferFormData();
+      if (!data.senior || !data.seniorId) {
+        alert('Please select a valid Senior Citizen.');
+        return;
+      }
+
+      // Check if user wants to update status to "Transferred"
+      const updateStatusCheckbox = document.getElementById('transfer-update-status');
+      if (updateStatusCheckbox && updateStatusCheckbox.checked) {
+        const seniorIdx = masterData.findIndex(d => String(d.id) === String(data.seniorId));
+        if (seniorIdx !== -1) {
+          masterData[seniorIdx].status = 'Transferred';
+          const transferNote = `Transferred to ${data.destBrgy}, ${data.destCity}, ${data.destProvince} on ${data.transferDateFormatted} (Ref: ${data.controlNo})`;
+          const prevRemarks = masterData[seniorIdx].remarks || '';
+          if (!prevRemarks.includes(data.controlNo)) {
+            masterData[seniorIdx].remarks = prevRemarks ? `${prevRemarks} | ${transferNote}` : transferNote;
+          }
+
+          // Sync with MySQL if API is available
+          if (useMySQLAPI) {
+            try {
+              await fetch(`${API_BASE_URL}?action=save_senior`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(masterData[seniorIdx])
+              });
+            } catch(err) { console.error('MySQL update error:', err); }
+          }
+
+          saveStoredData();
+          renderStats();
+          renderMasterTable();
+          displayVerificationResult(masterData[seniorIdx]);
+        }
+      }
+
+      // Render to print area
+      const printArea = document.getElementById('print-area');
+      const printQrId = 'print-transfer-qr';
+      printArea.innerHTML = generateTransferCertHTML(printQrId);
+
+      const qrEl = document.getElementById(printQrId);
+      if (qrEl) {
+        new QRCode(qrEl, {
+          text: `OSCA-TRANSFER:${data.seniorId}:${data.fullName}:FROM-${data.originBrgy}:TO-${data.destCity}:${data.controlNo}`,
+          width: 82,
+          height: 82
+        });
+      }
+
+      setTimeout(() => {
+        window.print();
+      }, 350);
+    }
+
+    function handleTransferSubmit(e) {
+      e.preventDefault();
+      printTransferCertificate();
+    }
+
+function printVerificationSlip(id) {
+      const senior = masterData.find(d => String(d.id) === String(id));
+      if (!senior) return;
+
+      const printArea = document.getElementById('print-area');
+      const fullName = senior.name_of_members || `${senior.firstname || ''} ${senior.middlename || ''} ${senior.lastname || ''}`.trim();
+
+      let dobFormatted = 'N/A';
+      if (senior.dob_month && senior.dob_day && senior.dob_year) {
+        dobFormatted = `${senior.dob_month} ${senior.dob_day}, ${senior.dob_year}`;
+      } else if (senior.dob) {
+        const d = new Date(senior.dob);
+        dobFormatted = isNaN(d) ? senior.dob : d.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      const age = senior.age || calculateAge(senior.dob);
+      const barangay = senior.barangay || 'Singalat';
+      const philhealth = senior.philhealth || senior.philhealth_no || 'N/A';
+      const sex = senior.gender || senior.sex || 'N/A';
+      const status = senior.status || 'Active';
+      const today = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      const controlNo = `OSCA-${String(senior.no || senior.id).padStart(4, '0')}-${new Date().getFullYear()}`;
+      const statusColor = status === 'Active' ? 'green' : '#c00';
+
+      printArea.innerHTML = `
+        <div style="font-family: 'Times New Roman', serif; max-width: 780px; margin: 0 auto; padding: 1.5rem 2rem; background: #fff; color: #000;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 3px solid #8B0000; margin-bottom: 0.5rem;">
+            <img src="palayan_seal.png" style="width: 85px; height: 85px; object-fit: contain;" />
+            <div style="text-align: center; flex: 1; padding: 0 1rem;">
+              <p style="margin: 0; font-size: 0.78rem; font-style: italic; color: #555;">Republic of the Philippines &bull; Nueva Ecija</p>
+              <h2 style="margin: 0.2rem 0 0; font-size: 1.18rem; font-family: 'Palatino Linotype', Palatino, serif; font-weight: bold; color: #1a1a1a; line-height: 1.25;">Energetic Association of Senior Citizens of Palayan City</h2>
+              <h3 style="margin: 0.15rem 0 0; font-size: 0.95rem; font-weight: bold; color: #222; letter-spacing: 0.5px;">Senior Citizens Center</h3>
+              <p style="margin: 0.15rem 0 0; font-size: 0.82rem; color: #444;">Barangay Singalat, Palayan City</p>
+            </div>
+            <img src="osca_logo.jpg" style="width: 85px; height: 85px; object-fit: contain;" />
+          </div>
+          <div style="height: 2px; background: linear-gradient(to right, #8B0000, #d4af37, #8B0000); margin-bottom: 1.25rem;"></div>
+          <div style="text-align: center; margin-bottom: 1.25rem;">
+            <h2 style="margin: 0; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; border: 2px solid #000; display: inline-block; padding: 0.3rem 2rem;">Verification Slip</h2>
+            <p style="margin: 0.4rem 0 0; font-size: 0.8rem; color: #555;">Control No.: <strong>${controlNo}</strong> &emsp; Date Issued: <strong>${today}</strong></p>
+          </div>
+          <div style="font-size: 1rem; line-height: 1.9; margin-bottom: 1.5rem; text-align: justify;">
+            <p style="margin: 0;">&emsp;&emsp;This is to certify that <strong style="text-transform: uppercase; font-size: 1.05rem;">${fullName}</strong>, of legal age, <strong>${sex}</strong>, born on <strong>${dobFormatted}</strong> (Age: <strong>${age}</strong>), residing at <strong>Barangay ${barangay}, Palayan City, Nueva Ecija</strong>, is a duly registered member of the <em>Energetic Association of Senior Citizens of Palayan City</em> with OSCA Control ID No. <strong style="font-size: 1.1rem; letter-spacing: 1px;">${senior.id}</strong>.</p>
+            <p style="margin: 0.75rem 0 0;">&emsp;&emsp;This senior citizen record is currently on file with status: <strong style="text-transform: uppercase; color: ${statusColor};">${status}</strong>. PhilHealth Number: <strong>${philhealth}</strong>.</p>
+            <p style="margin: 0.75rem 0 0;">&emsp;&emsp;This slip is issued upon the request of the above-named person for whatever legal purpose it may serve.</p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px dashed #aaa;">
+            <div style="text-align: center;">
+              <div id="print-qr-code" style="display: inline-block;"></div>
+              <p style="font-size: 0.7rem; color: #666; margin: 0.3rem 0 0;">Scan to verify</p>
+            </div>
+            <div style="display: flex; gap: 3rem; align-items: flex-end;">
+              <div style="text-align: center;">
+                <div style="border-top: 1.5px solid #000; width: 200px; padding-top: 0.3rem; margin-top: 3rem;">
+                  <strong style="font-size: 0.88rem; text-transform: uppercase;">${localStorage.getItem('osca_signatory_prep') || 'OSCA OFFICER-IN-CHARGE'}</strong>
+                  <p style="font-size: 0.75rem; margin: 0; color: #444;">Prepared / Recorded By</p>
+                </div>
+              </div>
+              <div style="text-align: center;">
+                <div style="border-top: 1.5px solid #000; width: 200px; padding-top: 0.3rem; margin-top: 3rem;">
+                  <strong style="font-size: 0.88rem; text-transform: uppercase;">${localStorage.getItem('osca_signatory_appr') || 'OSCA HEAD / MAYOR\'S OFFICE'}</strong>
+                  <p style="font-size: 0.75rem; margin: 0; color: #444;">Approved By</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="text-align: center; font-size: 0.7rem; color: #888; margin-top: 1.5rem; border-top: 1px solid #ddd; padding-top: 0.5rem;">
+            Office of Senior Citizens Affairs &bull; Barangay Singalat, Palayan City, Nueva Ecija &bull; Established 1993
+          </p>
+        </div>
+      `;
+
+      new QRCode(document.getElementById('print-qr-code'), {
+        text: `OSCA:${senior.id}:${fullName}:${status}:${barangay}`,
+        width: 80,
+        height: 80
+      });
+
+      setTimeout(() => { window.print(); }, 350);
+    }
+
+    // ROBUST EXCEL & CSV FILE PROCESSOR (Tuned for OSCA Guide Header Layout)
+    function setupDragAndDrop() {
+      const dropzone = document.getElementById('excel-dropzone');
+      if (!dropzone) return;
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) processExcelFile(files[0]);
+      });
+    }
+
+    function handleExcelFileUpload(e) {
+      const file = e.target.files[0];
+      if (file) processExcelFile(file);
+    }
+
+    function processExcelFile(file) {
+      const filename = file.name.toLowerCase();
+      
+      if (filename.endsWith('.csv') || filename.endsWith('.txt')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            let text = e.target.result;
+            if (text.charCodeAt(0) === 0xFEFF) text = text.substring(1);
+            const rows = parseCSVTextToGrid(text);
+            if (!rows || rows.length === 0) { alert('CSV file is empty or invalid!'); return; }
+            autoDetectAndShowMapping(rows);
+          } catch(err) { alert('Error reading CSV file: ' + err.message); }
+        };
+        reader.readAsText(file, 'utf-8');
+      } else {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            
+            if (jsonRows.length === 0) { alert('Excel file is empty!'); return; }
+            autoDetectAndShowMapping(jsonRows);
+          } catch(err) { alert('Error reading Excel file: ' + err.message); }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    }
+
+    function parseCSVTextToGrid(text) {
+      const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+      if (lines.length === 0) return [];
+
+      const firstLine = lines[0];
+      let delimiter = ',';
+      if (firstLine.includes('\t')) delimiter = '\t';
+      else if (firstLine.includes(';') && !firstLine.includes(',')) delimiter = ';';
+
+      return lines.map(line => {
+        const cells = [];
+        let curCell = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') inQuotes = !inQuotes;
+          else if (char === delimiter && !inQuotes) {
+            cells.push(curCell.trim().replace(/^"|"$/g, ''));
+            curCell = '';
+          } else { curCell += char; }
+        }
+        cells.push(curCell.trim().replace(/^"|"$/g, ''));
+        return cells;
+      });
+    }
+
+    function parsePastedExcelText() {
+      const text = document.getElementById('excel-paste-textarea').value.trim();
+      if (!text) { alert('Please paste CSV or Excel rows first!'); return; }
+      const rows = parseCSVTextToGrid(text);
+      if (rows.length === 0 || rows[0].length === 0) { alert('Invalid pasted text format.'); return; }
+      autoDetectAndShowMapping(rows);
+    }
+
+    // Smart Header Detector for OSCA Masterlist Layout
+    function autoDetectAndShowMapping(rawRows) {
+      let detectedBarangay = 'Singalat';
+      let headerRowIndex = -1;
+
+      for (let r = 0; r < Math.min(10, rawRows.length); r++) {
+        const rowStr = rawRows[r].join(' ');
+        if (rowStr.toLowerCase().includes('barangay:')) {
+          const match = rowStr.match(/barangay:\s*([^,\r\n"]+)/i);
+          if (match && match[1]) detectedBarangay = match[1].trim();
+        }
+        if (rowStr.toLowerCase().includes('name') || rowStr.toLowerCase().includes('member') || rowStr.toLowerCase().includes('id number')) {
+          headerRowIndex = r;
+          break;
+        }
+      }
+
+      if (headerRowIndex === -1) headerRowIndex = 0;
+
+      let headers = rawRows[headerRowIndex].map(h => String(h || '').trim());
+      let nextRow = rawRows[headerRowIndex + 1] || [];
+      let dataStartIndex = headerRowIndex + 1;
+
+      // Handle 2-line headers where line 1 is "Date of Birth" and line 2 is "Month", "Day", "Year"
+      if (nextRow.some(cell => /month|day|year/i.test(String(cell)))) {
+        let lastHeader = '';
+        headers = headers.map((h, cIdx) => {
+          if (h) lastHeader = h;
+          const sub = String(nextRow[cIdx] || '').trim();
+          if (sub) return `${lastHeader || 'Date'} ${sub}`;
+          return h || `Col ${cIdx+1}`;
+        });
+        dataStartIndex = headerRowIndex + 2;
+      }
+
+      // Filter out empty trailing summary rows or empty rows
+      const validRows = rawRows.slice(dataStartIndex).filter(row => {
+        const str = row.join('').trim();
+        return str.length > 0 && !row.every(c => c === '' || c === undefined || c === null);
+      });
+
+      tempParsedExcel = {
+        barangay: detectedBarangay,
+        headers: headers.map((h, i) => h || `Col ${i+1}`),
+        rows: validRows
+      };
+
+      showColumnMappingUIFromClean(tempParsedExcel.headers);
+    }
+
+    function showColumnMappingUIFromClean(headers) {
+      const grid = document.getElementById('column-map-grid');
+      grid.innerHTML = '';
+
+      const targetFields = [
+        { key: 'no', label: 'No.', hints: ['no', 'item', 'seq'] },
+        { key: 'id', label: 'ID Number', hints: ['id number', 'id', 'control'] },
+        { key: 'fullname', label: 'Name of Members', hints: ['name of members', 'name', 'fullname', 'member'] },
+        { key: 'address', label: 'Address / Barangay', hints: ['address', 'barangay', 'location', 'residence'] },
+        { key: 'dob_full', label: 'Full Date of Birth (Single Column)', hints: ['birth', 'dob', 'date of birth', 'bday', 'birthday'] },
+        { key: 'dob_month', label: 'DOB Month', hints: ['month'] },
+        { key: 'dob_day', label: 'DOB Day', hints: ['day'] },
+        { key: 'dob_year', label: 'DOB Year', hints: ['year'] },
+        { key: 'sex', label: 'Sex', hints: ['sex', 'gender'] },
+        { key: 'philhealth', label: 'Philhealth Number', hints: ['philhealth', 'ph'] },
+        { key: 'remarks', label: 'Remarks', hints: ['remarks', 'notes'] }
+      ];
+
+      targetFields.forEach(field => {
+        let bestMatchIdx = -1;
+        headers.forEach((h, idx) => {
+          const hLower = String(h).toLowerCase();
+          // Avoid matching "Date of Birth (Month / Day / Year)" to single full DOB if month/day/year subheaders are checked
+          if (field.key === 'dob_full' && (hLower.includes('month') || hLower.includes('day') || hLower.includes('year'))) {
+            return;
+          }
+          if (field.hints.some(hint => hLower.includes(hint))) {
+            bestMatchIdx = idx;
+          }
+        });
+
+        const selectOptions = headers.map((h, idx) => 
+          `<option value="${idx}" ${idx === bestMatchIdx ? 'selected' : ''}>Column ${idx + 1}: ${h}</option>`
+        ).join('');
+
+        const div = document.createElement('div');
+        div.className = 'form-group';
+        div.innerHTML = `
+          <label>${field.label}</label>
+          <select id="map-select-${field.key}" class="form-control">
+            <option value="-1">-- Auto Match / Default --</option>
+            ${selectOptions}
+          </select>
+        `;
+        grid.appendChild(div);
+      });
+
+      document.getElementById('column-mapping-wrapper').style.display = 'block';
+    }
+
+    // Helper to parse any date string or Excel serial number
+    function parseDateToComponents(rawDate) {
+      if (!rawDate && rawDate !== 0) return { monthStr: '', day: '', year: '', dobStr: '' };
+      
+      let dateObj = null;
+      const valStr = String(rawDate).trim();
+      
+      // Check if rawDate is Excel date serial number (e.g. 22656 -> 1962-01-12)
+      if (!isNaN(rawDate) && Number(rawDate) > 1000 && Number(rawDate) < 100000) {
+        // Excel 1900 date epoch adjustment
+        const excelSerial = Number(rawDate);
+        dateObj = new Date(Math.round((excelSerial - 25569) * 86400 * 1000));
+      } else if (valStr) {
+        const parsed = Date.parse(valStr);
+        if (!isNaN(parsed)) {
+          dateObj = new Date(parsed);
+        }
+      }
+
+      if (dateObj && !isNaN(dateObj.getTime())) {
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const year = dateObj.getFullYear();
+        const monthNum = dateObj.getMonth() + 1;
+        const monthStr = monthNames[dateObj.getMonth()];
+        const day = dateObj.getDate();
+        const dobStr = `${year}-${String(monthNum).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        return { monthStr, day, year, dobStr };
+      }
+
+      return { monthStr: '', day: '', year: '', dobStr: valStr };
+    }
+
+    async function confirmExcelImport() {
+      if (!tempParsedExcel || !tempParsedExcel.rows || tempParsedExcel.rows.length === 0) {
+        alert('No data rows found to import.');
+        return;
+      }
+
+      const confirmBtn = document.getElementById('confirm-import-btn');
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Syncing to Database...`;
+      }
+
+      try {
+        const headers = tempParsedExcel.headers;
+        customHeaders = []; // Use standard guide headers!
+
+        const rows = tempParsedExcel.rows;
+        const barangay = tempParsedExcel.barangay || 'Singalat';
+
+        const getVal = (row, key) => {
+          const select = document.getElementById(`map-select-${key}`);
+          if (!select) return '';
+          const idx = parseInt(select.value);
+          return (idx >= 0 && row[idx] !== undefined) ? String(row[idx]).trim() : '';
+        };
+
+        const monthMap = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        const importedSeniors = rows.map((row, rIdx) => {
+          const rawObj = {};
+          headers.forEach((h, cIdx) => {
+            rawObj[h] = row[cIdx] !== undefined && row[cIdx] !== null ? String(row[cIdx]).trim() : '';
+          });
+
+          let itemNo = parseInt(getVal(row, 'no')) || (rIdx + 1);
+          let oscaId = getVal(row, 'id');
+          let nameStr = getVal(row, 'fullname');
+          let mappedAddress = getVal(row, 'address');
+          let fullDobVal = getVal(row, 'dob_full');
+          let m = getVal(row, 'dob_month');
+          let d = getVal(row, 'dob_day');
+          let y = getVal(row, 'dob_year');
+          let sex = getVal(row, 'sex');
+          let philhealth = getVal(row, 'philhealth');
+          let remarks = getVal(row, 'remarks');
+
+          // Split "Angway, Teresita Navarro" or "Balbin,Juan Malagbangan"
+          let lastname = 'Senior', firstname = `Record ${rIdx+1}`, middlename = '';
+          if (nameStr) {
+            if (nameStr.includes(',')) {
+              const parts = nameStr.split(',');
+              lastname = parts[0].trim();
+              const firstMiddle = parts[1].trim().split(' ');
+              firstname = firstMiddle[0] || '';
+              middlename = firstMiddle.slice(1).join(' ');
+            } else {
+              const parts = nameStr.trim().split(' ');
+              firstname = parts[0] || 'Senior';
+              lastname = parts.slice(1).join(' ') || `Record ${rIdx+1}`;
+            }
+          }
+
+          let dobStr = '';
+          let dob_month = m;
+          let dob_day = d;
+          let dob_year = y;
+
+          if (fullDobVal) {
+            const parsedComp = parseDateToComponents(fullDobVal);
+            if (parsedComp.dobStr) dobStr = parsedComp.dobStr;
+            if (parsedComp.monthStr) dob_month = parsedComp.monthStr;
+            if (parsedComp.day) dob_day = parsedComp.day;
+            if (parsedComp.year) dob_year = parsedComp.year;
+          }
+
+          if (!dobStr && (y || m || d)) {
+            let mNum = parseInt(m);
+            if (isNaN(mNum)) {
+              const mKey = String(m).toLowerCase().substring(0, 3);
+              mNum = monthMap[mKey] || 1;
+              dob_month = monthNames[mNum - 1] || m;
+            } else {
+              dob_month = monthNames[mNum - 1] || m;
+            }
+            if (y && d) {
+              dobStr = `${y}-${String(mNum).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            }
+          }
+
+          if (!oscaId) oscaId = `24-${String(rIdx + 1000).padStart(4, '0')}`;
+          const calculatedAge = calculateAge(dobStr);
+
+          return {
+            no: itemNo,
+            id: oscaId,
+            name_of_members: nameStr || `${lastname}, ${firstname} ${middlename}`.trim(),
+            firstname: firstname,
+            middlename: middlename,
+            lastname: lastname,
+            extension: '',
+            dob_month: dob_month,
+            dob_day: dob_day,
+            dob_year: dob_year,
+            dob: dobStr,
+            age: calculatedAge,
+            gender: (sex.toLowerCase().startsWith('m') || sex.toLowerCase() === 'm') ? 'Male' : 'Female',
+            sex: (sex.toLowerCase().startsWith('m') || sex.toLowerCase() === 'm') ? 'Male' : 'Female',
+            civilstatus: 'Married',
+            barangay: barangay,
+            address: mappedAddress || `Brgy. ${barangay}`,
+            contact: '',
+            emergency: '',
+            philhealth: philhealth,
+            pensioner: 'No',
+            booklet: '',
+            status: 'Active',
+            remarks: remarks,
+            issue_date: new Date().toISOString().split('T')[0],
+            _rawObject: rawObj
+          };
+        });
+
+        if (useMySQLAPI) {
+          try {
+            const res = await fetch(`${API_BASE_URL}?action=import_batch`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items: importedSeniors })
+            });
+            const json = await res.json();
+            if (json.status === 'success') {
+              console.log('MySQL batch import success:', json.message);
+              await loadStoredData(); // Reload full multi-barangay dataset from database!
+            } else {
+              alert('MySQL sync message: ' + json.message);
+              // Append locally as fallback
+              masterData = masterData.concat(importedSeniors);
+            }
+          } catch(err) {
+            console.error('MySQL batch import failed, fallback to local state:', err);
+            masterData = masterData.concat(importedSeniors);
+          }
+        } else {
+          // LocalStorage mode: Merge newly imported seniors with existing masterData
+          const existingIds = new Set(masterData.map(s => String(s.id)));
+          const newRecords = importedSeniors.filter(s => !existingIds.has(String(s.id)));
+          masterData = masterData.concat(newRecords.length > 0 ? newRecords : importedSeniors);
+        }
+
+        saveStoredData();
+        renderStats();
+        renderMasterTable();
+
+        alert(`🎉 Successfully imported & synced ${importedSeniors.length} Senior Citizens from Barangay ${barangay} into phpMyAdmin / MySQL database!`);
+        document.getElementById('column-mapping-wrapper').style.display = 'none';
+        switchTab('tab-directory');
+
+      } catch(outerErr) {
+        alert('Import Error: ' + outerErr.message);
+      } finally {
+        if (confirmBtn) {
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = `<i class="fa-solid fa-check-double"></i> Confirm & Import to phpMyAdmin / MySQL`;
+        }
+      }
+    }
+
+    function loadSampleOSCAData() {
+      masterData = defaultOSCAData;
+      customHeaders = [];
+      saveStoredData();
+      renderStats();
+      renderMasterTable();
+      alert('Sample OSCA Master Data loaded successfully!');
+      switchTab('tab-directory');
+    }
+
+    function exportToExcel() {
+      const exportRows = masterData.map(d => ({
+        'No.': d.no || '',
+        'Name of Members': d.name_of_members || `${d.lastname}, ${d.firstname} ${d.middlename || ''}`.trim(),
+        'Month': d.dob_month || '',
+        'Day': d.dob_day || '',
+        'Year': d.dob_year || '',
+        'Sex': d.gender || d.sex || 'Male',
+        'ID Number': d.id,
+        'Philhealth Number': d.philhealth || d.philhealth_no || '',
+        'Remarks': d.remarks || ''
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(exportRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Masterlist of Senior Citizen');
+      XLSX.writeFile(workbook, `OSCA_Masterlist_Guide_${new Date().toISOString().split('T')[0]}.xlsx`);
+    }
+
+    // CLAIMS MODULE
+    function populateClaimSeniorSelect(searchQuery = '') {
+      const select = document.getElementById('claim-senior-select');
+      let filtered = masterData;
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.toLowerCase();
+        filtered = masterData.filter(d => {
+          const name = (d.name_of_members || `${d.firstname||''} ${d.lastname||''}`).toLowerCase();
+          return name.includes(q) || String(d.id).includes(q) || (d.barangay || '').toLowerCase().includes(q);
+        });
+      }
+      
+      const sorted = [...filtered].sort((a, b) => {
+        const nameA = (a.name_of_members || `${a.firstname||''} ${a.lastname||''}`).toLowerCase();
+        const nameB = (b.name_of_members || `${b.firstname||''} ${b.lastname||''}`).toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+
+      select.innerHTML = sorted.map(d => 
+        `<option value="${d.id}">[${d.id}] ${d.name_of_members || (d.firstname + ' ' + d.lastname)} — Brgy. ${d.barangay}</option>`
+      ).join('');
+    }
+
+    function openLogClaimModal() {
+      const searchInput = document.getElementById('claim-senior-search');
+      if (searchInput) searchInput.value = '';
+      populateClaimSeniorSelect();
+      document.getElementById('modal-claim-form').style.display = 'flex';
+    }
+
+    async function saveClaimRecord(e) {
+      e.preventDefault();
+      const seniorId = document.getElementById('claim-senior-select').value;
+      const senior = masterData.find(d => String(d.id) === String(seniorId));
+
+      const claim = {
+        date: new Date().toLocaleString('en-PH'),
+        id: seniorId,
+        name: senior ? (senior.name_of_members || `${senior.firstname} ${senior.lastname}`) : 'Unknown Senior',
+        type: document.getElementById('claim-type').value,
+        amount: document.getElementById('claim-amount').value,
+        officer: document.getElementById('claim-officer').value
+      };
+
+      if (useMySQLAPI) {
+        try {
+          await fetch(`${API_BASE_URL}?action=save_claim`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(claim)
+          });
+        } catch(err) { console.error('Save claim API error:', err); }
+      }
+
+      benefitClaims.unshift(claim);
+      saveStoredData();
+      renderClaimsTable();
+      closeModal('modal-claim-form');
+      alert('Assistance claim logged successfully!');
+    }
+
+    function renderClaimsTable() {
+      const tbody = document.getElementById('claims-table-body');
+      tbody.innerHTML = '';
+
+      if (benefitClaims.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No benefit claims logged yet. Click "Record New Claim" above.</td></tr>`;
+        return;
+      }
+
+      benefitClaims.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.date}</td>
+          <td><strong>${c.name}</strong></td>
+          <td><strong style="color: var(--accent);">${c.id}</strong></td>
+          <td>${c.type}</td>
+          <td><span style="color:#34d399; font-weight:600;">${c.amount}</span></td>
+          <td>${c.officer}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // QR SCANNER MODULE
+    function openScannerModal() {
+      document.getElementById('modal-scanner').style.display = 'flex';
+      html5QrScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+      html5QrScanner.render((decodedText) => {
+        closeScannerModal();
+        handleInstantSearch(decodedText.replace('OSCA:', '').split(':')[0]);
+      }, (errorMessage) => {
+        // scan error, ignore
+      });
+    }
+
+    function closeScannerModal() {
+      if (html5QrScanner) {
+        html5QrScanner.clear().catch(e => console.error(e));
+      }
+      document.getElementById('modal-scanner').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

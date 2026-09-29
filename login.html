@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OSCA — Secure Login | Palayan City Senior Citizens Affairs</title>
+  <meta name="description" content="Secure login portal for the Office of Senior Citizens Affairs (OSCA) of Palayan City, Nueva Ecija." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:      #0a2540;
+      --primary-mid:  #0e2f50;
+      --accent:       #d4af37;
+      --accent-glow:  rgba(212, 175, 55, 0.35);
+      --danger:       #ef4444;
+      --success:      #10b981;
+      --bg:           #080f1e;
+      --card-bg:      rgba(14, 26, 46, 0.82);
+      --border:       rgba(212, 175, 55, 0.22);
+      --text:         #f1f5f9;
+      --muted:        #94a3b8;
+      --font-h:       'Outfit', sans-serif;
+      --font-b:       'Plus Jakarta Sans', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ── Background Image ── */
+    .bg-scene {
+      position: fixed; inset: 0; z-index: 0;
+      background: linear-gradient(rgba(8, 15, 30, 0.75), rgba(8, 15, 30, 0.9)), url('city_hall_bg.jpg') center/cover no-repeat;
+    }
+    .orb-1 { width: 400px; height: 400px; background: #d4af37; top: -150px; left: -100px; animation-duration: 12s; }
+    .orb-2 { width: 300px; height: 300px; background: #0a2540; bottom: -100px; right: -80px; animation-duration: 16s; animation-delay: -4s; }
+    .orb-3 { width: 200px; height: 200px; background: #d4af37; top: 50%; right: 15%; opacity: 0.1; animation-duration: 10s; animation-delay: -8s; }
+
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 20px) scale(1.08); }
+    }
+
+    /* ── Page Layout ── */
+    .login-wrapper {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      gap: 3rem;
+    }
+
+    /* ── Branding Panel (Left) ── */
+    .brand-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 340px;
+      text-align: center;
+      animation: slideInLeft 0.7s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .seals-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .seal-img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover; /* changed from contain to cover to fill circle */
+      border-radius: 50%;
+      background-color: #fff; /* Ensures transparent PNGs also look like solid circles for consistency */
+      filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.4));
+      transition: filter 0.3s;
+    }
+
+    .seal-img:hover { filter: drop-shadow(0 0 28px rgba(212, 175, 55, 0.7)); }
+
+    .seal-divider {
+      width: 2px;
+      height: 70px;
+      background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+    }
+
+    .brand-title {
+      font-family: var(--font-h);
+    }
+
+    .brand-title h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title .subtitle {
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 0.35rem;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+    }
+
+    .brand-title .tagline {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      line-height: 1.6;
+    }
+
+
+    /* ── Divider ── */
+    .panel-divider {
+      width: 1px;
+      height: 340px;
+      background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.35), transparent);
+    }
+
+    /* ── Login Card (Right) ── */
+    .login-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem 2.25rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow:
+        0 25px 60px -10px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+        0 1px 0 rgba(212, 175, 55, 0.15) inset;
+      animation: slideInRight 0.7s cubic-bezier(.22,1,.36,1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, #8B0000, #d4af37, #8B0000);
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .lock-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1.5px solid rgba(212, 175, 55, 0.4);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.6rem;
+      color: var(--accent);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+      animation: pulse-lock 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-lock {
+      0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); }
+      50%       { box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); }
+    }
+
+    .card-header h2 {
+      font-family: var(--font-h);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .card-header p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ── Form Fields ── */
+    .field-group {
+      margin-bottom: 1.15rem;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.75px;
+      margin-bottom: 0.45rem;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: rgba(8, 15, 30, 0.7);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-family: var(--font-b);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.25s;
+    }
+
+    /* Password field needs extra right padding for the toggle button */
+    #password { padding-right: 2.8rem; }
+
+    .field-input::placeholder { color: rgba(148, 163, 184, 0.5); }
+
+    .field-input:focus {
+      border-color: var(--accent);
+      background: rgba(8, 15, 30, 0.9);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    .field-input:focus ~ .pass-toggle,
+    .input-wrap:focus-within .pass-toggle { color: var(--accent); }
+
+    /* Left icon inside input */
+    .input-wrap > i:first-child {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .input-wrap:focus-within > i:first-child { color: var(--accent); }
+
+    /* Password toggle */
+    .pass-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.25rem 0.35rem;
+      line-height: 1;
+      z-index: 2;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pass-toggle:hover { color: var(--accent); }
+
+    /* ── Alert ── */
+    .alert-box {
+      display: none;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      margin-bottom: 1rem;
+      animation: shake 0.4s ease;
+    }
+
+    .alert-box.success {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-6px); }
+      40%       { transform: translateX(6px); }
+      60%       { transform: translateX(-4px); }
+      80%       { transform: translateX(4px); }
+    }
+
+    /* ── Login Button ── */
+    .btn-login {
+      width: 100%;
+      padding: 0.95rem;
+      background: linear-gradient(135deg, #d4af37, #b89628);
+      border: none;
+      border-radius: 12px;
+      color: #0a2540;
+      font-family: var(--font-h);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+      margin-top: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-login:hover:not(:disabled) {
+      background: linear-gradient(135deg, #e0bc48, #d4af37);
+      box-shadow: 0 6px 28px rgba(212, 175, 55, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-login:active:not(:disabled) { transform: translateY(0); }
+
+    .btn-login:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .btn-login .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(10, 37, 64, 0.3);
+      border-top-color: #0a2540;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Default Credentials Hint ── */
+    .cred-hint {
+      margin-top: 1.25rem;
+      background: rgba(212, 175, 55, 0.07);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .cred-hint strong { color: var(--accent); }
+
+    .cred-hint .cred-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 0.3rem;
+    }
+
+    /* ── Footer ── */
+    .login-footer {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 0.73rem;
+      color: rgba(148, 163, 184, 0.5);
+      z-index: 1;
+    }
+
+    /* ── What's New Preview Panel ── */
+    .update-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 300px;
+      animation: slideInLeft 0.7s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .update-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(212,175,55,0.15);
+      border: 1px solid rgba(212,175,55,0.4);
+      border-radius: 20px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .update-title {
+      font-family: var(--font-h);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.35;
+    }
+
+    .update-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Mini preview card */
+    .preview-card {
+      background: rgba(14,26,46,0.85);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 16px;
+      padding: 1rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .preview-search-bar {
+      background: rgba(15,23,42,0.8);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 0.6rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      color: rgba(148,163,184,0.7);
+      font-size: 0.75rem;
+    }
+
+    .preview-search-bar i { font-size: 0.8rem; }
+
+    .preview-btns {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 0.5rem;
+    }
+
+    .preview-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.6rem 0.35rem;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-family: var(--font-h);
+      text-align: center;
+      border: 1.5px solid transparent;
+    }
+
+    .preview-btn i { font-size: 1.05rem; margin-bottom: 0.1rem; }
+
+    .preview-btn-scan {
+      background: rgba(59,130,246,0.12);
+      border-color: rgba(59,130,246,0.35);
+      color: #93c5fd;
+    }
+    .preview-btn-transfer {
+      background: rgba(212,175,55,0.10);
+      border-color: rgba(212,175,55,0.35);
+      color: var(--accent);
+    }
+    .preview-btn-add {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+
+    .update-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .update-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .update-feature-item i {
+      color: var(--accent);
+      margin-top: 2px;
+      font-size: 0.72rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .update-panel { display: none; }
+    }
+    @media (max-width: 768px) {
+      .brand-panel, .panel-divider { display: none; }
+      .login-card { max-width: 100%; padding: 2rem 1.5rem; }
+      .login-wrapper { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-scene"></div>
+
+  <!-- Login Layout -->
+  <div class="login-wrapper">
+
+    <!-- Far Left: What's New Preview -->
+    <div class="update-panel">
+      <span class="update-badge"><i class="fa-solid fa-star"></i> What's New</span>
+      <p class="update-title">Simpler Toolbar<br>for Senior-Friendly Use</p>
+      <p class="update-desc">The search and action buttons are now separated into clear, large rows — easier to read and tap.</p>
+
+      <!-- Mini preview of the new toolbar -->
+      <div class="preview-card">
+        <div class="preview-search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Search by ID, Full Name, Barangay…
+        </div>
+        <div class="preview-btns">
+          <div class="preview-btn preview-btn-scan">
+            <i class="fa-solid fa-qrcode"></i>
+            Scan QR
+          </div>
+          <div class="preview-btn preview-btn-transfer">
+            <i class="fa-solid fa-file-export"></i>
+            Transfer
+          </div>
+          <div class="preview-btn preview-btn-add">
+            <i class="fa-solid fa-user-plus"></i>
+            Add Senior
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature list -->
+      <div class="update-features">
+        <div class="update-feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Full-width search bar with larger text</span>
+        </div>
+        <div class="update-feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Buttons now show icon + label + description</span>
+        </div>
+        <div class="update-feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Color-coded actions for quick recognition</span>
+        </div>
+        <div class="update-feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Responsive — stacks on mobile screens</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="panel-divider" style="height: 400px;"></div>
+
+    <!-- Left: Branding -->
+    <div class="brand-panel">
+      <div class="seals-row">
+        <img class="seal-img" src="palayan_seal.png" alt="Palayan City Seal" style="border-radius: 50%; object-fit: cover;" onerror="this.style.display='none'" />
+        <div class="seal-divider"></div>
+        <img class="seal-img" src="osca_logo.jpg?v=2" alt="OSCA Logo" style="border-radius: 50%; object-fit: cover; background-color: #fff;" onerror="this.style.display='none'" />
+      </div>
+
+      <div class="brand-title">
+        <h1>OFFICE OF SENIOR CITIZENS AFFAIRS</h1>
+        <p class="subtitle">Palayan City, Nueva Ecija</p>
+        <p class="tagline">
+          Official Verification &amp; Master Data Management System &mdash;
+          Serving the Senior Citizens of Palayan City with dignity and excellence.
+        </p>
+      </div>
+    </div>
+
+    <!-- Panel Divider -->
+    <div class="panel-divider"></div>
+
+    <!-- Right: Login Card -->
+    <div class="login-card">
+
+      <div class="card-header">
+        <div class="lock-icon">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2>Secure Staff Login</h2>
+        <p>Enter your credentials to access the OSCA system</p>
+      </div>
+
+      <div id="alert-box" class="alert-box" role="alert"></div>
+
+      <form id="login-form" onsubmit="handleLogin(event)" autocomplete="off" novalidate>
+
+        <!-- Username -->
+        <div class="field-group">
+          <label for="username">Username</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-user"></i>
+            <input
+              type="text"
+              id="username"
+              class="field-input"
+              placeholder="Enter your username"
+              autocomplete="username"
+              required
+              spellcheck="false"
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-key"></i>
+            <input
+              type="password"
+              id="password"
+              class="field-input"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+            <button type="button" class="pass-toggle" id="pass-toggle-btn" onclick="togglePassword()" title="Show/Hide password" tabindex="-1" aria-label="Show password">
+              <i class="fa-regular fa-eye" id="pass-toggle-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Login Button -->
+        <button type="submit" class="btn-login" id="login-btn">
+          <div class="spinner" id="login-spinner"></div>
+          <i class="fa-solid fa-right-to-bracket" id="login-icon"></i>
+          <span id="login-label">Sign In to OSCA System</span>
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="login-footer">
+    Office of Senior Citizens Affairs (OSCA) &bull; Palayan City, Nueva Ecija &bull; Pursuant to R.A. 7432 &amp; R.A. 9994
+  </div>
+
+  <script>
+    // ── Auto-detect Auth API URL ──────────────────────────────────────────────
+    const AUTH_URL = (() => {
+      if (location.pathname.toLowerCase().includes('/osca/')) return 'auth.php';
+      if (location.port === '8000') return 'http://127.0.0.1:8000/auth.php';
+      return 'http://127.0.0.1/OSCA/auth.php';
+    })();
+
+    // ── If already logged in, redirect immediately ────────────────────────────
+    (async () => {
+      const token = localStorage.getItem('osca_auth_token');
+      if (token) {
+        try {
+          const res = await fetch(`${AUTH_URL}?action=verify`, {
+            headers: { 'X-Auth-Token': token }
+          });
+          const json = await res.json();
+          if (json.status === 'success') {
+            window.location.replace('index.html');
+          }
+        } catch (e) { /* not connected, ignore */ }
+      }
+    })();
+
+    // ── Toggle password visibility ────────────────────────────────────────────
+    function togglePassword() {
+      const pwField = document.getElementById('password');
+      const icon    = document.getElementById('pass-toggle-icon');
+      const btn     = document.getElementById('pass-toggle-btn');
+      if (pwField.type === 'password') {
+        pwField.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+        btn.setAttribute('aria-label', 'Hide password');
+        btn.title = 'Hide password';
+      } else {
+        pwField.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+        btn.setAttribute('aria-label', 'Show password');
+        btn.title = 'Show password';
+      }
+    }
+
+    // ── Show Alert ────────────────────────────────────────────────────────────
+    function showAlert(message, type = 'error') {
+      const box = document.getElementById('alert-box');
+      box.textContent = message;
+      box.className = 'alert-box' + (type === 'success' ? ' success' : '');
+      box.style.display = 'block';
+    }
+
+    function hideAlert() {
+      document.getElementById('alert-box').style.display = 'none';
+    }
+
+    // ── Set Loading State ─────────────────────────────────────────────────────
+    function setLoading(loading) {
+      const btn     = document.getElementById('login-btn');
+      const spinner = document.getElementById('login-spinner');
+      const icon    = document.getElementById('login-icon');
+      const label   = document.getElementById('login-label');
+      btn.disabled  = loading;
+      spinner.style.display = loading ? 'block' : 'none';
+      icon.style.display    = loading ? 'none'  : 'inline';
+      label.textContent     = loading ? 'Signing In...' : 'Sign In to OSCA System';
+    }
+
+    // ── Handle Login ──────────────────────────────────────────────────────────
+    async function handleLogin(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showAlert('Please enter both username and password.');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const res = await fetch(`${AUTH_URL}?action=login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const json = await res.json();
+
+        if (json.status === 'success') {
+          // Store auth info
+          localStorage.setItem('osca_auth_token', json.token);
+          localStorage.setItem('osca_auth_user', JSON.stringify(json.user));
+          localStorage.setItem('osca_token_expires', json.expires);
+
+          showAlert(`Welcome, ${json.user.full_name}! Redirecting...`, 'success');
+
+          setTimeout(() => {
+            window.location.replace('index.html');
+          }, 700);
+        } else {
+          setLoading(false);
+          showAlert(json.message || 'Login failed. Please try again.');
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+        }
+
+      } catch (err) {
+        setLoading(false);
+        // Offline / no PHP → allow local access with hardcoded fallback
+        const fallback = [
+          { username: 'admin',   password: 'admin123', full_name: 'System Administrator', role: 'admin' },
+          { username: 'officer', password: 'osca2024', full_name: 'OSCA Officer',          role: 'officer' },
+          { username: 'viewer',  password: 'viewer123', full_name: 'Read-Only Viewer',     role: 'viewer' },
+        ];
+        const match = fallback.find(u => u.username === username && u.password === password);
+        if (match) {
+          const localToken = 'local_' + Date.now();
+          localStorage.setItem('osca_auth_token', localToken);
+          localStorage.setItem('osca_auth_user', JSON.stringify({ username: match.username, full_name: match.full_name, role: match.role }));
+          showAlert(`Welcome, ${match.full_name}! Redirecting...`, 'success');
+          setTimeout(() => { window.location.replace('index.html'); }, 700);
+        } else {
+          showAlert('Cannot connect to server. Check your credentials or XAMPP is running.');
+        }
+      }
+    }
+
+    // ── Enter key on username → focus password ────────────────────────────────
+    document.getElementById('username').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('password').focus();
+    });
+  </script>
+
+</body>
+</html>
